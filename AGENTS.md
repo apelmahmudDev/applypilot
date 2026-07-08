@@ -23,6 +23,17 @@ These rules apply to every Codex session in this repository. Follow them before 
 - Do not break WXT entrypoint conventions.
 - Do not add custom build tooling unless absolutely necessary and approved by the user.
 
+## Module Pattern Rules
+
+- Use `modules/<feature>` for feature-specific UI, types, schemas, hooks, helpers, mocks, and orchestration that are not broadly shared.
+- Keep WXT `entrypoints/` files thin: they should mount the entrypoint, wire top-level state, and compose feature modules.
+- Prefer imports from feature modules through the project alias, such as `@/modules/popup/...`, instead of reaching through long relative paths.
+- Put reusable primitives and cross-feature utilities in existing shared folders such as `components/`, `hooks/`, `lib/`, or `utils/`, not inside a single feature module.
+- Keep module internals organized by responsibility. Use `components/` for feature components, `types.ts` for feature-local types, schema files for validation, and small helper files when they clarify behavior.
+- Do not create barrel exports by default. Add an `index.ts` only when a module has a stable public surface used by multiple files.
+- Avoid importing from one feature module into another feature module unless the code is intentionally shared. Move shared logic to a common folder instead.
+- Keep browser-extension boundaries intact inside modules: content extraction logic, background logic, popup UI, side panel UI, and dashboard UI should remain separated by entrypoint responsibility.
+
 ## Command Safety
 
 - Confirm the current directory is the repository root before making changes.

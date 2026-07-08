@@ -109,6 +109,21 @@ These rules apply to every Codex session in this repository. Follow them before 
 - Full dashboard views should be used for larger management tasks such as analytics, export/import, detailed filtering, and bulk review.
 - Keep dark mode styling consistent if the existing UI uses a dark theme.
 
+## Table and Data Table Rules
+
+- For new data tables, follow the shadcn/Radix data-table structure and split table code by responsibility.
+- Prefer this structure inside the relevant feature folder:
+  - `columns.tsx` for column definitions.
+  - `data-table.tsx` for the reusable `<DataTable />` component.
+  - `page.tsx`, `view.tsx`, or the feature entry component for fetching/loading data and rendering the table.
+- In this WXT + React extension, do not assume Next.js server components. Treat `page.tsx` from shadcn examples as the feature-level screen/view component.
+- Keep column definitions focused on headers, cells, sorting labels, row actions, and display formatting.
+- Keep table state and UI controls such as sorting, filtering, pagination, row selection, empty state, and loading state inside `data-table.tsx` unless the feature already has a shared table pattern.
+- Keep data fetching, storage reads, mutation handlers, and feature-specific orchestration outside `data-table.tsx` when practical.
+- Use existing `components/ui/table.tsx` and related shadcn/Radix UI components before creating custom table primitives.
+- For dashboard-scale job lists, prefer a data table over card-only layouts when users need scanning, filtering, sorting, or bulk actions.
+- Avoid putting large or complex data tables inside the popup. Use the dashboard for full tables and the side panel only for lightweight lists.
+
 ## Code Quality
 
 - Use TypeScript types instead of `any` when practical.

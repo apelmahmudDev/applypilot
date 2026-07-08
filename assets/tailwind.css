@@ -122,7 +122,7 @@
 	html,
 	body,
 	#root {
-		@apply m-0 min-h-[548px] w-[380px] overflow-hidden bg-transparent;
+		@apply m-0 min-h-[600px] w-[380px] overflow-hidden bg-transparent;
 	}
 	body {
 		@apply text-foreground antialiased;

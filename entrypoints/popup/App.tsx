@@ -8,9 +8,31 @@ import {
 	Settings,
 	X,
 } from "lucide-react";
+import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import {
+	Field,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupText,
+	InputGroupTextarea,
+} from "@/components/ui/input-group";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 const detectedJob = {
 	title: "Frontend Developer",
@@ -25,18 +47,22 @@ const detectedJob = {
 type PopupView = "detected" | "edit" | "saved";
 type JobForm = typeof detectedJob;
 
-const inputClassName =
-	"h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-950 outline-none transition focus:border-blue-500 focus:ring-3 focus:ring-blue-100";
+const jobFormSchema = z.object({
+	title: z.string().trim().min(1, "Job title is required."),
+	company: z.string().trim().min(1, "Company is required."),
+	location: z.string().trim().min(1, "Location is required."),
+	url: z.string().trim().url("Enter a valid job URL."),
+	platform: z.string().trim().min(1, "Platform is required."),
+	status: z.enum(["Interested", "Applied", "Interviewing", "Saved"]),
+	notes: z.string().max(500, "Notes must be 500 characters or less."),
+});
 
 function App() {
 	const [view, setView] = useState<PopupView>("detected");
 	const [job, setJob] = useState<JobForm>(detectedJob);
 
-	const updateJobField = (field: keyof JobForm, value: string) => {
-		setJob((currentJob) => ({ ...currentJob, [field]: value }));
-	};
-
-	const saveJob = () => {
+	const saveJob = (savedJob: JobForm = job) => {
+		setJob(savedJob);
 		setView("saved");
 	};
 
@@ -84,7 +110,6 @@ function App() {
 				<EditJobView
 					job={job}
 					onCancel={() => setView("detected")}
-					onChange={updateJobField}
 					onSave={saveJob}
 				/>
 			)}
@@ -185,14 +210,22 @@ function DetectedJobView({
 function EditJobView({
 	job,
 	onCancel,
-	onChange,
 	onSave,
 }: {
 	job: JobForm;
 	onCancel: () => void;
-	onChange: (field: keyof JobForm, value: string) => void;
-	onSave: () => void;
+	onSave: (job: JobForm) => void;
 }) {
+	const form = useForm({
+		defaultValues: job,
+		validators: {
+			onSubmit: jobFormSchema,
+		},
+		onSubmit: ({ value }) => {
+			onSave(value);
+		},
+	});
+
 	return (
 		<section className="flex min-h-0 flex-1 flex-col px-5 py-4">
 			<div className="mb-3 flex items-center gap-2">
@@ -214,67 +247,207 @@ function EditJobView({
 				className="flex min-h-0 flex-1 flex-col"
 				onSubmit={(event) => {
 					event.preventDefault();
-					onSave();
+					form.handleSubmit();
 				}}
 			>
-				<div className="-mx-1 min-h-0 flex-1 space-y-2.5 overflow-y-auto px-1 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-					<Field label="Job Title">
-						<input
-							className={inputClassName}
-							value={job.title}
-							onChange={(event) => onChange("title", event.target.value)}
+				<div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+					<FieldGroup className="gap-3">
+						<form.Field
+							name="title"
+							children={(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field className="gap-1.5" data-invalid={isInvalid}>
+										<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+											Job Title
+										</FieldLabel>
+										<Input
+											id={field.name}
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(event) => field.handleChange(event.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete="off"
+											className="border-slate-200 bg-white text-sm font-medium text-slate-950"
+										/>
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
+									</Field>
+								);
+							}}
 						/>
-					</Field>
-					<Field label="Company">
-						<input
-							className={inputClassName}
-							value={job.company}
-							onChange={(event) => onChange("company", event.target.value)}
+						<form.Field
+							name="company"
+							children={(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field className="gap-1.5" data-invalid={isInvalid}>
+										<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+											Company
+										</FieldLabel>
+										<Input
+											id={field.name}
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(event) => field.handleChange(event.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete="off"
+											className="border-slate-200 bg-white text-sm font-medium text-slate-950"
+										/>
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
+									</Field>
+								);
+							}}
 						/>
-					</Field>
-					<Field label="Location">
-						<input
-							className={inputClassName}
-							value={job.location}
-							onChange={(event) => onChange("location", event.target.value)}
+						<form.Field
+							name="location"
+							children={(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field className="gap-1.5" data-invalid={isInvalid}>
+										<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+											Location
+										</FieldLabel>
+										<Input
+											id={field.name}
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(event) => field.handleChange(event.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete="off"
+											className="border-slate-200 bg-white text-sm font-medium text-slate-950"
+										/>
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
+									</Field>
+								);
+							}}
 						/>
-					</Field>
-					<Field label="Job URL">
-						<input
-							className={inputClassName}
-							type="url"
-							value={job.url}
-							onChange={(event) => onChange("url", event.target.value)}
+						<form.Field
+							name="url"
+							children={(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field className="gap-1.5" data-invalid={isInvalid}>
+										<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+											Job URL
+										</FieldLabel>
+										<Input
+											id={field.name}
+											name={field.name}
+											type="url"
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(event) => field.handleChange(event.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete="url"
+											className="border-slate-200 bg-white text-sm font-medium text-slate-950"
+										/>
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
+									</Field>
+								);
+							}}
 						/>
-					</Field>
-					<div className="grid grid-cols-2 gap-3">
-						<Field label="Platform">
-							<input
-								className={inputClassName}
-								value={job.platform}
-								onChange={(event) => onChange("platform", event.target.value)}
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="platform"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched && !field.state.meta.isValid;
+									return (
+										<Field className="gap-1.5" data-invalid={isInvalid}>
+											<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+												Platform
+											</FieldLabel>
+											<Input
+												id={field.name}
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(event) => field.handleChange(event.target.value)}
+												aria-invalid={isInvalid}
+												autoComplete="off"
+												className="border-slate-200 bg-white text-sm font-medium text-slate-950"
+											/>
+											{isInvalid && <FieldError errors={field.state.meta.errors} />}
+										</Field>
+									);
+								}}
 							/>
-						</Field>
-						<Field label="Status">
-							<select
-								className={inputClassName}
-								value={job.status}
-								onChange={(event) => onChange("status", event.target.value)}
-							>
-								<option>Interested</option>
-								<option>Applied</option>
-								<option>Interviewing</option>
-								<option>Saved</option>
-							</select>
-						</Field>
-					</div>
-					<Field label="Notes">
-						<textarea
-							className="min-h-16 w-full resize-none rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-950 outline-none transition focus:border-blue-500 focus:ring-3 focus:ring-blue-100"
-							value={job.notes}
-							onChange={(event) => onChange("notes", event.target.value)}
+							<form.Field
+								name="status"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched && !field.state.meta.isValid;
+									return (
+										<Field className="gap-1.5" data-invalid={isInvalid}>
+											<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+												Status
+											</FieldLabel>
+											<Select
+												value={field.state.value}
+												onValueChange={(value) => {
+													field.handleChange(value as JobForm["status"]);
+												}}
+											>
+												<SelectTrigger
+													id={field.name}
+													aria-invalid={isInvalid}
+													className="w-full border-slate-200 bg-white text-sm font-medium text-slate-950"
+												>
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="Interested">Interested</SelectItem>
+													<SelectItem value="Applied">Applied</SelectItem>
+													<SelectItem value="Interviewing">Interviewing</SelectItem>
+													<SelectItem value="Saved">Saved</SelectItem>
+												</SelectContent>
+											</Select>
+											{isInvalid && <FieldError errors={field.state.meta.errors} />}
+										</Field>
+									);
+								}}
+							/>
+						</div>
+						<form.Field
+							name="notes"
+							children={(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field className="gap-1.5" data-invalid={isInvalid}>
+										<FieldLabel className="text-xs font-bold text-slate-700" htmlFor={field.name}>
+											Notes
+										</FieldLabel>
+										<InputGroup>
+											<InputGroupTextarea
+												id={field.name}
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(event) => field.handleChange(event.target.value)}
+												aria-invalid={isInvalid}
+												rows={3}
+												className="min-h-16 resize-none text-sm font-medium text-slate-950"
+											/>
+											<InputGroupAddon align="block-end">
+												<InputGroupText className="text-xs tabular-nums">
+													{field.state.value.length}/500
+												</InputGroupText>
+											</InputGroupAddon>
+										</InputGroup>
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
+									</Field>
+								);
+							}}
 						/>
-					</Field>
+					</FieldGroup>
 				</div>
 
 				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4">
@@ -295,21 +468,6 @@ function EditJobView({
 				</div>
 			</form>
 		</section>
-	);
-}
-
-function Field({
-	label,
-	children,
-}: {
-	label: string;
-	children: React.ReactNode;
-}) {
-	return (
-		<label className="block">
-			<span className="mb-1 block text-xs font-bold text-slate-700">{label}</span>
-			{children}
-		</label>
 	);
 }
 

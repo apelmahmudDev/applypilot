@@ -20,6 +20,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useSystemTheme } from "@/hooks/use-system-theme";
 import { getStoredJobs, type StoredJob } from "@/lib/jobs/storage";
 import { openDashboard } from "@/lib/open-dashboard";
 import { cn } from "@/lib/utils";
@@ -57,7 +58,7 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 };
 
 export function SidePanel() {
-	const [isDarkMode, setIsDarkMode] = useState(true);
+	const { isDarkMode } = useSystemTheme();
 	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
@@ -429,7 +430,7 @@ export function SidePanel() {
 							isDarkMode ? "text-slate-300" : "text-slate-700",
 						)}
 						aria-pressed={isDarkMode}
-						onClick={() => setIsDarkMode((currentMode) => !currentMode)}
+						title="Uses your system theme"
 					>
 						<Moon
 							className={cn(
@@ -438,7 +439,7 @@ export function SidePanel() {
 							)}
 							aria-hidden="true"
 						/>
-						Dark Mode
+						System Mode
 						<span
 							className={cn(
 								"relative h-6 w-11 rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)] transition-colors",

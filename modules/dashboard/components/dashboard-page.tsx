@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useSystemTheme } from "@/hooks/use-system-theme";
 import { DashboardContent } from "@/modules/dashboard/components/dashboard-content";
 import { DashboardHeader } from "@/modules/dashboard/components/dashboard-header";
 import { DashboardSidebar } from "@/modules/dashboard/components/dashboard-sidebar";
@@ -15,6 +16,7 @@ function getViewFromHash(): DashboardView {
 }
 
 export function DashboardPage() {
+	useSystemTheme();
 	const [activeView, setActiveView] = useState<DashboardView>(getViewFromHash);
 
 	useEffect(() => {
@@ -34,7 +36,7 @@ export function DashboardPage() {
 
 	return (
 		<SidebarProvider
-			className="min-h-screen bg-slate-50 text-slate-950"
+			className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50"
 			style={
 				{
 					"--sidebar-width": "18.5rem",
@@ -43,7 +45,7 @@ export function DashboardPage() {
 			}
 		>
 			<DashboardSidebar activeView={activeView} onViewChange={handleViewChange} />
-			<SidebarInset className="bg-slate-50">
+			<SidebarInset className="bg-slate-50 dark:bg-slate-950">
 				<main
 					className="@container/main flex min-h-screen flex-1 flex-col"
 					style={{ ["--dashboard-header-offset" as string]: "4.5rem" }}

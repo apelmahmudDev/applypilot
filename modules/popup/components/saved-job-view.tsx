@@ -20,8 +20,8 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 				<div className="flex size-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
 					<CheckCircle2 className="size-7" aria-hidden="true" />
 				</div>
-				<h2 className="mt-4 text-lg font-bold text-slate-950">{title}</h2>
-				<p className="mt-2 max-w-[260px] text-sm font-medium leading-5 text-slate-700">
+				<h2 className="mt-4 text-lg font-bold text-slate-950 dark:text-white">{title}</h2>
+				<p className="mt-2 max-w-[260px] text-sm font-medium leading-5 text-slate-700 dark:text-slate-300">
 					{job.title} at {job.company} is ready for advanced editing.
 				</p>
 
@@ -29,10 +29,10 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 					<Button
 						type="button"
 						variant="outline"
-						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50"
+						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
 						onClick={openSidePanel}
 					>
-						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700">
+						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
 							<PanelRight className="size-5" aria-hidden="true" />
 						</span>
 						Open Side Panel
@@ -40,7 +40,7 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 					<Button
 						type="button"
 						variant="outline"
-						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50"
+						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
 						onClick={openDashboard}
 					>
 						<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">
@@ -51,7 +51,7 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 				</div>
 			</div>
 
-			<p className="text-center text-xs font-medium text-slate-700">
+			<p className="text-center text-xs font-medium text-slate-700 dark:text-slate-400">
 				All data is stored locally in your browser.
 			</p>
 		</section>

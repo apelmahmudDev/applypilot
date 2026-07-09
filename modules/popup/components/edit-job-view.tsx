@@ -32,9 +32,9 @@ type EditJobViewProps = {
 };
 
 const fieldClassName = "gap-1.5";
-const fieldLabelClassName = "text-xs font-bold text-slate-700";
+const fieldLabelClassName = "text-xs font-bold text-slate-700 dark:text-slate-300";
 const inputClassName =
-	"border-slate-200 bg-white text-sm font-medium text-slate-950";
+	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
 
 export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 	const form = useForm({
@@ -54,14 +54,14 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					type="button"
 					variant="ghost"
 					size="icon-sm"
-					className="-ml-1 text-slate-700 hover:bg-slate-100"
+					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900"
 					aria-label="Back to detected job"
 					title="Back"
 					onClick={onCancel}
 				>
 					<ArrowLeft className="size-4" aria-hidden="true" />
 				</Button>
-				<h2 className="text-base font-bold text-slate-950">
+				<h2 className="text-base font-bold text-slate-950 dark:text-white">
 					Edit Before Saving
 				</h2>
 			</div>
@@ -224,7 +224,7 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 												}
 												aria-invalid={isInvalid}
 												rows={3}
-												className="min-h-16 resize-none text-sm font-medium text-slate-950"
+												className="min-h-16 resize-none text-sm font-medium text-slate-950 dark:text-slate-100"
 											/>
 											<InputGroupAddon align="block-end">
 												<InputGroupText className="text-xs tabular-nums">
@@ -242,11 +242,11 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					</FieldGroup>
 				</div>
 
-				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4">
+				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4 dark:border-slate-800 dark:bg-slate-950">
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 hover:bg-slate-50"
+						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
 						onClick={onCancel}
 					>
 						Cancel

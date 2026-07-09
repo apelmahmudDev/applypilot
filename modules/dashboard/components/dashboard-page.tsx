@@ -1,138 +1,41 @@
-import {
-	BarChart3,
-	Bell,
-	BriefcaseBusiness,
-	Download,
-	Grid2X2,
-	Moon,
-	Send,
-	Settings,
-	TrendingUp,
-} from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
-import { AnalyticsPage } from "@/modules/dashboard/components/analytics-page";
-import { dashboardColumns } from "@/modules/dashboard/components/columns";
-import { DataTable } from "@/modules/dashboard/components/data-table";
-import { dashboardJobs, dashboardStats } from "@/modules/dashboard/mock-data";
-
-type DashboardView =
-	| "dashboard"
-	| "all-jobs"
-	| "analytics"
-	| "reminders"
-	| "export"
-	| "settings";
-
-const navItems: Array<{
-	label: string;
-	value: DashboardView;
-	icon: typeof Grid2X2;
-}> = [
-	{ label: "Dashboard", value: "dashboard", icon: Grid2X2 },
-	{ label: "All Jobs", value: "all-jobs", icon: BriefcaseBusiness },
-	{ label: "Analytics", value: "analytics", icon: BarChart3 },
-	{ label: "Reminders", value: "reminders", icon: Bell },
-	{ label: "Export", value: "export", icon: Download },
-	{ label: "Settings", value: "settings", icon: Settings },
-];
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardContent } from "@/modules/dashboard/components/dashboard-content";
+import { DashboardHeader } from "@/modules/dashboard/components/dashboard-header";
+import { DashboardSidebar } from "@/modules/dashboard/components/dashboard-sidebar";
+import type { DashboardView } from "@/modules/dashboard/navigation";
 
 export function DashboardPage() {
 	const [activeView, setActiveView] = useState<DashboardView>("dashboard");
 
 	return (
-		<main className="h-screen min-h-[720px] overflow-hidden bg-slate-50 p-6 text-slate-950">
-			<div className="mx-auto flex h-full max-w-[1440px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.10)]">
-				<aside className="flex w-[250px] shrink-0 flex-col border-r border-slate-200 bg-white px-5 py-6">
-					<div className="flex items-center gap-3 px-1">
-						<div className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-							<Send
-								className="size-6 fill-blue-500 stroke-blue-600"
-								aria-hidden="true"
-							/>
-						</div>
-						<h1 className="text-xl font-bold tracking-normal">ApplyPilot</h1>
+		<SidebarProvider
+			className="min-h-screen bg-slate-50 text-slate-950"
+			style={
+				{
+					"--sidebar-width": "18.5rem",
+					"--sidebar-width-icon": "5rem",
+				} as React.CSSProperties
+			}
+		>
+			<DashboardSidebar activeView={activeView} onViewChange={setActiveView} />
+			<SidebarInset className="bg-slate-50">
+				<main
+					className="@container/main flex min-h-screen flex-1 flex-col"
+					style={{ ["--dashboard-header-offset" as string]: "4.5rem" }}
+				>
+					<DashboardHeader activeView={activeView} />
+					<div
+						data-dashboard-content
+						className="flex flex-1 flex-col px-4 pb-6 md:px-8"
+					>
+						<section className="mx-auto flex w-full max-w-[1280px] flex-1 flex-col">
+							<DashboardContent activeView={activeView} />
+						</section>
 					</div>
-
-					<nav className="mt-10 space-y-2">
-						{navItems.map((item) => {
-							const Icon = item.icon;
-							const isActive = activeView === item.value;
-
-							return (
-								<Button
-									key={item.label}
-									type="button"
-									variant="ghost"
-									className={cn(
-										"h-11 w-full justify-start gap-3 rounded-md px-3 text-sm font-bold",
-										isActive
-											? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
-											: "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
-									)}
-									onClick={() => setActiveView(item.value)}
-								>
-									<Icon className="size-4" aria-hidden="true" />
-									{item.label}
-								</Button>
-							);
-						})}
-					</nav>
-
-					<div className="mt-auto space-y-5">
-						<div className="flex items-center justify-between px-2 text-sm font-bold text-slate-700">
-							<div className="flex items-center gap-2">
-								<Moon className="size-4 text-blue-600" aria-hidden="true" />
-								Dark Mode
-							</div>
-							<Switch size="sm" />
-						</div>
-						<div className="flex items-center gap-3 rounded-md bg-slate-50 p-3">
-							<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">
-								A
-							</div>
-							<span className="truncate text-sm font-bold text-slate-800">
-								Aryan Mehta
-							</span>
-						</div>
-					</div>
-				</aside>
-
-				<section className="min-w-0 flex-1 overflow-y-auto px-7 py-6">
-					{activeView === "analytics" ? (
-						<AnalyticsPage />
-					) : (
-						<DataTable
-							columns={dashboardColumns}
-							data={dashboardJobs}
-							statsSlot={
-								<div className="grid grid-cols-5 gap-5">
-									{dashboardStats.map((stat) => (
-										<article
-											key={stat.label}
-											className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]"
-										>
-											<p className="text-xs font-bold text-slate-700">
-												{stat.label}
-											</p>
-											<p className="mt-3 text-3xl font-bold tracking-normal text-slate-950">
-												{stat.value}
-											</p>
-											<p className="mt-3 flex items-center gap-1 text-xs font-bold text-emerald-600">
-												<TrendingUp className="size-3.5" aria-hidden="true" />
-												{stat.trend}
-											</p>
-										</article>
-									))}
-								</div>
-							}
-						/>
-					)}
-				</section>
-			</div>
-		</main>
+				</main>
+			</SidebarInset>
+		</SidebarProvider>
 	);
 }

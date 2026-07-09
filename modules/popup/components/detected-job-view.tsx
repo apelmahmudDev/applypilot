@@ -50,7 +50,7 @@ export function DetectedJobView({
 				</div>
 			)}
 
-			<article className="rounded-lg border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-slate-900/70 dark:shadow-none">
+			<article className="rounded-lg border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-[#262628] dark:shadow-none">
 				<h2 className="text-base font-bold leading-6 text-slate-950 dark:text-white">
 					{job.title || "Unknown job title"}
 				</h2>
@@ -75,7 +75,7 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					variant="outline"
-					className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+					className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
 					onClick={onEdit}
 				>
 					Edit Before Saving
@@ -94,7 +94,7 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					variant="outline"
-					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
+					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
 					onClick={openDashboard}
 				>
 					<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">
@@ -105,10 +105,10 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					variant="outline"
-					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
+					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
 					onClick={openSidePanel}
 				>
-					<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+					<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-[#202020] dark:text-slate-200">
 						<PanelRight className="size-5" aria-hidden="true" />
 					</span>
 					Open Side Panel

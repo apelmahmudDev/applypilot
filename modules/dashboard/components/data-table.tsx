@@ -163,7 +163,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									className="h-[72px] border-slate-100 hover:bg-slate-50/80"
+									className="h-[72px] border-slate-100 hover:bg-slate-50/80 dark:hover:bg-[#303032]"
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="px-5 py-3">

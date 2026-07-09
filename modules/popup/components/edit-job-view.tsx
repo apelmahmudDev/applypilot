@@ -34,7 +34,7 @@ type EditJobViewProps = {
 const fieldClassName = "gap-1.5";
 const fieldLabelClassName = "text-xs font-bold text-slate-700 dark:text-slate-300";
 const inputClassName =
-	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
+	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100";
 
 export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 	const form = useForm({
@@ -54,7 +54,7 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					type="button"
 					variant="ghost"
 					size="icon-sm"
-					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900"
+					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#262628]"
 					aria-label="Back to detected job"
 					title="Back"
 					onClick={onCancel}
@@ -242,11 +242,11 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					</FieldGroup>
 				</div>
 
-				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4 dark:border-slate-800 dark:bg-slate-950">
+				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4 dark:border-slate-800 dark:bg-[#202020]">
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
 						onClick={onCancel}
 					>
 						Cancel

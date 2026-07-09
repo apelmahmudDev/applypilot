@@ -112,14 +112,14 @@ export function SidePanel() {
 		<main
 			className={cn(
 				"h-screen min-h-[720px] w-full overflow-hidden p-2 transition-colors",
-				isDarkMode ? "bg-[#060b14] text-slate-100" : "bg-[#f8fafc] text-slate-950",
+				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-[#f8fafc] text-slate-950",
 			)}
 		>
 			<div
 				className={cn(
 					"flex h-full flex-col overflow-hidden rounded-lg border transition-colors",
 					isDarkMode
-						? "border-slate-700/55 bg-[linear-gradient(145deg,#0d1422_0%,#070b12_46%,#0a111d_100%)] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
+						? "border-slate-700/55 bg-[#262628] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
 						: "border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]",
 				)}
 			>
@@ -144,7 +144,7 @@ export function SidePanel() {
 						size="icon-sm"
 						className={cn(
 							isDarkMode
-								? "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+								? "text-slate-300 hover:bg-[#303032] hover:text-white"
 								: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
 						)}
 						aria-label="Open settings"
@@ -169,7 +169,7 @@ export function SidePanel() {
 						className={cn(
 							"flex h-10 items-center gap-3 rounded-lg border px-3 transition-colors",
 							isDarkMode
-								? "border-slate-700/70 bg-slate-950/35 text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+								? "border-slate-700/70 bg-[#262628] text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
 								: "border-slate-200 bg-white text-slate-500 shadow-[0_8px_22px_rgba(15,23,42,0.06)]",
 						)}
 					>
@@ -181,7 +181,7 @@ export function SidePanel() {
 							className={cn(
 								"rounded-md border px-2 py-0.5 text-[11px] font-medium",
 								isDarkMode
-									? "border-slate-700 bg-slate-900 text-slate-500"
+									? "border-slate-700 bg-[#262628] text-slate-500"
 									: "border-slate-200 bg-white text-slate-500",
 							)}
 						>
@@ -214,7 +214,7 @@ export function SidePanel() {
 							className={cn(
 								"rounded-lg border p-4 transition-colors",
 								isDarkMode
-									? "border-slate-700/75 bg-slate-900/45 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+									? "border-slate-700/75 bg-[#262628] shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
 									: "border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)]",
 							)}
 						>
@@ -223,7 +223,7 @@ export function SidePanel() {
 									className={cn(
 										"flex size-[72px] shrink-0 items-center justify-center rounded-lg border text-4xl font-bold",
 										isDarkMode
-											? "border-slate-700/55 bg-slate-800/45"
+											? "border-slate-700/55 bg-[#262628]"
 											: "border-slate-200 bg-slate-50",
 									)}
 								>
@@ -267,7 +267,7 @@ export function SidePanel() {
 									className={cn(
 										"h-10 rounded-md text-sm font-semibold",
 										isDarkMode
-											? "border-slate-600/70 bg-slate-950/25 text-slate-100 hover:bg-slate-800/80 hover:text-white"
+											? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
 											: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
 									)}
 									onClick={() =>
@@ -292,7 +292,7 @@ export function SidePanel() {
 						className={cn(
 							"grid grid-cols-3 rounded-lg border py-3 transition-colors",
 							isDarkMode
-								? "border-slate-700/65 bg-slate-900/45"
+								? "border-slate-700/65 bg-[#262628]"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
@@ -306,7 +306,7 @@ export function SidePanel() {
 						className={cn(
 							"overflow-hidden rounded-lg border transition-colors",
 							isDarkMode
-								? "border-slate-700/65 bg-slate-900/35"
+								? "border-slate-700/65 bg-[#262628]"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
@@ -320,7 +320,7 @@ export function SidePanel() {
 						className={cn(
 							"overflow-hidden rounded-lg border transition-colors",
 							isDarkMode
-								? "border-slate-700/65 bg-slate-900/35"
+								? "border-slate-700/65 bg-[#262628]"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
@@ -361,7 +361,7 @@ export function SidePanel() {
 										className={cn(
 											"h-8 rounded-md px-3 text-xs",
 											isDarkMode
-												? "border-slate-600/70 bg-slate-950/20 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+												? "border-slate-600/70 bg-[#262628] text-slate-200 hover:bg-[#303032] hover:text-white"
 												: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
 										)}
 									>
@@ -373,7 +373,7 @@ export function SidePanel() {
 										size="icon-sm"
 										className={cn(
 											isDarkMode
-												? "text-slate-400 hover:bg-slate-800/80 hover:text-white"
+												? "text-slate-400 hover:bg-[#303032] hover:text-white"
 												: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
 										)}
 										aria-label="Reminder actions"
@@ -391,7 +391,7 @@ export function SidePanel() {
 						className={cn(
 							"flex w-full items-center gap-3 rounded-lg border p-3 text-left transition",
 							isDarkMode
-								? "border-slate-700/65 bg-slate-900/45 hover:bg-slate-800/70"
+								? "border-slate-700/65 bg-[#262628] hover:bg-[#303032]"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)] hover:bg-slate-50",
 						)}
 						onClick={openDashboard}

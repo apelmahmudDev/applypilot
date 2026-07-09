@@ -88,7 +88,7 @@ export function JobFormPanel({
 				className={cn(
 					"flex min-h-0 flex-1 flex-col rounded-lg border shadow-[0_16px_40px_rgba(15,23,42,0.12)]",
 					isDarkMode
-						? "border-slate-700/70 bg-slate-950/45"
+						? "border-slate-700/70 bg-[#262628]"
 						: "border-slate-200 bg-white",
 				)}
 			>
@@ -112,7 +112,7 @@ export function JobFormPanel({
 						size="icon-sm"
 						className={cn(
 							isDarkMode
-								? "text-slate-300 hover:bg-slate-800 hover:text-white"
+								? "text-slate-300 hover:bg-[#303032] hover:text-white"
 								: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
 						)}
 						aria-label="Close job form"
@@ -241,7 +241,7 @@ export function JobFormPanel({
 								className={cn(
 									"flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border px-2 py-1.5",
 									isDarkMode
-										? "border-slate-700 bg-slate-950/35"
+										? "border-slate-700 bg-[#262628]"
 										: "border-slate-200 bg-white",
 								)}
 							>
@@ -287,7 +287,7 @@ export function JobFormPanel({
 								className={cn(
 									"min-h-24 resize-none rounded-md text-sm font-medium",
 									isDarkMode
-										? "border-slate-700 bg-slate-950/35 text-slate-100 placeholder:text-slate-500"
+										? "border-slate-700 bg-[#262628] text-slate-100 placeholder:text-slate-500"
 										: "border-slate-200 bg-white text-slate-950 placeholder:text-slate-400",
 								)}
 								placeholder="Great role for frontend development using modern technologies."
@@ -300,7 +300,7 @@ export function JobFormPanel({
 						className={cn(
 							"grid shrink-0 grid-cols-2 gap-3 border-t px-4 py-4",
 							isDarkMode
-								? "border-slate-800 bg-slate-950/25"
+								? "border-slate-800 bg-[#202020]"
 								: "border-slate-100 bg-white",
 						)}
 					>
@@ -310,7 +310,7 @@ export function JobFormPanel({
 							className={cn(
 								"h-10 rounded-md text-sm font-bold",
 								isDarkMode
-									? "border-slate-700 bg-slate-950/35 text-slate-100 hover:bg-slate-800"
+									? "border-slate-700 bg-[#262628] text-slate-100 hover:bg-[#303032]"
 									: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
 							)}
 							onClick={onCancel}
@@ -385,7 +385,7 @@ function TextInput({
 			className={cn(
 				inputBase,
 				isDarkMode
-					? "border-slate-700 bg-slate-950/35 text-slate-100 placeholder:text-slate-500"
+					? "border-slate-700 bg-[#262628] text-slate-100 placeholder:text-slate-500"
 					: "border-slate-200 bg-white text-slate-950 placeholder:text-slate-400",
 			)}
 			onChange={(event) => onChange(event.target.value)}
@@ -412,7 +412,7 @@ function SelectInput({
 					inputBase,
 					"w-full",
 					isDarkMode
-						? "border-slate-700 bg-slate-950/35 text-slate-100"
+						? "border-slate-700 bg-[#262628] text-slate-100"
 						: "border-slate-200 bg-white text-slate-950",
 				)}
 			>
@@ -450,7 +450,7 @@ function DateInput({
 						inputBase,
 						"w-full justify-between px-3 font-medium",
 						isDarkMode
-							? "border-slate-700 bg-slate-950/35 text-slate-100"
+							? "border-slate-700 bg-[#262628] text-slate-100"
 							: "border-slate-200 bg-white text-slate-950",
 					)}
 				>

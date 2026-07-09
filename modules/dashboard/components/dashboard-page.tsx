@@ -36,7 +36,7 @@ export function DashboardPage() {
 
 	return (
 		<SidebarProvider
-			className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50"
+			className="min-h-screen bg-slate-50 text-slate-950 dark:bg-[#202020] dark:text-slate-50"
 			style={
 				{
 					"--sidebar-width": "18.5rem",
@@ -45,7 +45,7 @@ export function DashboardPage() {
 			}
 		>
 			<DashboardSidebar activeView={activeView} onViewChange={handleViewChange} />
-			<SidebarInset className="bg-slate-50 dark:bg-slate-950">
+			<SidebarInset className="bg-slate-50 dark:bg-[#202020]">
 				<main
 					className="@container/main flex min-h-screen flex-1 flex-col"
 					style={{ ["--dashboard-header-offset" as string]: "4.5rem" }}

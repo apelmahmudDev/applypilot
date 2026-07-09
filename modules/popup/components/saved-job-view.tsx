@@ -29,10 +29,10 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 					<Button
 						type="button"
 						variant="outline"
-						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
+						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
 						onClick={openSidePanel}
 					>
-						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-[#202020] dark:text-slate-200">
 							<PanelRight className="size-5" aria-hidden="true" />
 						</span>
 						Open Side Panel
@@ -40,7 +40,7 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 					<Button
 						type="button"
 						variant="outline"
-						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:shadow-none dark:hover:bg-slate-800"
+						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
 						onClick={openDashboard}
 					>
 						<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">

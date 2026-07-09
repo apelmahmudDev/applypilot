@@ -22,7 +22,7 @@ function isDetectableUrl(url: string) {
 	return /^https?:\/\//.test(url);
 }
 
-function detectJobInPage(): DetectedJob {
+function detectJobInPage(): DetectedJob | null {
 	type PartialDetectedJob = Partial<DetectedJob>;
 
 	const url = window.location.href;
@@ -40,6 +40,10 @@ function detectJobInPage(): DetectedJob {
 		metaDetected,
 		genericDetected,
 	);
+
+	if (!hasDetectedJobDetails(detected)) {
+		return null;
+	}
 
 	return {
 		title: detected.title ?? "",
@@ -347,5 +351,9 @@ function detectJobInPage(): DetectedJob {
 		if (item.title && item.company && item.location) return "high";
 		if (item.title && item.company) return "medium";
 		return "low";
+	}
+
+	function hasDetectedJobDetails(item: PartialDetectedJob) {
+		return Boolean(item.title || item.company || item.location || item.description);
 	}
 }

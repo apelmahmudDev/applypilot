@@ -6,7 +6,6 @@ import { EditJobView } from "@/modules/popup/components/edit-job-view";
 import { PopupShell } from "@/modules/popup/components/popup-shell";
 import { SavedJobView } from "@/modules/popup/components/saved-job-view";
 import { useDetectedJob } from "@/modules/popup/hooks/use-detected-job";
-import { detectedJob } from "@/modules/popup/mock-job";
 import type { JobForm, PopupView } from "@/modules/popup/types";
 
 function App() {
@@ -14,8 +13,7 @@ function App() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveError, setSaveError] = useState("");
 	const [saveResult, setSaveResult] = useState<SaveJobResult | null>(null);
-	const { job, setJob, isDetecting, error, confidence } =
-		useDetectedJob(detectedJob);
+	const { job, setJob, isDetecting, error, confidence } = useDetectedJob();
 
 	const saveJob = async (savedJob: JobForm = job) => {
 		setIsSaving(true);

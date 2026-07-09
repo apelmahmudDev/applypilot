@@ -4,13 +4,23 @@ import { detectJobFromActiveTab } from "@/lib/job-detection/detect-active-tab";
 import type { DetectionConfidence } from "@/lib/job-detection/types";
 import type { JobForm } from "@/modules/popup/types";
 
+const emptyJob: JobForm = {
+	title: "",
+	company: "",
+	location: "",
+	url: "",
+	platform: "Other",
+	status: "Interested",
+	notes: "",
+};
+
 type DetectionState = {
 	isDetecting: boolean;
 	error: string;
 	confidence: DetectionConfidence | null;
 };
 
-export function useDetectedJob(fallbackJob: JobForm) {
+export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 	const [job, setJob] = useState<JobForm>(fallbackJob);
 	const [state, setState] = useState<DetectionState>({
 		isDetecting: true,
@@ -30,20 +40,20 @@ export function useDetectedJob(fallbackJob: JobForm) {
 				if (!detectedJob) {
 					setState({
 						isDetecting: false,
-						error: "Open a job page to auto-detect details.",
+						error: "",
 						confidence: null,
 					});
 					return;
 				}
 
 				setJob({
-					title: detectedJob.title || fallbackJob.title,
-					company: detectedJob.company || fallbackJob.company,
-					location: detectedJob.location || fallbackJob.location,
-					url: detectedJob.url || fallbackJob.url,
-					platform: detectedJob.platform || fallbackJob.platform,
+					title: detectedJob.title,
+					company: detectedJob.company,
+					location: detectedJob.location,
+					url: detectedJob.url,
+					platform: detectedJob.platform || "Other",
 					status: fallbackJob.status,
-					notes: detectedJob.description || fallbackJob.notes,
+					notes: detectedJob.description,
 				});
 				setState({
 					isDetecting: false,

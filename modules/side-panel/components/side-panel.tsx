@@ -1,4 +1,5 @@
 import {
+	AlertCircle,
 	Bookmark,
 	CalendarDays,
 	CheckCircle2,
@@ -12,6 +13,7 @@ import {
 	MoreVertical,
 	PencilLine,
 	PlusCircle,
+	RefreshCw,
 	Search,
 	Send,
 	Settings,
@@ -21,20 +23,21 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useSystemTheme } from "@/hooks/use-system-theme";
-import { getStoredJobs, type StoredJob } from "@/lib/jobs/storage";
+import {
+	getStoredJobs,
+	saveJobToStorage,
+	type StoredJob,
+} from "@/lib/jobs/storage";
 import { openDashboard } from "@/lib/open-dashboard";
 import { cn } from "@/lib/utils";
 import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
-import {
-	detectedJobForm,
-	emptyJobForm,
-	recentJobs,
-	reminders,
-} from "@/modules/side-panel/mock-data";
+import { useSidePanelDetection } from "@/modules/side-panel/hooks/use-side-panel-detection";
+import { emptyJobForm, reminders } from "@/modules/side-panel/mock-data";
 import type {
 	JobStatus,
 	RecentJob,
 	SidePanelJobForm,
+	SidePanelJobStatus,
 } from "@/modules/side-panel/types";
 
 const statusStyles: Record<JobStatus, string> = {
@@ -60,10 +63,20 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 export function SidePanel() {
 	const { isDarkMode } = useSystemTheme();
 	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
+	const [isSaving, setIsSaving] = useState(false);
+	const [saveError, setSaveError] = useState("");
+	const [saveMessage, setSaveMessage] = useState("");
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
 		job: SidePanelJobForm;
 	} | null>(null);
+	const {
+		job: detectedJob,
+		isDetecting,
+		error: detectionError,
+		confidence,
+		retryDetection,
+	} = useSidePanelDetection();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -94,19 +107,43 @@ export function SidePanel() {
 		};
 	}, []);
 
-	const displayedJobs = useMemo(() => {
-		if (!storedJobs.length) {
-			return recentJobs;
+	const displayedJobs = useMemo(
+		() => storedJobs.slice(0, 5).map(mapStoredJobToRecentJob),
+		[storedJobs],
+	);
+
+	const savedCount = storedJobs.length;
+	const appliedCount = storedJobs.filter((job) => job.status === "Applied").length;
+	const interviewCount = storedJobs.filter(
+		(job) => job.status === "Interviewing",
+	).length;
+
+	const handleSaveJob = async (job: SidePanelJobForm) => {
+		setIsSaving(true);
+		setSaveError("");
+		setSaveMessage("");
+
+		try {
+			const result = await saveJobToStorage(toStoredJobForm(job));
+			setStoredJobs((currentJobs) => {
+				const withoutSavedJob = currentJobs.filter(
+					(currentJob) => currentJob.id !== result.job.id,
+				);
+
+				return [result.job, ...withoutSavedJob];
+			});
+			setSaveMessage(
+				result.action === "updated"
+					? "Saved changes to this job."
+					: "Saved this job locally.",
+			);
+			setActiveForm(null);
+		} catch {
+			setSaveError("Could not save this job. Please try again.");
+		} finally {
+			setIsSaving(false);
 		}
-
-		return storedJobs.slice(0, 5).map(mapStoredJobToRecentJob);
-	}, [storedJobs]);
-
-	const savedCount = storedJobs.length || 42;
-	const appliedCount =
-		storedJobs.filter((job) => job.status === "Applied").length || 18;
-	const interviewCount =
-		storedJobs.filter((job) => job.status === "Interviewing").length || 4;
+	};
 
 	return (
 		<main
@@ -160,7 +197,7 @@ export function SidePanel() {
 						initialJob={activeForm.job}
 						isDarkMode={isDarkMode}
 						onCancel={() => setActiveForm(null)}
-						onSave={() => setActiveForm(null)}
+						onSave={handleSaveJob}
 					/>
 				) : (
 					<>
@@ -218,73 +255,152 @@ export function SidePanel() {
 									: "border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)]",
 							)}
 						>
-							<div className="flex gap-4">
-								<div
-									className={cn(
-										"flex size-[72px] shrink-0 items-center justify-center rounded-lg border text-4xl font-bold",
-										isDarkMode
-											? "border-slate-700/55 bg-[#262628]"
-											: "border-slate-200 bg-slate-50",
+							{isDetecting ? (
+								<DetectionMessage
+									icon={RefreshCw}
+									title="Detecting job details"
+									description="Reading visible job information from the active tab."
+									isDarkMode={isDarkMode}
+									isLoading
+								/>
+							) : detectedJob ? (
+								<>
+									{confidence === "low" && (
+										<p
+											className={cn(
+												"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
+												isDarkMode
+													? "border-amber-400/20 bg-amber-500/10 text-amber-200"
+													: "border-amber-100 bg-amber-50 text-amber-700",
+											)}
+										>
+											Review the detected details before saving.
+										</p>
 									)}
-								>
-									<span className="bg-[conic-gradient(from_0deg,#4285f4,#34a853,#fbbc05,#ea4335,#4285f4)] bg-clip-text text-transparent">
-										G
-									</span>
-								</div>
-								<div className="min-w-0 flex-1">
-									<h3 className={cn("truncate text-base font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
-										Frontend Developer
-									</h3>
-									<p className={cn("mt-1 text-sm font-medium", isDarkMode ? "text-slate-300" : "text-slate-700")}>Google</p>
-									<p className={cn("mt-2 flex items-center gap-1.5 text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
-										<MapPin className="size-3.5" aria-hidden="true" />
-										Bengaluru, Karnataka, India
-									</p>
-									<a
-										href="https://careers.google.com/jobs/results/1234567890"
-										target="_blank"
-										rel="noreferrer"
-										className={cn(
-											"mt-2 flex min-w-0 items-center gap-2 text-xs font-medium",
-											isDarkMode
-												? "text-blue-300 hover:text-blue-200"
-												: "text-blue-600 hover:text-blue-700",
-										)}
-									>
-										<Link className="size-3.5 shrink-0" aria-hidden="true" />
-										<span className="truncate">
-											careers.google.com/jobs/results/1234567890
-										</span>
-										<ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
-									</a>
-								</div>
-							</div>
+									{saveMessage && (
+										<p
+											className={cn(
+												"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
+												isDarkMode
+													? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
+													: "border-emerald-100 bg-emerald-50 text-emerald-700",
+											)}
+										>
+											{saveMessage}
+										</p>
+									)}
+									{saveError && (
+										<p
+											className={cn(
+												"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
+												isDarkMode
+													? "border-red-400/20 bg-red-500/10 text-red-200"
+													: "border-red-100 bg-red-50 text-red-700",
+											)}
+										>
+											{saveError}
+										</p>
+									)}
+									<div className="flex gap-4">
+										<CompanyMark brand={getBrand(detectedJob.company, detectedJob.platform)} size="lg" />
+										<div className="min-w-0 flex-1">
+											<h3 className={cn("truncate text-base font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
+												{detectedJob.title || "Untitled role"}
+											</h3>
+											<p className={cn("mt-1 truncate text-sm font-medium", isDarkMode ? "text-slate-300" : "text-slate-700")}>
+												{detectedJob.company || "Unknown company"}
+											</p>
+											<p className={cn("mt-2 flex items-center gap-1.5 text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
+												<MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+												<span className="truncate">
+													{detectedJob.location || "Location not found"}
+												</span>
+											</p>
+											{detectedJob.url && (
+												<a
+													href={detectedJob.url}
+													target="_blank"
+													rel="noreferrer"
+													className={cn(
+														"mt-2 flex min-w-0 items-center gap-2 text-xs font-medium",
+														isDarkMode
+															? "text-blue-300 hover:text-blue-200"
+															: "text-blue-600 hover:text-blue-700",
+													)}
+												>
+													<Link className="size-3.5 shrink-0" aria-hidden="true" />
+													<span className="truncate">{formatDisplayUrl(detectedJob.url)}</span>
+													<ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+												</a>
+											)}
+										</div>
+									</div>
 
-							<div className="mt-5 grid grid-cols-2 gap-3">
-								<Button
-									type="button"
-									variant="outline"
-									className={cn(
-										"h-10 rounded-md text-sm font-semibold",
-										isDarkMode
-											? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
-											: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
-									)}
-									onClick={() =>
-										setActiveForm({ mode: "edit", job: detectedJobForm })
-									}
-								>
-									<PencilLine className="size-4" aria-hidden="true" />
-									Edit Details
-								</Button>
-								<Button
-									type="button"
-									className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
-								>
-									<PlusCircle className="size-4" aria-hidden="true" />
-									Save Job
-								</Button>
-							</div>
+									<div className="mt-5 grid grid-cols-2 gap-3">
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 rounded-md text-sm font-semibold",
+												isDarkMode
+													? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
+													: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+											)}
+											onClick={() =>
+												setActiveForm({ mode: "edit", job: detectedJob })
+											}
+										>
+											<PencilLine className="size-4" aria-hidden="true" />
+											Edit Details
+										</Button>
+										<Button
+											type="button"
+											className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
+											disabled={isSaving}
+											onClick={() => handleSaveJob(detectedJob)}
+										>
+											<PlusCircle className="size-4" aria-hidden="true" />
+											{isSaving ? "Saving..." : "Save Job"}
+										</Button>
+									</div>
+								</>
+							) : (
+								<>
+									<DetectionMessage
+										icon={detectionError ? AlertCircle : Sparkles}
+										title={detectionError ? "Detection failed" : "No job detected"}
+										description={
+											detectionError ||
+											"Open a job page or add the application details manually."
+										}
+										isDarkMode={isDarkMode}
+									/>
+									<div className="mt-5 grid grid-cols-2 gap-3">
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 rounded-md text-sm font-semibold",
+												isDarkMode
+													? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
+													: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+											)}
+											onClick={retryDetection}
+										>
+											<RefreshCw className="size-4" aria-hidden="true" />
+											Retry
+										</Button>
+										<Button
+											type="button"
+											className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
+											onClick={() => setActiveForm({ mode: "add", job: emptyJobForm })}
+										>
+											<PlusCircle className="size-4" aria-hidden="true" />
+											Add Manually
+										</Button>
+									</div>
+								</>
+							)}
 						</div>
 					</section>
 
@@ -308,11 +424,17 @@ export function SidePanel() {
 							isDarkMode
 								? "border-slate-700/65 bg-[#262628]"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
-						)}
+							)}
 					>
-						{displayedJobs.map((job) => (
-							<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
-						))}
+						{displayedJobs.length ? (
+							displayedJobs.map((job) => (
+								<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
+							))
+						) : (
+							<p className={cn("px-3 py-4 text-sm", isDarkMode ? "text-slate-400" : "text-slate-500")}>
+								No saved jobs yet.
+							</p>
+						)}
 					</section>
 
 					<ListHeader title="Today's Reminders" isDarkMode={isDarkMode} />
@@ -482,6 +604,56 @@ function ListHeader({ title, isDarkMode }: { title: string; isDarkMode: boolean 
 	);
 }
 
+function DetectionMessage({
+	icon: Icon,
+	title,
+	description,
+	isDarkMode,
+	isLoading = false,
+}: {
+	icon: typeof Sparkles;
+	title: string;
+	description: string;
+	isDarkMode: boolean;
+	isLoading?: boolean;
+}) {
+	return (
+		<div className="flex items-start gap-3">
+			<div
+				className={cn(
+					"flex size-11 shrink-0 items-center justify-center rounded-lg",
+					isDarkMode
+						? "bg-indigo-500/15 text-indigo-200"
+						: "bg-blue-50 text-blue-600",
+				)}
+			>
+				<Icon
+					className={cn("size-5", isLoading && "animate-spin")}
+					aria-hidden="true"
+				/>
+			</div>
+			<div className="min-w-0 flex-1">
+				<h3
+					className={cn(
+						"text-sm font-semibold",
+						isDarkMode ? "text-white" : "text-slate-950",
+					)}
+				>
+					{title}
+				</h3>
+				<p
+					className={cn(
+						"mt-1 text-xs leading-5",
+						isDarkMode ? "text-slate-400" : "text-slate-500",
+					)}
+				>
+					{description}
+				</p>
+			</div>
+		</div>
+	);
+}
+
 function StatItem({
 	icon: Icon,
 	value,
@@ -557,10 +729,24 @@ function RecentJobRow({ job, isDarkMode }: { job: RecentJob; isDarkMode: boolean
 	);
 }
 
-function CompanyMark({ brand }: { brand: RecentJob["brand"] }) {
+function CompanyMark({
+	brand,
+	size = "sm",
+}: {
+	brand: RecentJob["brand"];
+	size?: "sm" | "lg";
+}) {
+	const sizeClass = size === "lg" ? "size-[72px] rounded-lg text-4xl" : "size-9 rounded-md text-xl";
+
 	if (brand === "microsoft") {
 		return (
-			<div className="grid size-9 grid-cols-2 gap-0.5 rounded-md bg-slate-950 p-1">
+			<div
+				className={cn(
+					"grid shrink-0 grid-cols-2 gap-0.5 bg-slate-950",
+					sizeClass,
+					size === "lg" ? "p-3" : "p-1",
+				)}
+			>
 				<span className="bg-red-500" />
 				<span className="bg-green-500" />
 				<span className="bg-blue-500" />
@@ -581,7 +767,8 @@ function CompanyMark({ brand }: { brand: RecentJob["brand"] }) {
 	return (
 		<div
 			className={cn(
-				"relative flex size-9 items-center justify-center rounded-md text-xl font-bold",
+				"relative flex shrink-0 items-center justify-center font-bold",
+				sizeClass,
 				brandStyles[brand],
 				brand === "amazon" &&
 					"after:absolute after:bottom-1 after:h-0.5 after:w-5 after:rounded-full after:bg-orange-400",
@@ -634,4 +821,32 @@ function formatDate(value: string) {
 		month: "short",
 		year: "numeric",
 	}).format(date);
+}
+
+function toStoredJobForm(job: SidePanelJobForm): Parameters<typeof saveJobToStorage>[0] {
+	return {
+		title: job.title,
+		company: job.company,
+		location: job.location,
+		url: job.url,
+		platform: job.platform,
+		status: mapSidePanelStatus(job.status),
+		notes: job.notes,
+	};
+}
+
+function mapSidePanelStatus(status: SidePanelJobStatus) {
+	if (status === "Interview") return "Interviewing";
+	if (status === "Saved") return "Saved";
+	if (status === "Applied") return "Applied";
+	return "Interested";
+}
+
+function formatDisplayUrl(url: string) {
+	try {
+		const parsedUrl = new URL(url);
+		return `${parsedUrl.hostname.replace(/^www\./, "")}${parsedUrl.pathname}`;
+	} catch {
+		return url;
+	}
 }

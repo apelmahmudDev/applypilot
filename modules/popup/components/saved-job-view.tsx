@@ -1,6 +1,7 @@
 import { CheckCircle2, Grid2X2, PanelRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { openDashboard } from "@/lib/open-dashboard";
 import { openSidePanel } from "@/lib/open-side-panel";
 import type { JobForm } from "@/modules/popup/types";
 
@@ -38,6 +39,7 @@ export function SavedJobView({ job }: SavedJobViewProps) {
 						type="button"
 						variant="outline"
 						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50"
+						onClick={openDashboard}
 					>
 						<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">
 							<Grid2X2 className="size-5" aria-hidden="true" />

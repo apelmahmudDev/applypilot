@@ -1,0 +1,72 @@
+import type { DashboardJob } from "@/modules/dashboard/types";
+
+export const dashboardJobs: DashboardJob[] = [
+	{
+		id: "google-frontend",
+		title: "Frontend Developer",
+		company: "Google",
+		location: "Bengaluru, India",
+		deadline: "31 Jul, 2024",
+		followUp: "15 Jul, 2024",
+		status: "Applied",
+		brand: "google",
+	},
+	{
+		id: "microsoft-software",
+		title: "Software Engineer",
+		company: "Microsoft",
+		location: "Noida, India",
+		deadline: "25 Jul, 2024",
+		followUp: "10 Jul, 2024",
+		status: "Interview",
+		brand: "microsoft",
+	},
+	{
+		id: "swiggy-frontend",
+		title: "Frontend Developer",
+		company: "Swiggy",
+		location: "Remote",
+		deadline: "15 Aug, 2024",
+		followUp: "-",
+		status: "Saved",
+		brand: "swiggy",
+	},
+	{
+		id: "amazon-sde",
+		title: "SDE I",
+		company: "Amazon",
+		location: "Bengaluru, India",
+		deadline: "20 Jul, 2024",
+		followUp: "12 Jul, 2024",
+		status: "Applied",
+		brand: "amazon",
+	},
+	{
+		id: "zomato-ui",
+		title: "UI Developer",
+		company: "Zomato",
+		location: "Gurugram, India",
+		deadline: "10 Jun, 2024",
+		followUp: "-",
+		status: "Rejected",
+		brand: "zomato",
+	},
+	{
+		id: "google-product",
+		title: "Product Designer",
+		company: "Google",
+		location: "Hyderabad, India",
+		deadline: "05 Aug, 2024",
+		followUp: "18 Jul, 2024",
+		status: "Offer",
+		brand: "google",
+	},
+];
+
+export const dashboardStats = [
+	{ label: "Total Jobs", value: "42", trend: "12% this month" },
+	{ label: "Applied", value: "18", trend: "8% this month" },
+	{ label: "Interview", value: "4", trend: "2% this month" },
+	{ label: "Offers", value: "1", trend: "1% this month" },
+	{ label: "Rejected", value: "10", trend: "3% this month" },
+];

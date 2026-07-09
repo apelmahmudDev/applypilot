@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { openDashboard } from "@/lib/open-dashboard";
 import { cn } from "@/lib/utils";
 import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
 import {
@@ -346,6 +347,7 @@ export function SidePanel() {
 								? "border-slate-700/65 bg-slate-900/45 hover:bg-slate-800/70"
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)] hover:bg-slate-50",
 						)}
+						onClick={openDashboard}
 					>
 						<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
 							<Grid2X2 className="size-5" aria-hidden="true" />

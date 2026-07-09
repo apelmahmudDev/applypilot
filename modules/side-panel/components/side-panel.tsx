@@ -288,14 +288,16 @@ export function SidePanel() {
 	return (
 		<main
 			className={cn(
-				"h-screen min-h-[720px] w-full overflow-hidden transition-colors",
+				"h-screen min-h-[720px] w-full overflow-hidden p-2 transition-colors",
 				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-[#f8fafc] text-slate-950",
 			)}
 		>
 			<div
 				className={cn(
-					"flex h-full flex-col overflow-hidden transition-colors",
-					isDarkMode ? "bg-[#262628]" : "bg-white",
+					"flex h-full flex-col overflow-hidden rounded-lg border transition-colors",
+					isDarkMode
+						? "border-slate-700/55 bg-[#262628] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
+						: "border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]",
 				)}
 			>
 				{activeForm ? (

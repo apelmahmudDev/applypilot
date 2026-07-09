@@ -17,9 +17,10 @@ import {
 	Settings,
 	Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { getStoredJobs, type StoredJob } from "@/lib/jobs/storage";
 import { openDashboard } from "@/lib/open-dashboard";
 import { cn } from "@/lib/utils";
 import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
@@ -52,14 +53,59 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 	microsoft: "bg-slate-950 text-white",
 	swiggy: "bg-orange-500 text-white",
 	google: "bg-white text-slate-950",
+	default: "bg-blue-600 text-white",
 };
 
 export function SidePanel() {
 	const [isDarkMode, setIsDarkMode] = useState(true);
+	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
 		job: SidePanelJobForm;
 	} | null>(null);
+
+	useEffect(() => {
+		let isMounted = true;
+
+		async function loadJobs() {
+			const jobs = await getStoredJobs();
+
+			if (isMounted) {
+				setStoredJobs(jobs);
+			}
+		}
+
+		loadJobs();
+
+		const handleStorageChange: Parameters<
+			typeof browser.storage.onChanged.addListener
+		>[0] = (changes, areaName) => {
+			if (areaName === "local" && changes["applypilot.jobs"]) {
+				loadJobs();
+			}
+		};
+
+		browser.storage.onChanged.addListener(handleStorageChange);
+
+		return () => {
+			isMounted = false;
+			browser.storage.onChanged.removeListener(handleStorageChange);
+		};
+	}, []);
+
+	const displayedJobs = useMemo(() => {
+		if (!storedJobs.length) {
+			return recentJobs;
+		}
+
+		return storedJobs.slice(0, 5).map(mapStoredJobToRecentJob);
+	}, [storedJobs]);
+
+	const savedCount = storedJobs.length || 42;
+	const appliedCount =
+		storedJobs.filter((job) => job.status === "Applied").length || 18;
+	const interviewCount =
+		storedJobs.filter((job) => job.status === "Interviewing").length || 4;
 
 	return (
 		<main
@@ -249,9 +295,9 @@ export function SidePanel() {
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
-						<StatItem icon={Bookmark} value="42" label="Saved" isDarkMode={isDarkMode} />
-						<StatItem icon={CheckCircle2} value="18" label="Applied" bordered isDarkMode={isDarkMode} />
-						<StatItem icon={CalendarDays} value="4" label="Interview" bordered isDarkMode={isDarkMode} />
+						<StatItem icon={Bookmark} value={String(savedCount)} label="Saved" isDarkMode={isDarkMode} />
+						<StatItem icon={CheckCircle2} value={String(appliedCount)} label="Applied" bordered isDarkMode={isDarkMode} />
+						<StatItem icon={CalendarDays} value={String(interviewCount)} label="Interview" bordered isDarkMode={isDarkMode} />
 					</section>
 
 					<ListHeader title="Recent Jobs" isDarkMode={isDarkMode} />
@@ -263,7 +309,7 @@ export function SidePanel() {
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
-						{recentJobs.map((job) => (
+						{displayedJobs.map((job) => (
 							<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
 						))}
 					</section>
@@ -522,7 +568,14 @@ function CompanyMark({ brand }: { brand: RecentJob["brand"] }) {
 		);
 	}
 
-	const label = brand === "amazon" ? "a" : brand === "swiggy" ? "S" : "G";
+	const label =
+		brand === "amazon"
+			? "a"
+			: brand === "swiggy"
+				? "S"
+				: brand === "google"
+					? "G"
+					: "A";
 
 	return (
 		<div
@@ -536,4 +589,48 @@ function CompanyMark({ brand }: { brand: RecentJob["brand"] }) {
 			{label}
 		</div>
 	);
+}
+
+function mapStoredJobToRecentJob(job: StoredJob): RecentJob {
+	return {
+		id: job.id,
+		title: job.title || "Untitled role",
+		company: job.company || "Unknown company",
+		location: job.location || "Unknown location",
+		date: formatDate(job.updatedAt),
+		followUp: "Saved locally",
+		status: mapJobStatus(job.status),
+		brand: getBrand(job.company, job.platform),
+	};
+}
+
+function mapJobStatus(status: StoredJob["status"]): JobStatus {
+	if (status === "Applied") return "Applied";
+	if (status === "Interviewing") return "Interview";
+	return "Saved";
+}
+
+function getBrand(company: string, platform: string): RecentJob["brand"] {
+	const value = `${company} ${platform}`.toLowerCase();
+
+	if (value.includes("google")) return "google";
+	if (value.includes("microsoft")) return "microsoft";
+	if (value.includes("amazon")) return "amazon";
+	if (value.includes("swiggy")) return "swiggy";
+
+	return "default";
+}
+
+function formatDate(value: string) {
+	const date = new Date(value);
+
+	if (Number.isNaN(date.getTime())) {
+		return "";
+	}
+
+	return new Intl.DateTimeFormat("en-GB", {
+		day: "2-digit",
+		month: "short",
+		year: "numeric",
+	}).format(date);
 }

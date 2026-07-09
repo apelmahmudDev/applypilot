@@ -11,7 +11,7 @@ export type RecentJob = {
 	date: string;
 	followUp: string;
 	status: JobStatus;
-	brand: "amazon" | "microsoft" | "swiggy" | "google";
+	brand: "amazon" | "microsoft" | "swiggy" | "google" | "default";
 };
 
 export type Reminder = {

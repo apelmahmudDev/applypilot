@@ -11,6 +11,8 @@ type DetectedJobViewProps = {
 	confidence: DetectionConfidence | null;
 	error: string;
 	isDetecting: boolean;
+	isSaving: boolean;
+	saveError: string;
 	onEdit: () => void;
 	onSave: () => void;
 };
@@ -20,6 +22,8 @@ export function DetectedJobView({
 	confidence,
 	error,
 	isDetecting,
+	isSaving,
+	saveError,
 	onEdit,
 	onSave,
 }: DetectedJobViewProps) {
@@ -37,6 +41,12 @@ export function DetectedJobView({
 			{(error || confidence === "low") && (
 				<div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
 					{error || "We detected some information, but please review before saving."}
+				</div>
+			)}
+
+			{saveError && (
+				<div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+					{saveError}
 				</div>
 			)}
 
@@ -73,9 +83,10 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
+					disabled={isSaving || isDetecting}
 					onClick={onSave}
 				>
-					Save Job
+					{isSaving ? "Saving..." : "Save Job"}
 				</Button>
 			</div>
 

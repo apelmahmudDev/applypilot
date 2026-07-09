@@ -7,18 +7,20 @@ import type { JobForm } from "@/modules/popup/types";
 
 type SavedJobViewProps = {
 	job: JobForm;
+	saveAction?: "created" | "updated";
 };
 
-export function SavedJobView({ job }: SavedJobViewProps) {
+export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps) {
+	const title =
+		saveAction === "updated" ? "Updated saved job" : "Saved successfully";
+
 	return (
 		<section className="flex flex-1 flex-col px-5 py-5">
 			<div className="flex flex-1 flex-col items-center justify-center text-center">
 				<div className="flex size-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
 					<CheckCircle2 className="size-7" aria-hidden="true" />
 				</div>
-				<h2 className="mt-4 text-lg font-bold text-slate-950">
-					Saved successfully
-				</h2>
+				<h2 className="mt-4 text-lg font-bold text-slate-950">{title}</h2>
 				<p className="mt-2 max-w-[260px] text-sm font-medium leading-5 text-slate-700">
 					{job.title} at {job.company} is ready for advanced editing.
 				</p>

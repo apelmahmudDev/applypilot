@@ -70,3 +70,5 @@ export const dashboardStats = [
 	{ label: "Offers", value: "1", trend: "1% this month" },
 	{ label: "Rejected", value: "10", trend: "3% this month" },
 ];
+
+export const analyticsMonthlyActivity = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];

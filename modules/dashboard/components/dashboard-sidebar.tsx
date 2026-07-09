@@ -29,11 +29,14 @@ export function DashboardSidebar({
 	activeView,
 	onViewChange,
 }: DashboardSidebarProps) {
+	const collapsedMenuButtonClass =
+		"group-data-[collapsible=icon]:h-auto! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:flex-col! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-1 group-data-[collapsible=icon]:px-1! group-data-[collapsible=icon]:py-2.5! group-data-[collapsible=icon]:text-center group-data-[collapsible=icon]:[&>span]:overflow-visible group-data-[collapsible=icon]:[&>span]:text-clip group-data-[collapsible=icon]:[&>span]:whitespace-normal group-data-[collapsible=icon]:[&>span]:text-center group-data-[collapsible=icon]:[&>span]:text-[11px] group-data-[collapsible=icon]:[&>span]:leading-4";
+
 	return (
 		<Sidebar collapsible="icon" variant="inset">
 			<SidebarHeader className="px-3 pb-2 pt-4">
 				<div className="flex items-center gap-3 rounded-lg px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-					<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+					<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 group-data-[collapsible=icon]:size-11">
 						<Send
 							className="size-6 fill-blue-500 stroke-blue-600"
 							aria-hidden="true"
@@ -50,12 +53,14 @@ export function DashboardSidebar({
 				</div>
 			</SidebarHeader>
 
-			<SidebarContent className="px-2">
+			<SidebarContent className="px-2 group-data-[collapsible=icon]:px-1.5">
 				{dashboardNavSections.map((section) => (
-					<SidebarGroup key={section.label}>
-						<SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+					<SidebarGroup key={section.label} className="px-1">
+						<SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-normal">
+							{section.label}
+						</SidebarGroupLabel>
 						<SidebarGroupContent>
-							<SidebarMenu>
+							<SidebarMenu className="gap-1">
 								{section.items.map((item) => {
 									const Icon = item.icon;
 									const isActive = activeView === item.value;
@@ -69,13 +74,14 @@ export function DashboardSidebar({
 												isActive={isActive}
 												className={cn(
 													"h-10 rounded-lg font-bold",
+													collapsedMenuButtonClass,
 													isActive
 														? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
 														: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
 												)}
 												onClick={() => onViewChange(item.value)}
 											>
-												<Icon className="size-4" aria-hidden="true" />
+												<Icon className="size-4 group-data-[collapsible=icon]:size-5" aria-hidden="true" />
 												<span>{item.label}</span>
 											</SidebarMenuButton>
 										</SidebarMenuItem>

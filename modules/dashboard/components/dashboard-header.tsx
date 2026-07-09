@@ -2,7 +2,7 @@ import { Bell, Plus, Search, Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarArrowTrigger, SidebarTrigger } from "@/components/ui/sidebar";
 import {
 	getDashboardViewTitle,
 	type DashboardView,
@@ -17,9 +17,10 @@ export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 
 	return (
 		<header className="sticky top-0 z-10 w-full bg-slate-50/85 backdrop-blur-md">
+			<SidebarArrowTrigger />
 			<nav className="mx-auto flex h-[var(--dashboard-header-offset)] max-w-[1280px] items-center justify-between gap-4 px-4 md:px-8">
 				<div className="flex min-w-0 items-center gap-3">
-					<SidebarTrigger className="size-10 rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50" />
+					<SidebarTrigger className="size-10 rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 md:hidden" />
 					<div className="min-w-0">
 						<p className="text-xs font-bold uppercase text-slate-500">
 							ApplyPilot

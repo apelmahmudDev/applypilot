@@ -11,7 +11,6 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarRail,
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -115,7 +114,6 @@ export function DashboardSidebar({
 					</div>
 				</div>
 			</SidebarFooter>
-			<SidebarRail />
 		</Sidebar>
 	);
 }

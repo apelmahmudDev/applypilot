@@ -11,6 +11,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -28,8 +29,16 @@ export function DashboardSidebar({
 	activeView,
 	onViewChange,
 }: DashboardSidebarProps) {
+	const { isMobile, setOpenMobile } = useSidebar();
 	const collapsedMenuButtonClass =
 		"group-data-[collapsible=icon]:h-auto! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:flex-col! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-1 group-data-[collapsible=icon]:px-1! group-data-[collapsible=icon]:py-2.5! group-data-[collapsible=icon]:text-center group-data-[collapsible=icon]:[&>span]:overflow-visible group-data-[collapsible=icon]:[&>span]:text-clip group-data-[collapsible=icon]:[&>span]:whitespace-normal group-data-[collapsible=icon]:[&>span]:text-center group-data-[collapsible=icon]:[&>span]:text-[11px] group-data-[collapsible=icon]:[&>span]:leading-4";
+
+	function handleViewChange(view: DashboardView) {
+		onViewChange(view);
+		if (isMobile) {
+			setOpenMobile(false);
+		}
+	}
 
 	return (
 		<Sidebar collapsible="icon" variant="inset">
@@ -77,7 +86,7 @@ export function DashboardSidebar({
 														? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
 														: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
 												)}
-												onClick={() => onViewChange(item.value)}
+												onClick={() => handleViewChange(item.value)}
 											>
 												<Icon className="size-4 group-data-[collapsible=icon]:size-5" aria-hidden="true" />
 												<span>{item.label}</span>

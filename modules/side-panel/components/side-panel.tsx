@@ -10,13 +10,11 @@ import {
 	Grid2X2,
 	Link,
 	MapPin,
-	Moon,
 	MoreVertical,
 	PencilLine,
 	PlusCircle,
 	RefreshCw,
 	Search,
-	Send,
 	Settings,
 	Sparkles,
 } from "lucide-react";
@@ -290,50 +288,16 @@ export function SidePanel() {
 	return (
 		<main
 			className={cn(
-				"h-screen min-h-[720px] w-full overflow-hidden p-2 transition-colors",
+				"h-screen min-h-[720px] w-full overflow-hidden transition-colors",
 				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-[#f8fafc] text-slate-950",
 			)}
 		>
 			<div
 				className={cn(
-					"flex h-full flex-col overflow-hidden rounded-lg border transition-colors",
-					isDarkMode
-						? "border-slate-700/55 bg-[#262628] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
-						: "border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]",
+					"flex h-full flex-col overflow-hidden transition-colors",
+					isDarkMode ? "bg-[#262628]" : "bg-white",
 				)}
 			>
-				<header className="flex shrink-0 items-center justify-between px-5 pb-4 pt-5">
-					<div className="flex items-center gap-3">
-						<Send
-							className="size-7 fill-indigo-500 stroke-indigo-300"
-							aria-hidden="true"
-						/>
-						<h1
-							className={cn(
-								"text-xl font-bold tracking-normal",
-								isDarkMode ? "text-white" : "text-slate-950",
-							)}
-						>
-							ApplyPilot
-						</h1>
-					</div>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className={cn(
-							isDarkMode
-								? "text-slate-300 hover:bg-[#303032] hover:text-white"
-								: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
-						)}
-						aria-label="Open settings"
-						title="Settings"
-						onClick={() => setPanelView("settings")}
-					>
-						<Settings className="size-5" aria-hidden="true" />
-					</Button>
-				</header>
-
 				{activeForm ? (
 					<JobFormPanel
 						mode={activeForm.mode}
@@ -407,7 +371,7 @@ export function SidePanel() {
 					<SettingsView isDarkMode={isDarkMode} onBack={() => setPanelView("home")} />
 				) : (
 					<>
-				<div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
+				<div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4 pt-4">
 					<div
 						className={cn(
 							"flex h-10 items-center gap-3 rounded-lg border px-3 transition-colors",
@@ -723,33 +687,16 @@ export function SidePanel() {
 					<button
 						type="button"
 						className={cn(
-							"flex items-center gap-2 rounded-md text-sm font-medium transition",
-							isDarkMode ? "text-slate-300" : "text-slate-700",
+							"flex size-10 items-center justify-center rounded-lg border transition",
+							isDarkMode
+								? "border-slate-700 bg-[#262628] text-slate-300 hover:bg-[#303032] hover:text-white"
+								: "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-950",
 						)}
-						aria-pressed={isDarkMode}
-						title="Uses your system theme"
+						aria-label="Open settings"
+						title="Settings"
+						onClick={() => setPanelView("settings")}
 					>
-						<Moon
-							className={cn(
-								"size-4",
-								isDarkMode ? "text-indigo-300" : "text-blue-600",
-							)}
-							aria-hidden="true"
-						/>
-						System Mode
-						<span
-							className={cn(
-								"relative h-6 w-11 rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)] transition-colors",
-								isDarkMode ? "bg-indigo-600" : "bg-slate-200",
-							)}
-						>
-							<span
-								className={cn(
-									"absolute top-1 size-4 rounded-full bg-white transition-all",
-									isDarkMode ? "right-1" : "left-1",
-								)}
-							/>
-						</span>
+						<Settings className="size-5" aria-hidden="true" />
 					</button>
 				</footer>
 					</>
@@ -785,7 +732,7 @@ function AllApplicationsView({
 	onOpenJob: (job: StoredJob) => void;
 }) {
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="All Applications" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
 				<div
@@ -901,7 +848,7 @@ function AllRemindersView({
 	onMarkDone: (reminderId: string) => void;
 }) {
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="All Reminders" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
 				<div className="grid grid-cols-3 gap-2">
@@ -964,7 +911,7 @@ function SettingsView({
 	onBack: () => void;
 }) {
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="Settings" isDarkMode={isDarkMode} onBack={onBack} />
 			<section
 				className={cn(
@@ -976,7 +923,7 @@ function SettingsView({
 			>
 				<p className="text-sm font-semibold">System theme</p>
 				<p className="mt-1 text-xs leading-5">
-					ApplyPilot follows your browser and operating system appearance.
+					Applypilot follows your browser and operating system appearance.
 				</p>
 			</section>
 			<div className="mt-auto">
@@ -1001,7 +948,7 @@ function JobDetailsView({
 }) {
 	if (!job) {
 		return (
-			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 				<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
 				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
 					This job is no longer available.
@@ -1013,7 +960,7 @@ function JobDetailsView({
 	const status = mapJobStatus(job.status);
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
 				<section
@@ -1150,7 +1097,7 @@ function ReminderDetailsView({
 }) {
 	if (!reminder) {
 		return (
-			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 				<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
 				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
 					This reminder is no longer available.
@@ -1162,7 +1109,7 @@ function ReminderDetailsView({
 	const Icon = reminder.icon;
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
 				<section

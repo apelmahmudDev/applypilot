@@ -23,7 +23,7 @@ export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 					<SidebarTrigger className="size-10 rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 md:hidden" />
 					<div className="min-w-0">
 						<p className="text-xs font-bold uppercase text-slate-500">
-							ApplyPilot
+							Applypilot
 						</p>
 						<h2 className="truncate text-xl font-bold tracking-normal text-slate-950">
 							{title}

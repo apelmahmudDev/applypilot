@@ -54,7 +54,7 @@ export function DashboardSidebar({
 					</div>
 					<div className="min-w-0 group-data-[collapsible=icon]:hidden">
 						<h1 className="truncate text-lg font-bold tracking-normal">
-							ApplyPilot
+							Applypilot
 						</h1>
 						<p className="truncate text-xs font-semibold text-slate-500">
 							Job application tracker

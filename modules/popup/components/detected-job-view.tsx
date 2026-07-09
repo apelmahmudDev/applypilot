@@ -70,7 +70,7 @@ export function DetectedJobView({
 				<DetectionStateCard
 					icon={Radar}
 					title="Scanning the active tab"
-					description="ApplyPilot is checking visible headings, page metadata, and common job-page fields."
+					description="Applypilot is checking visible headings, page metadata, and common job-page fields."
 					tone="neutral"
 					isLoading
 				/>

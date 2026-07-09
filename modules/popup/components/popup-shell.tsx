@@ -18,7 +18,7 @@ export function PopupShell({ children }: PopupShellProps) {
 					<div className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">
 						<Send className="size-5 fill-blue-500 stroke-blue-600" aria-hidden="true" />
 					</div>
-					<h1 className="text-lg font-bold tracking-normal">ApplyPilot</h1>
+					<h1 className="text-lg font-bold tracking-normal">Applypilot</h1>
 				</div>
 				<div className="flex items-center gap-1">
 					<Button

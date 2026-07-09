@@ -5,6 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
 	modules: ["@wxt-dev/module-react"],
 	manifest: {
+		name: "Applypilot",
+		short_name: "Applypilot",
 		permissions: ["activeTab", "scripting", "sidePanel", "storage"],
 	},
 	vite: () => ({

@@ -2,6 +2,8 @@ export const jobStatuses = [
 	"Interested",
 	"Applied",
 	"Interviewing",
+	"Rejected",
+	"Offer",
 	"Saved",
 ] as const;
 

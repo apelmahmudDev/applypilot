@@ -1,7 +1,12 @@
 import type { ComponentType } from "react";
 import type { LucideProps } from "lucide-react";
 
-export type JobStatus = "Applied" | "Interview" | "Saved";
+export type JobStatus =
+	| "Applied"
+	| "Interview"
+	| "Saved"
+	| "Rejected"
+	| "Offer";
 
 export type RecentJob = {
 	id: string;
@@ -27,7 +32,9 @@ export type SidePanelJobStatus =
 	| "Saved"
 	| "Applied"
 	| "Interview"
-	| "Interested";
+	| "Interested"
+	| "Rejected"
+	| "Offer";
 
 export type SidePanelJobForm = {
 	title: string;

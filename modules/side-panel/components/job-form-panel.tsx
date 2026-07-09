@@ -41,6 +41,8 @@ const statuses: SidePanelJobStatus[] = [
 	"Applied",
 	"Interview",
 	"Interested",
+	"Rejected",
+	"Offer",
 ];
 
 const inputBase =

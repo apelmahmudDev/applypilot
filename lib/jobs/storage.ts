@@ -13,6 +13,24 @@ export type SaveJobResult = {
 	action: "created" | "updated";
 };
 
+export async function createJobInStorage(job: JobForm): Promise<SaveJobResult> {
+	const jobs = await getStoredJobs();
+	const now = new Date().toISOString();
+	const storedJob: StoredJob = {
+		...normalizeJob(job),
+		id: createJobId(),
+		createdAt: now,
+		updatedAt: now,
+	};
+
+	await setStoredJobs([storedJob, ...jobs]);
+
+	return {
+		job: storedJob,
+		action: "created",
+	};
+}
+
 export async function saveJobToStorage(job: JobForm): Promise<SaveJobResult> {
 	const jobs = await getStoredJobs();
 	const now = new Date().toISOString();

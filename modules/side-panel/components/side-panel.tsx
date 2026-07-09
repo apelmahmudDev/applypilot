@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useSystemTheme } from "@/hooks/use-system-theme";
 import {
+	createJobInStorage,
 	getStoredJobs,
 	saveJobToStorage,
 	type StoredJob,
@@ -124,7 +125,10 @@ export function SidePanel() {
 		setSaveMessage("");
 
 		try {
-			const result = await saveJobToStorage(toStoredJobForm(job));
+			const result =
+				activeForm?.mode === "add"
+					? await createJobInStorage(toStoredJobForm(job))
+					: await saveJobToStorage(toStoredJobForm(job));
 			setStoredJobs((currentJobs) => {
 				const withoutSavedJob = currentJobs.filter(
 					(currentJob) => currentJob.id !== result.job.id,
@@ -426,11 +430,10 @@ export function SidePanel() {
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 							)}
 					>
-						{displayedJobs.length ? (
-							displayedJobs.map((job) => (
-								<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
-							))
-						) : (
+						{displayedJobs.map((job) => (
+							<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
+						))}
+						{!displayedJobs.length && (
 							<p className={cn("px-3 py-4 text-sm", isDarkMode ? "text-slate-400" : "text-slate-500")}>
 								No saved jobs yet.
 							</p>

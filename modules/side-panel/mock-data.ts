@@ -1,6 +1,10 @@
 import { BriefcaseBusiness, CalendarDays, CheckCircle2 } from "lucide-react";
 
-import type { RecentJob, Reminder } from "@/modules/side-panel/types";
+import type {
+	RecentJob,
+	Reminder,
+	SidePanelJobForm,
+} from "@/modules/side-panel/types";
 
 export const recentJobs: RecentJob[] = [
 	{
@@ -63,6 +67,38 @@ export const reminders: Reminder[] = [
 		icon: BriefcaseBusiness,
 	},
 ];
+
+export const emptyJobForm: SidePanelJobForm = {
+	title: "",
+	company: "",
+	location: "",
+	url: "",
+	platform: "LinkedIn",
+	salary: "",
+	status: "Saved",
+	deadline: "",
+	followUpDate: "",
+	recruiterName: "",
+	recruiterEmail: "",
+	tags: [],
+	notes: "",
+};
+
+export const detectedJobForm: SidePanelJobForm = {
+	title: "Frontend Developer",
+	company: "Google",
+	location: "Bengaluru, Karnataka, India",
+	url: "https://www.linkedin.com/jobs/view/1234567890",
+	platform: "LinkedIn",
+	salary: "INR 12 - 18 LPA",
+	status: "Saved",
+	deadline: "2024-07-31",
+	followUpDate: "2024-07-15",
+	recruiterName: "John Doe",
+	recruiterEmail: "john.doe@google.com",
+	tags: ["React", "Next.js", "Frontend"],
+	notes: "Great role for frontend development using modern technologies.",
+};
 
 export const stats = [
 	{ label: "Saved", value: "42", icon: CalendarDays },

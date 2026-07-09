@@ -22,3 +22,25 @@ export type Reminder = {
 	time: string;
 	icon: ComponentType<LucideProps>;
 };
+
+export type SidePanelJobStatus =
+	| "Saved"
+	| "Applied"
+	| "Interview"
+	| "Interested";
+
+export type SidePanelJobForm = {
+	title: string;
+	company: string;
+	location: string;
+	url: string;
+	platform: string;
+	salary: string;
+	status: SidePanelJobStatus;
+	deadline: string;
+	followUpDate: string;
+	recruiterName: string;
+	recruiterEmail: string;
+	tags: string[];
+	notes: string;
+};

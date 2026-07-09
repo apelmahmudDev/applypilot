@@ -21,8 +21,18 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { recentJobs, reminders } from "@/modules/side-panel/mock-data";
-import type { JobStatus, RecentJob } from "@/modules/side-panel/types";
+import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
+import {
+	detectedJobForm,
+	emptyJobForm,
+	recentJobs,
+	reminders,
+} from "@/modules/side-panel/mock-data";
+import type {
+	JobStatus,
+	RecentJob,
+	SidePanelJobForm,
+} from "@/modules/side-panel/types";
 
 const statusStyles: Record<JobStatus, string> = {
 	Applied: "border-blue-400/20 bg-blue-500/15 text-blue-300",
@@ -45,6 +55,10 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 
 export function SidePanel() {
 	const [isDarkMode, setIsDarkMode] = useState(true);
+	const [activeForm, setActiveForm] = useState<{
+		mode: "add" | "edit";
+		job: SidePanelJobForm;
+	} | null>(null);
 
 	return (
 		<main
@@ -92,6 +106,16 @@ export function SidePanel() {
 					</Button>
 				</header>
 
+				{activeForm ? (
+					<JobFormPanel
+						mode={activeForm.mode}
+						initialJob={activeForm.job}
+						isDarkMode={isDarkMode}
+						onCancel={() => setActiveForm(null)}
+						onSave={() => setActiveForm(null)}
+					/>
+				) : (
+					<>
 				<div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
 					<div
 						className={cn(
@@ -124,6 +148,7 @@ export function SidePanel() {
 									? "text-indigo-300 hover:text-indigo-200"
 									: "text-blue-600 hover:text-blue-700",
 							)}
+							onClick={() => setActiveForm({ mode: "add", job: emptyJobForm })}
 						>
 							<PlusCircle className="size-3.5" aria-hidden="true" />
 							Add Job
@@ -197,6 +222,9 @@ export function SidePanel() {
 											? "border-slate-600/70 bg-slate-950/25 text-slate-100 hover:bg-slate-800/80 hover:text-white"
 											: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
 									)}
+									onClick={() =>
+										setActiveForm({ mode: "edit", job: detectedJobForm })
+									}
 								>
 									<PencilLine className="size-4" aria-hidden="true" />
 									Edit Details
@@ -378,6 +406,8 @@ export function SidePanel() {
 						</span>
 					</button>
 				</footer>
+					</>
+				)}
 			</div>
 		</main>
 	);

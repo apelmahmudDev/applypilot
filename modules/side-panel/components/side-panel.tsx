@@ -17,6 +17,7 @@ import {
 	Settings,
 	Sparkles,
 } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,12 @@ const statusStyles: Record<JobStatus, string> = {
 	Saved: "border-slate-400/15 bg-slate-500/15 text-slate-300",
 };
 
+const lightStatusStyles: Record<JobStatus, string> = {
+	Applied: "border-blue-100 bg-blue-50 text-blue-600",
+	Interview: "border-amber-100 bg-amber-50 text-amber-600",
+	Saved: "border-slate-100 bg-slate-50 text-slate-500",
+};
+
 const brandStyles: Record<RecentJob["brand"], string> = {
 	amazon: "bg-[#111827] text-white before:bg-blue-500",
 	microsoft: "bg-slate-950 text-white",
@@ -37,16 +44,35 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 };
 
 export function SidePanel() {
+	const [isDarkMode, setIsDarkMode] = useState(true);
+
 	return (
-		<main className="h-screen min-h-[720px] w-full overflow-hidden bg-[#060b14] p-2 text-slate-100">
-			<div className="flex h-full flex-col overflow-hidden rounded-lg border border-slate-700/55 bg-[linear-gradient(145deg,#0d1422_0%,#070b12_46%,#0a111d_100%)] shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+		<main
+			className={cn(
+				"h-screen min-h-[720px] w-full overflow-hidden p-2 transition-colors",
+				isDarkMode ? "bg-[#060b14] text-slate-100" : "bg-[#f8fafc] text-slate-950",
+			)}
+		>
+			<div
+				className={cn(
+					"flex h-full flex-col overflow-hidden rounded-lg border transition-colors",
+					isDarkMode
+						? "border-slate-700/55 bg-[linear-gradient(145deg,#0d1422_0%,#070b12_46%,#0a111d_100%)] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
+						: "border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]",
+				)}
+			>
 				<header className="flex shrink-0 items-center justify-between px-5 pb-4 pt-5">
 					<div className="flex items-center gap-3">
 						<Send
 							className="size-7 fill-indigo-500 stroke-indigo-300"
 							aria-hidden="true"
 						/>
-						<h1 className="text-xl font-bold tracking-normal text-white">
+						<h1
+							className={cn(
+								"text-xl font-bold tracking-normal",
+								isDarkMode ? "text-white" : "text-slate-950",
+							)}
+						>
 							ApplyPilot
 						</h1>
 					</div>
@@ -54,7 +80,11 @@ export function SidePanel() {
 						type="button"
 						variant="ghost"
 						size="icon-sm"
-						className="text-slate-300 hover:bg-slate-800/80 hover:text-white"
+						className={cn(
+							isDarkMode
+								? "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+								: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+						)}
 						aria-label="Open settings"
 						title="Settings"
 					>
@@ -63,18 +93,37 @@ export function SidePanel() {
 				</header>
 
 				<div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
-					<div className="flex h-10 items-center gap-3 rounded-lg border border-slate-700/70 bg-slate-950/35 px-3 text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+					<div
+						className={cn(
+							"flex h-10 items-center gap-3 rounded-lg border px-3 transition-colors",
+							isDarkMode
+								? "border-slate-700/70 bg-slate-950/35 text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+								: "border-slate-200 bg-white text-slate-500 shadow-[0_8px_22px_rgba(15,23,42,0.06)]",
+						)}
+					>
 						<Search className="size-4 shrink-0" aria-hidden="true" />
 						<span className="min-w-0 flex-1 truncate text-sm">
 							Search jobs, companies, notes...
 						</span>
-						<kbd className="rounded-md border border-slate-700 bg-slate-900 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+						<kbd
+							className={cn(
+								"rounded-md border px-2 py-0.5 text-[11px] font-medium",
+								isDarkMode
+									? "border-slate-700 bg-slate-900 text-slate-500"
+									: "border-slate-200 bg-white text-slate-500",
+							)}
+						>
 							Ctrl K
 						</kbd>
-						<span className="h-5 w-px bg-slate-700" />
+						<span className={cn("h-5 w-px", isDarkMode ? "bg-slate-700" : "bg-slate-200")} />
 						<button
 							type="button"
-							className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-indigo-300 hover:text-indigo-200"
+							className={cn(
+								"flex shrink-0 items-center gap-1.5 text-xs font-medium",
+								isDarkMode
+									? "text-indigo-300 hover:text-indigo-200"
+									: "text-blue-600 hover:text-blue-700",
+							)}
 						>
 							<PlusCircle className="size-3.5" aria-hidden="true" />
 							Add Job
@@ -84,23 +133,37 @@ export function SidePanel() {
 					<section className="space-y-3">
 						<div className="flex items-center gap-3 px-1">
 							<Sparkles className="size-4 text-cyan-300" aria-hidden="true" />
-							<h2 className="text-sm font-semibold text-white">
+							<h2 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
 								Detected on this page
 							</h2>
 						</div>
-						<div className="rounded-lg border border-slate-700/75 bg-slate-900/45 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.24)]">
+						<div
+							className={cn(
+								"rounded-lg border p-4 transition-colors",
+								isDarkMode
+									? "border-slate-700/75 bg-slate-900/45 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+									: "border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)]",
+							)}
+						>
 							<div className="flex gap-4">
-								<div className="flex size-[72px] shrink-0 items-center justify-center rounded-lg border border-slate-700/55 bg-slate-800/45 text-4xl font-bold">
+								<div
+									className={cn(
+										"flex size-[72px] shrink-0 items-center justify-center rounded-lg border text-4xl font-bold",
+										isDarkMode
+											? "border-slate-700/55 bg-slate-800/45"
+											: "border-slate-200 bg-slate-50",
+									)}
+								>
 									<span className="bg-[conic-gradient(from_0deg,#4285f4,#34a853,#fbbc05,#ea4335,#4285f4)] bg-clip-text text-transparent">
 										G
 									</span>
 								</div>
 								<div className="min-w-0 flex-1">
-									<h3 className="truncate text-base font-bold text-white">
+									<h3 className={cn("truncate text-base font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
 										Frontend Developer
 									</h3>
-									<p className="mt-1 text-sm font-medium text-slate-300">Google</p>
-									<p className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
+									<p className={cn("mt-1 text-sm font-medium", isDarkMode ? "text-slate-300" : "text-slate-700")}>Google</p>
+									<p className={cn("mt-2 flex items-center gap-1.5 text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
 										<MapPin className="size-3.5" aria-hidden="true" />
 										Bengaluru, Karnataka, India
 									</p>
@@ -108,7 +171,12 @@ export function SidePanel() {
 										href="https://careers.google.com/jobs/results/1234567890"
 										target="_blank"
 										rel="noreferrer"
-										className="mt-2 flex min-w-0 items-center gap-2 text-xs font-medium text-blue-300 hover:text-blue-200"
+										className={cn(
+											"mt-2 flex min-w-0 items-center gap-2 text-xs font-medium",
+											isDarkMode
+												? "text-blue-300 hover:text-blue-200"
+												: "text-blue-600 hover:text-blue-700",
+										)}
 									>
 										<Link className="size-3.5 shrink-0" aria-hidden="true" />
 										<span className="truncate">
@@ -123,14 +191,19 @@ export function SidePanel() {
 								<Button
 									type="button"
 									variant="outline"
-									className="h-10 rounded-md border-slate-600/70 bg-slate-950/25 text-sm font-semibold text-slate-100 hover:bg-slate-800/80 hover:text-white"
+									className={cn(
+										"h-10 rounded-md text-sm font-semibold",
+										isDarkMode
+											? "border-slate-600/70 bg-slate-950/25 text-slate-100 hover:bg-slate-800/80 hover:text-white"
+											: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+									)}
 								>
 									<PencilLine className="size-4" aria-hidden="true" />
 									Edit Details
 								</Button>
 								<Button
 									type="button"
-									className="h-10 rounded-md bg-indigo-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(79,70,229,0.34)] hover:bg-indigo-500"
+									className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
 								>
 									<PlusCircle className="size-4" aria-hidden="true" />
 									Save Job
@@ -139,40 +212,69 @@ export function SidePanel() {
 						</div>
 					</section>
 
-					<section className="grid grid-cols-3 rounded-lg border border-slate-700/65 bg-slate-900/45 py-3">
-						<StatItem icon={Bookmark} value="42" label="Saved" />
-						<StatItem icon={CheckCircle2} value="18" label="Applied" bordered />
-						<StatItem icon={CalendarDays} value="4" label="Interview" bordered />
+					<section
+						className={cn(
+							"grid grid-cols-3 rounded-lg border py-3 transition-colors",
+							isDarkMode
+								? "border-slate-700/65 bg-slate-900/45"
+								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+						)}
+					>
+						<StatItem icon={Bookmark} value="42" label="Saved" isDarkMode={isDarkMode} />
+						<StatItem icon={CheckCircle2} value="18" label="Applied" bordered isDarkMode={isDarkMode} />
+						<StatItem icon={CalendarDays} value="4" label="Interview" bordered isDarkMode={isDarkMode} />
 					</section>
 
-					<ListHeader title="Recent Jobs" />
-					<section className="overflow-hidden rounded-lg border border-slate-700/65 bg-slate-900/35">
+					<ListHeader title="Recent Jobs" isDarkMode={isDarkMode} />
+					<section
+						className={cn(
+							"overflow-hidden rounded-lg border transition-colors",
+							isDarkMode
+								? "border-slate-700/65 bg-slate-900/35"
+								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+						)}
+					>
 						{recentJobs.map((job) => (
-							<RecentJobRow key={job.id} job={job} />
+							<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
 						))}
 					</section>
 
-					<ListHeader title="Today's Reminders" />
-					<section className="overflow-hidden rounded-lg border border-slate-700/65 bg-slate-900/35">
+					<ListHeader title="Today's Reminders" isDarkMode={isDarkMode} />
+					<section
+						className={cn(
+							"overflow-hidden rounded-lg border transition-colors",
+							isDarkMode
+								? "border-slate-700/65 bg-slate-900/35"
+								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+						)}
+					>
 						{reminders.map((reminder) => {
 							const Icon = reminder.icon;
 
 							return (
 								<div
 									key={reminder.id}
-									className="flex items-center gap-3 border-b border-slate-800/85 px-3 py-3 last:border-b-0"
+									className={cn(
+										"flex items-center gap-3 border-b px-3 py-3 last:border-b-0",
+										isDarkMode ? "border-slate-800/85" : "border-slate-100",
+									)}
 								>
 									<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
 										<Icon className="size-5" aria-hidden="true" />
 									</div>
 									<div className="min-w-0 flex-1">
-										<h3 className="truncate text-sm font-semibold text-white">
+										<h3 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
 											{reminder.company} - {reminder.title}
 										</h3>
-										<p className="truncate text-xs text-slate-400">
+										<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
 											{reminder.description}
 										</p>
-										<p className="mt-1 text-xs font-medium text-blue-300">
+										<p
+											className={cn(
+												"mt-1 text-xs font-medium",
+												isDarkMode ? "text-blue-300" : "text-blue-600",
+											)}
+										>
 											{reminder.time}
 										</p>
 									</div>
@@ -180,7 +282,12 @@ export function SidePanel() {
 										type="button"
 										variant="outline"
 										size="sm"
-										className="h-8 rounded-md border-slate-600/70 bg-slate-950/20 px-3 text-xs text-slate-200 hover:bg-slate-800/80 hover:text-white"
+										className={cn(
+											"h-8 rounded-md px-3 text-xs",
+											isDarkMode
+												? "border-slate-600/70 bg-slate-950/20 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+												: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+										)}
 									>
 										Mark Done
 									</Button>
@@ -188,7 +295,11 @@ export function SidePanel() {
 										type="button"
 										variant="ghost"
 										size="icon-sm"
-										className="text-slate-400 hover:bg-slate-800/80 hover:text-white"
+										className={cn(
+											isDarkMode
+												? "text-slate-400 hover:bg-slate-800/80 hover:text-white"
+												: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
+										)}
 										aria-label="Reminder actions"
 										title="Actions"
 									>
@@ -201,50 +312,89 @@ export function SidePanel() {
 
 					<button
 						type="button"
-						className="flex w-full items-center gap-3 rounded-lg border border-slate-700/65 bg-slate-900/45 p-3 text-left transition hover:bg-slate-800/70"
+						className={cn(
+							"flex w-full items-center gap-3 rounded-lg border p-3 text-left transition",
+							isDarkMode
+								? "border-slate-700/65 bg-slate-900/45 hover:bg-slate-800/70"
+								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)] hover:bg-slate-50",
+						)}
 					>
 						<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
 							<Grid2X2 className="size-5" aria-hidden="true" />
 						</div>
 						<div className="min-w-0 flex-1">
-							<h2 className="truncate text-sm font-semibold text-white">
+							<h2 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
 								Open Full Dashboard
 							</h2>
-							<p className="truncate text-xs text-slate-400">
+							<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
 								View analytics, export data, and more
 							</p>
 						</div>
-						<ChevronRight className="size-4 text-slate-400" aria-hidden="true" />
+						<ChevronRight className={cn("size-4", isDarkMode ? "text-slate-400" : "text-slate-500")} aria-hidden="true" />
 					</button>
 				</div>
 
-				<footer className="flex shrink-0 items-center justify-between border-t border-slate-800/80 px-5 py-3">
+				<footer
+					className={cn(
+						"flex shrink-0 items-center justify-between border-t px-5 py-3",
+						isDarkMode ? "border-slate-800/80" : "border-slate-200",
+					)}
+				>
 					<div className="flex min-w-0 items-center gap-3">
 						<CircleUserRound className="size-8 shrink-0 text-indigo-300" aria-hidden="true" />
-						<span className="truncate text-sm font-medium text-slate-200">
+						<span className={cn("truncate text-sm font-medium", isDarkMode ? "text-slate-200" : "text-slate-700")}>
 							Apel Mahmud
 						</span>
 					</div>
-					<div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-						<Moon className="size-4 text-indigo-300" aria-hidden="true" />
+					<button
+						type="button"
+						className={cn(
+							"flex items-center gap-2 rounded-md text-sm font-medium transition",
+							isDarkMode ? "text-slate-300" : "text-slate-700",
+						)}
+						aria-pressed={isDarkMode}
+						onClick={() => setIsDarkMode((currentMode) => !currentMode)}
+					>
+						<Moon
+							className={cn(
+								"size-4",
+								isDarkMode ? "text-indigo-300" : "text-blue-600",
+							)}
+							aria-hidden="true"
+						/>
 						Dark Mode
-						<span className="relative h-6 w-11 rounded-full bg-indigo-600 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]">
-							<span className="absolute right-1 top-1 size-4 rounded-full bg-white" />
+						<span
+							className={cn(
+								"relative h-6 w-11 rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)] transition-colors",
+								isDarkMode ? "bg-indigo-600" : "bg-slate-200",
+							)}
+						>
+							<span
+								className={cn(
+									"absolute top-1 size-4 rounded-full bg-white transition-all",
+									isDarkMode ? "right-1" : "left-1",
+								)}
+							/>
 						</span>
-					</div>
+					</button>
 				</footer>
 			</div>
 		</main>
 	);
 }
 
-function ListHeader({ title }: { title: string }) {
+function ListHeader({ title, isDarkMode }: { title: string; isDarkMode: boolean }) {
 	return (
 		<div className="flex items-center justify-between px-1 pt-1">
-			<h2 className="text-sm font-semibold text-white">{title}</h2>
+			<h2 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>{title}</h2>
 			<button
 				type="button"
-				className="flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-200"
+				className={cn(
+					"flex items-center gap-1 text-xs font-medium",
+					isDarkMode
+						? "text-slate-400 hover:text-slate-200"
+						: "text-slate-500 hover:text-slate-900",
+				)}
 			>
 				View all
 				<ChevronRight className="size-3" aria-hidden="true" />
@@ -258,53 +408,67 @@ function StatItem({
 	value,
 	label,
 	bordered = false,
+	isDarkMode,
 }: {
 	icon: typeof Bookmark;
 	value: string;
 	label: string;
 	bordered?: boolean;
+	isDarkMode: boolean;
 }) {
 	return (
 		<div
 			className={cn(
 				"flex items-center justify-center gap-3 px-2",
-				bordered && "border-l border-slate-700/65",
+				bordered && (isDarkMode ? "border-l border-slate-700/65" : "border-l border-slate-200"),
 			)}
 		>
 			<Icon className="size-5 text-indigo-300" aria-hidden="true" />
 			<div>
-				<p className="text-lg font-bold leading-5 text-white">{value}</p>
-				<p className="text-[11px] font-medium text-slate-400">{label}</p>
+				<p className={cn("text-lg font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>{value}</p>
+				<p className={cn("text-[11px] font-medium", isDarkMode ? "text-slate-400" : "text-slate-500")}>{label}</p>
 			</div>
 		</div>
 	);
 }
 
-function RecentJobRow({ job }: { job: RecentJob }) {
+function RecentJobRow({ job, isDarkMode }: { job: RecentJob; isDarkMode: boolean }) {
 	return (
-		<div className="grid grid-cols-[48px_minmax(0,1fr)_74px_84px] items-center gap-2 border-b border-slate-800/85 px-3 py-2.5 last:border-b-0">
+		<div
+			className={cn(
+				"grid grid-cols-[48px_minmax(0,1fr)_74px_84px] items-center gap-2 border-b px-3 py-2.5 last:border-b-0",
+				isDarkMode ? "border-slate-800/85" : "border-slate-100",
+			)}
+		>
 			<CompanyMark brand={job.brand} />
 			<div className="min-w-0">
-				<h3 className="truncate text-sm font-semibold text-white">{job.title}</h3>
-				<p className="truncate text-xs text-slate-400">
+				<h3 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>{job.title}</h3>
+				<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
 					{job.company} - {job.location}
 				</p>
 			</div>
 			<span
 				className={cn(
 					"justify-self-start rounded-md border px-2 py-1 text-[11px] font-semibold",
-					statusStyles[job.status],
+					isDarkMode ? statusStyles[job.status] : lightStatusStyles[job.status],
 				)}
 			>
 				{job.status}
 			</span>
 			<div className="min-w-0 text-right">
-				<p className="truncate text-xs text-slate-400">{job.date}</p>
+				<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>{job.date}</p>
 				<p
 					className={cn(
 						"mt-1 truncate text-xs font-medium",
-						job.followUp === "Today" ? "text-emerald-300" : "text-blue-300",
-						job.followUp.includes("1d") && "text-amber-300",
+						isDarkMode
+							? job.followUp === "Today"
+								? "text-emerald-300"
+								: "text-blue-300"
+							: job.followUp === "Today"
+								? "text-emerald-600"
+								: "text-blue-600",
+						job.followUp.includes("1d") &&
+							(isDarkMode ? "text-amber-300" : "text-amber-600"),
 					)}
 				>
 					{job.followUp}

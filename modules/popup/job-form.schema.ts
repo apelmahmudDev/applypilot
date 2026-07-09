@@ -9,5 +9,5 @@ export const jobFormSchema = z.object({
 	url: z.string().trim().url("Enter a valid job URL."),
 	platform: z.string().trim().min(1, "Platform is required."),
 	status: z.enum(jobStatuses),
-	notes: z.string().max(500, "Notes must be 500 characters or less."),
+	notes: z.string(),
 });

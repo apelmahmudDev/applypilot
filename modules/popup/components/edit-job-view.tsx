@@ -228,7 +228,7 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 											/>
 											<InputGroupAddon align="block-end">
 												<InputGroupText className="text-xs tabular-nums">
-													{field.state.value.length}/500
+													{field.state.value.length} characters
 												</InputGroupText>
 											</InputGroupAddon>
 										</InputGroup>

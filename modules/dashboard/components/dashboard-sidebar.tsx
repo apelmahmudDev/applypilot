@@ -69,7 +69,6 @@ export function DashboardSidebar({
 											<SidebarMenuButton
 												type="button"
 												size="lg"
-												tooltip={item.label}
 												isActive={isActive}
 												className={cn(
 													"h-10 rounded-lg font-bold",

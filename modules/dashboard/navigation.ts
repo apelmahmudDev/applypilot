@@ -49,6 +49,16 @@ export const dashboardNavSections: DashboardNavSection[] = [
 	},
 ];
 
+const dashboardViews = new Set<DashboardView>(
+	dashboardNavSections
+		.flatMap((section) => section.items)
+		.map((item) => item.value),
+);
+
+export function isDashboardView(value: string): value is DashboardView {
+	return dashboardViews.has(value as DashboardView);
+}
+
 export function getDashboardViewTitle(view: DashboardView) {
 	return (
 		dashboardNavSections

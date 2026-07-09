@@ -1,13 +1,36 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardContent } from "@/modules/dashboard/components/dashboard-content";
 import { DashboardHeader } from "@/modules/dashboard/components/dashboard-header";
 import { DashboardSidebar } from "@/modules/dashboard/components/dashboard-sidebar";
-import type { DashboardView } from "@/modules/dashboard/navigation";
+import {
+	isDashboardView,
+	type DashboardView,
+} from "@/modules/dashboard/navigation";
+
+function getViewFromHash(): DashboardView {
+	const hashView = window.location.hash.replace(/^#/, "");
+	return isDashboardView(hashView) ? hashView : "dashboard";
+}
 
 export function DashboardPage() {
-	const [activeView, setActiveView] = useState<DashboardView>("dashboard");
+	const [activeView, setActiveView] = useState<DashboardView>(getViewFromHash);
+
+	useEffect(() => {
+		function handleHashChange() {
+			setActiveView(getViewFromHash());
+		}
+
+		window.addEventListener("hashchange", handleHashChange);
+		return () => window.removeEventListener("hashchange", handleHashChange);
+	}, []);
+
+	const handleViewChange = useCallback((view: DashboardView) => {
+		if (view === activeView) return;
+		window.location.hash = view;
+		setActiveView(view);
+	}, [activeView]);
 
 	return (
 		<SidebarProvider
@@ -19,7 +42,7 @@ export function DashboardPage() {
 				} as React.CSSProperties
 			}
 		>
-			<DashboardSidebar activeView={activeView} onViewChange={setActiveView} />
+			<DashboardSidebar activeView={activeView} onViewChange={handleViewChange} />
 			<SidebarInset className="bg-slate-50">
 				<main
 					className="@container/main flex min-h-screen flex-1 flex-col"

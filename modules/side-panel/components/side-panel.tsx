@@ -67,7 +67,14 @@ const brandStyles: Record<RecentJob["brand"], string> = {
 	default: "bg-blue-600 text-white",
 };
 
-type SidePanelView = "home" | "applications" | "reminders" | "settings";
+type SidePanelView =
+	| "home"
+	| "applications"
+	| "reminders"
+	| "settings"
+	| "jobDetails"
+	| "reminderDetails";
+type DetailsBackView = Exclude<SidePanelView, "jobDetails" | "reminderDetails">;
 type ApplicationFilter = "All" | JobStatus;
 type ReminderFilter = "Today" | "Upcoming" | "Completed";
 
@@ -93,6 +100,11 @@ export function SidePanel() {
 	const { isDarkMode } = useSystemTheme();
 	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
 	const [panelView, setPanelView] = useState<SidePanelView>("home");
+	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+	const [selectedReminderId, setSelectedReminderId] = useState<string | null>(
+		null,
+	);
+	const [detailsBackView, setDetailsBackView] = useState<DetailsBackView>("home");
 	const [applicationSearch, setApplicationSearch] = useState("");
 	const [applicationFilter, setApplicationFilter] =
 		useState<ApplicationFilter>("All");
@@ -146,6 +158,14 @@ export function SidePanel() {
 	const displayedJobs = useMemo(
 		() => storedJobs.slice(0, 5).map(mapStoredJobToRecentJob),
 		[storedJobs],
+	);
+	const selectedJob = useMemo(
+		() => storedJobs.find((job) => job.id === selectedJobId) ?? null,
+		[selectedJobId, storedJobs],
+	);
+	const selectedReminder = useMemo(
+		() => reminders.find((reminder) => reminder.id === selectedReminderId) ?? null,
+		[selectedReminderId],
 	);
 	const allApplicationJobs = useMemo(() => {
 		const search = applicationSearch.trim().toLowerCase();
@@ -252,6 +272,21 @@ export function SidePanel() {
 		}
 	};
 
+	const openJobDetails = (jobId: string, backView: DetailsBackView) => {
+		setSelectedJobId(jobId);
+		setDetailsBackView(backView);
+		setPanelView("jobDetails");
+	};
+
+	const openReminderDetails = (
+		reminderId: string,
+		backView: DetailsBackView,
+	) => {
+		setSelectedReminderId(reminderId);
+		setDetailsBackView(backView);
+		setPanelView("reminderDetails");
+	};
+
 	return (
 		<main
 			className={cn(
@@ -307,6 +342,34 @@ export function SidePanel() {
 						onCancel={() => setActiveForm(null)}
 						onSave={handleSaveJob}
 					/>
+				) : panelView === "jobDetails" ? (
+					<JobDetailsView
+						job={selectedJob}
+						isDarkMode={isDarkMode}
+						onBack={() => setPanelView(detailsBackView)}
+						onEdit={(job) =>
+							setActiveForm({ mode: "edit", job: toSidePanelJobForm(job) })
+						}
+						onStatusChange={handleCycleJobStatus}
+					/>
+				) : panelView === "reminderDetails" ? (
+					<ReminderDetailsView
+						reminder={selectedReminder}
+						isCompleted={
+							selectedReminder
+								? completedReminderIds.includes(selectedReminder.id)
+								: false
+						}
+						isDarkMode={isDarkMode}
+						onBack={() => setPanelView(detailsBackView)}
+						onMarkDone={(reminderId) =>
+							setCompletedReminderIds((currentIds) =>
+								currentIds.includes(reminderId)
+									? currentIds
+									: [...currentIds, reminderId],
+							)
+						}
+					/>
 				) : panelView === "applications" ? (
 					<AllApplicationsView
 						jobs={allApplicationJobs}
@@ -319,6 +382,7 @@ export function SidePanel() {
 						onFilterChange={setApplicationFilter}
 						onSortChange={setApplicationSort}
 						onStatusChange={handleCycleJobStatus}
+						onOpenJob={(job) => openJobDetails(job.id, "applications")}
 					/>
 				) : panelView === "reminders" ? (
 					<AllRemindersView
@@ -328,6 +392,9 @@ export function SidePanel() {
 						isDarkMode={isDarkMode}
 						onBack={() => setPanelView("home")}
 						onFilterChange={setReminderFilter}
+						onOpenReminder={(reminder) =>
+							openReminderDetails(reminder.id, "reminders")
+						}
 						onMarkDone={(reminderId) =>
 							setCompletedReminderIds((currentIds) =>
 								currentIds.includes(reminderId)
@@ -570,7 +637,12 @@ export function SidePanel() {
 							)}
 					>
 						{displayedJobs.map((job) => (
-							<RecentJobRow key={job.id} job={job} isDarkMode={isDarkMode} />
+							<RecentJobRow
+								key={job.id}
+								job={job}
+								isDarkMode={isDarkMode}
+								onOpen={() => openJobDetails(job.id, "home")}
+							/>
 						))}
 						{!displayedJobs.length && (
 							<p className={cn("px-3 py-4 text-sm", isDarkMode ? "text-slate-400" : "text-slate-500")}>
@@ -592,66 +664,23 @@ export function SidePanel() {
 								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
 						)}
 					>
-						{reminders.map((reminder) => {
-							const Icon = reminder.icon;
-
-							return (
-								<div
-									key={reminder.id}
-									className={cn(
-										"flex items-center gap-3 border-b px-3 py-3 last:border-b-0",
-										isDarkMode ? "border-slate-800/85" : "border-slate-100",
-									)}
-								>
-									<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
-										<Icon className="size-5" aria-hidden="true" />
-									</div>
-									<div className="min-w-0 flex-1">
-										<h3 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
-											{reminder.company} - {reminder.title}
-										</h3>
-										<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
-											{reminder.description}
-										</p>
-										<p
-											className={cn(
-												"mt-1 text-xs font-medium",
-												isDarkMode ? "text-blue-300" : "text-blue-600",
-											)}
-										>
-											{reminder.time}
-										</p>
-									</div>
-									<Button
-										type="button"
-										variant="outline"
-										size="sm"
-										className={cn(
-											"h-8 rounded-md px-3 text-xs",
-											isDarkMode
-												? "border-slate-600/70 bg-[#262628] text-slate-200 hover:bg-[#303032] hover:text-white"
-												: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-										)}
-									>
-										Mark Done
-									</Button>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon-sm"
-										className={cn(
-											isDarkMode
-												? "text-slate-400 hover:bg-[#303032] hover:text-white"
-												: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
-										)}
-										aria-label="Reminder actions"
-										title="Actions"
-									>
-										<MoreVertical className="size-4" aria-hidden="true" />
-									</Button>
-								</div>
-							);
-						})}
+						{reminders.map((reminder) => (
+							<ReminderManagementRow
+								key={reminder.id}
+								reminder={reminder}
+								isCompleted={completedReminderIds.includes(reminder.id)}
+								isDarkMode={isDarkMode}
+								showActions
+								onOpen={() => openReminderDetails(reminder.id, "home")}
+								onMarkDone={() =>
+									setCompletedReminderIds((currentIds) =>
+										currentIds.includes(reminder.id)
+											? currentIds
+											: [...currentIds, reminder.id],
+									)
+								}
+							/>
+						))}
 					</section>
 
 					<button
@@ -741,6 +770,7 @@ function AllApplicationsView({
 	onFilterChange,
 	onSortChange,
 	onStatusChange,
+	onOpenJob,
 }: {
 	jobs: StoredJob[];
 	search: string;
@@ -752,6 +782,7 @@ function AllApplicationsView({
 	onFilterChange: (value: ApplicationFilter) => void;
 	onSortChange: (value: string) => void;
 	onStatusChange: (job: StoredJob) => void;
+	onOpenJob: (job: StoredJob) => void;
 }) {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
@@ -835,6 +866,7 @@ function AllApplicationsView({
 							job={job}
 							isDarkMode={isDarkMode}
 							onStatusChange={() => onStatusChange(job)}
+							onOpen={() => onOpenJob(job)}
 						/>
 					))}
 					{!jobs.length && (
@@ -856,6 +888,7 @@ function AllRemindersView({
 	isDarkMode,
 	onBack,
 	onFilterChange,
+	onOpenReminder,
 	onMarkDone,
 }: {
 	reminders: Reminder[];
@@ -864,6 +897,7 @@ function AllRemindersView({
 	isDarkMode: boolean;
 	onBack: () => void;
 	onFilterChange: (value: ReminderFilter) => void;
+	onOpenReminder: (reminder: Reminder) => void;
 	onMarkDone: (reminderId: string) => void;
 }) {
 	return (
@@ -906,6 +940,7 @@ function AllRemindersView({
 							reminder={reminder}
 							isCompleted={completedReminderIds.includes(reminder.id)}
 							isDarkMode={isDarkMode}
+							onOpen={() => onOpenReminder(reminder)}
 							onMarkDone={() => onMarkDone(reminder.id)}
 						/>
 					))}
@@ -947,6 +982,292 @@ function SettingsView({
 			<div className="mt-auto">
 				<FullDashboardButton isDarkMode={isDarkMode} />
 			</div>
+		</div>
+	);
+}
+
+function JobDetailsView({
+	job,
+	isDarkMode,
+	onBack,
+	onEdit,
+	onStatusChange,
+}: {
+	job: StoredJob | null;
+	isDarkMode: boolean;
+	onBack: () => void;
+	onEdit: (job: StoredJob) => void;
+	onStatusChange: (job: StoredJob) => void;
+}) {
+	if (!job) {
+		return (
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+				<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
+				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
+					This job is no longer available.
+				</p>
+			</div>
+		);
+	}
+
+	const status = mapJobStatus(job.status);
+
+	return (
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+			<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
+			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
+				<section
+					className={cn(
+						"rounded-lg border p-4",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<div className="flex items-start gap-3">
+						<CompanyMark brand={getBrand(job.company, job.platform)} size="lg" />
+						<div className="min-w-0 flex-1">
+							<h2
+								className={cn(
+									"text-base font-bold leading-6",
+									isDarkMode ? "text-white" : "text-slate-950",
+								)}
+							>
+								{job.title || "Untitled role"}
+							</h2>
+							<p
+								className={cn(
+									"mt-1 text-sm font-semibold",
+									isDarkMode ? "text-slate-300" : "text-slate-700",
+								)}
+							>
+								{job.company || "Unknown company"}
+							</p>
+							<p
+								className={cn(
+									"mt-2 flex items-center gap-1.5 text-xs",
+									isDarkMode ? "text-slate-400" : "text-slate-500",
+								)}
+							>
+								<MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+								<span>{job.location || "Location not found"}</span>
+							</p>
+						</div>
+					</div>
+
+					<div className="mt-4 grid grid-cols-2 gap-2">
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								isDarkMode
+									? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032]"
+									: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+							)}
+							onClick={() => onEdit(job)}
+						>
+							<PencilLine className="size-4" aria-hidden="true" />
+							Edit
+						</Button>
+						<Button
+							type="button"
+							className="h-9 rounded-md bg-blue-600 text-xs font-semibold text-white hover:bg-blue-500"
+							onClick={() => onStatusChange(job)}
+						>
+							Status: {status}
+						</Button>
+					</div>
+				</section>
+
+				<section
+					className={cn(
+						"rounded-lg border p-3",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<DetailLine label="Platform" value={job.platform || "Other"} isDarkMode={isDarkMode} />
+					<DetailLine label="Saved" value={formatDate(job.createdAt) || "Unknown"} isDarkMode={isDarkMode} />
+					<DetailLine label="Updated" value={formatDate(job.updatedAt) || "Unknown"} isDarkMode={isDarkMode} />
+					{job.url && (
+						<a
+							href={job.url}
+							target="_blank"
+							rel="noreferrer"
+							className={cn(
+								"mt-3 flex min-w-0 items-center gap-2 text-xs font-semibold",
+								isDarkMode
+									? "text-blue-300 hover:text-blue-200"
+									: "text-blue-600 hover:text-blue-700",
+							)}
+						>
+							<Link className="size-3.5 shrink-0" aria-hidden="true" />
+							<span className="truncate">{formatDisplayUrl(job.url)}</span>
+							<ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+						</a>
+					)}
+				</section>
+
+				<section
+					className={cn(
+						"rounded-lg border p-3",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<h3 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+						Job Description / Notes
+					</h3>
+					<p
+						className={cn(
+							"mt-2 whitespace-pre-wrap text-xs leading-5",
+							isDarkMode ? "text-slate-300" : "text-slate-600",
+						)}
+					>
+						{job.notes || "No description or notes saved yet."}
+					</p>
+				</section>
+			</div>
+		</div>
+	);
+}
+
+function ReminderDetailsView({
+	reminder,
+	isCompleted,
+	isDarkMode,
+	onBack,
+	onMarkDone,
+}: {
+	reminder: Reminder | null;
+	isCompleted: boolean;
+	isDarkMode: boolean;
+	onBack: () => void;
+	onMarkDone: (reminderId: string) => void;
+}) {
+	if (!reminder) {
+		return (
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+				<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
+				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
+					This reminder is no longer available.
+				</p>
+			</div>
+		);
+	}
+
+	const Icon = reminder.icon;
+
+	return (
+		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
+			<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
+			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
+				<section
+					className={cn(
+						"rounded-lg border p-4",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<div className="flex items-start gap-3">
+						<div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
+							<Icon className="size-5" aria-hidden="true" />
+						</div>
+						<div className="min-w-0 flex-1">
+							<h2
+								className={cn(
+									"text-base font-bold leading-6",
+									isDarkMode ? "text-white" : "text-slate-950",
+								)}
+							>
+								{reminder.company} - {reminder.title}
+							</h2>
+							<p
+								className={cn(
+									"mt-1 text-sm font-medium",
+									isDarkMode ? "text-slate-300" : "text-slate-700",
+								)}
+							>
+								{reminder.description}
+							</p>
+						</div>
+					</div>
+
+					<Button
+						type="button"
+						className="mt-4 h-9 w-full rounded-md bg-blue-600 text-xs font-semibold text-white hover:bg-blue-500"
+						disabled={isCompleted}
+						onClick={() => onMarkDone(reminder.id)}
+					>
+						{isCompleted ? "Completed" : "Mark Done"}
+					</Button>
+				</section>
+
+				<section
+					className={cn(
+						"rounded-lg border p-3",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<DetailLine label="Company" value={reminder.company} isDarkMode={isDarkMode} />
+					<DetailLine label="Role" value={reminder.title} isDarkMode={isDarkMode} />
+					<DetailLine label="When" value={reminder.time} isDarkMode={isDarkMode} />
+					<DetailLine
+						label="Status"
+						value={isCompleted ? "Completed" : "Open"}
+						isDarkMode={isDarkMode}
+					/>
+				</section>
+
+				<section
+					className={cn(
+						"rounded-lg border p-3",
+						isDarkMode
+							? "border-slate-700/65 bg-[#262628]"
+							: "border-slate-200 bg-white",
+					)}
+				>
+					<h3 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+						Reminder Note
+					</h3>
+					<p
+						className={cn(
+							"mt-2 whitespace-pre-wrap text-xs leading-5",
+							isDarkMode ? "text-slate-300" : "text-slate-600",
+						)}
+					>
+						{reminder.description}
+					</p>
+				</section>
+			</div>
+			<FullDashboardButton isDarkMode={isDarkMode} />
+		</div>
+	);
+}
+
+function DetailLine({
+	label,
+	value,
+	isDarkMode,
+}: {
+	label: string;
+	value: string;
+	isDarkMode: boolean;
+}) {
+	return (
+		<div className="flex items-center justify-between gap-3 py-1.5">
+			<span className={cn("text-xs font-semibold", isDarkMode ? "text-slate-500" : "text-slate-400")}>
+				{label}
+			</span>
+			<span className={cn("min-w-0 truncate text-right text-xs font-medium", isDarkMode ? "text-slate-200" : "text-slate-700")}>
+				{value}
+			</span>
 		</div>
 	);
 }
@@ -1097,19 +1418,32 @@ function ApplicationJobRow({
 	job,
 	isDarkMode,
 	onStatusChange,
+	onOpen,
 }: {
 	job: StoredJob;
 	isDarkMode: boolean;
 	onStatusChange: () => void;
+	onOpen: () => void;
 }) {
 	const status = mapJobStatus(job.status);
 
 	return (
 		<div
+			role="button"
+			tabIndex={0}
 			className={cn(
-				"border-b px-3 py-3 last:border-b-0",
-				isDarkMode ? "border-slate-800/85" : "border-slate-100",
+				"cursor-pointer border-b px-3 py-3 transition last:border-b-0",
+				isDarkMode
+					? "border-slate-800/85 hover:bg-[#303032]"
+					: "border-slate-100 hover:bg-slate-50",
 			)}
+			onClick={onOpen}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					onOpen();
+				}
+			}}
 		>
 			<div className="flex items-start gap-3">
 				<CompanyMark brand={getBrand(job.company, job.platform)} />
@@ -1137,7 +1471,10 @@ function ApplicationJobRow({
 								"rounded-md border px-2 py-1 text-[11px] font-semibold",
 								isDarkMode ? statusStyles[status] : lightStatusStyles[status],
 							)}
-							onClick={onStatusChange}
+							onClick={(event) => {
+								event.stopPropagation();
+								onStatusChange();
+							}}
 						>
 							Status: {status}
 						</button>
@@ -1160,21 +1497,36 @@ function ReminderManagementRow({
 	reminder,
 	isCompleted,
 	isDarkMode,
+	showActions = false,
+	onOpen,
 	onMarkDone,
 }: {
 	reminder: Reminder;
 	isCompleted: boolean;
 	isDarkMode: boolean;
+	showActions?: boolean;
+	onOpen: () => void;
 	onMarkDone: () => void;
 }) {
 	const Icon = reminder.icon;
 
 	return (
 		<div
+			role="button"
+			tabIndex={0}
 			className={cn(
-				"flex items-center gap-3 border-b px-3 py-3 last:border-b-0",
-				isDarkMode ? "border-slate-800/85" : "border-slate-100",
+				"flex cursor-pointer items-center gap-3 border-b px-3 py-3 transition last:border-b-0",
+				isDarkMode
+					? "border-slate-800/85 hover:bg-[#303032]"
+					: "border-slate-100 hover:bg-slate-50",
 			)}
+			onClick={onOpen}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					onOpen();
+				}
+			}}
 		>
 			<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
 				<Icon className="size-5" aria-hidden="true" />
@@ -1216,10 +1568,30 @@ function ReminderManagementRow({
 						: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
 				)}
 				disabled={isCompleted}
-				onClick={onMarkDone}
+				onClick={(event) => {
+					event.stopPropagation();
+					onMarkDone();
+				}}
 			>
 				{isCompleted ? "Done" : "Mark Done"}
 			</Button>
+			{showActions && (
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-sm"
+					className={cn(
+						isDarkMode
+							? "text-slate-400 hover:bg-[#303032] hover:text-white"
+							: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
+					)}
+					aria-label="Reminder actions"
+					title="Actions"
+					onClick={(event) => event.stopPropagation()}
+				>
+					<MoreVertical className="size-4" aria-hidden="true" />
+				</Button>
+			)}
 		</div>
 	);
 }
@@ -1243,13 +1615,32 @@ function FullDashboardButton({ isDarkMode }: { isDarkMode: boolean }) {
 	);
 }
 
-function RecentJobRow({ job, isDarkMode }: { job: RecentJob; isDarkMode: boolean }) {
+function RecentJobRow({
+	job,
+	isDarkMode,
+	onOpen,
+}: {
+	job: RecentJob;
+	isDarkMode: boolean;
+	onOpen: () => void;
+}) {
 	return (
 		<div
+			role="button"
+			tabIndex={0}
 			className={cn(
-				"grid grid-cols-[48px_minmax(0,1fr)_74px_84px] items-center gap-2 border-b px-3 py-2.5 last:border-b-0",
-				isDarkMode ? "border-slate-800/85" : "border-slate-100",
+				"grid cursor-pointer grid-cols-[48px_minmax(0,1fr)_74px_84px] items-center gap-2 border-b px-3 py-2.5 transition last:border-b-0",
+				isDarkMode
+					? "border-slate-800/85 hover:bg-[#303032]"
+					: "border-slate-100 hover:bg-slate-50",
 			)}
+			onClick={onOpen}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					onOpen();
+				}
+			}}
 		>
 			<CompanyMark brand={job.brand} />
 			<div className="min-w-0">
@@ -1397,8 +1788,37 @@ function toStoredJobForm(job: SidePanelJobForm): Parameters<typeof saveJobToStor
 	};
 }
 
+function toSidePanelJobForm(job: StoredJob): SidePanelJobForm {
+	return {
+		title: job.title,
+		company: job.company,
+		location: job.location,
+		url: job.url,
+		platform: job.platform,
+		salary: "",
+		status: mapStoredStatusToSidePanelStatus(job.status),
+		deadline: "",
+		followUpDate: "",
+		recruiterName: "",
+		recruiterEmail: "",
+		tags: [],
+		notes: job.notes,
+	};
+}
+
 function mapSidePanelStatus(status: SidePanelJobStatus): StoredJob["status"] {
 	if (status === "Interview") return "Interviewing";
+	if (status === "Saved") return "Saved";
+	if (status === "Applied") return "Applied";
+	if (status === "Rejected") return "Rejected";
+	if (status === "Offer") return "Offer";
+	return "Interested";
+}
+
+function mapStoredStatusToSidePanelStatus(
+	status: StoredJob["status"],
+): SidePanelJobStatus {
+	if (status === "Interviewing") return "Interview";
 	if (status === "Saved") return "Saved";
 	if (status === "Applied") return "Applied";
 	if (status === "Rejected") return "Rejected";

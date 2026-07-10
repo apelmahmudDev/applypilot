@@ -15,7 +15,7 @@ export function mapStoredJobToRecentJob(job: StoredJob): RecentJob {
 		company: job.company || "Unknown company",
 		location: job.location || "Unknown location",
 		date: formatDate(job.updatedAt),
-		followUp: "Saved locally",
+		followUp: job.followUpDate ? formatDate(job.followUpDate) : "No reminder",
 		status: mapJobStatus(job.status),
 		brand: getBrand(job.company, job.platform),
 	};
@@ -40,9 +40,7 @@ export function getBrand(company: string, platform: string): RecentJob["brand"] 
 	return "default";
 }
 
-export function toStoredJobForm(
-	job: SidePanelJobForm,
-): JobForm {
+export function toStoredJobForm(job: SidePanelJobForm): JobForm {
 	return {
 		title: job.title,
 		company: job.company,
@@ -52,6 +50,11 @@ export function toStoredJobForm(
 		salary: job.salary,
 		status: mapSidePanelStatus(job.status),
 		deadline: job.deadline,
+		followUpDate: job.followUpDate,
+		followUpTime: job.followUpTime,
+		reminderNote: job.reminderNote,
+		reminderEnabled: job.reminderEnabled,
+		reminderDone: job.reminderDone,
 		notes: job.notes,
 	};
 }
@@ -66,10 +69,11 @@ export function toSidePanelJobForm(job: StoredJob): SidePanelJobForm {
 		salary: "",
 		status: mapStoredStatusToSidePanelStatus(job.status),
 		deadline: "",
-		followUpDate: "",
-		recruiterName: "",
-		recruiterEmail: "",
-		tags: [],
+		followUpDate: job.followUpDate,
+		followUpTime: job.followUpTime,
+		reminderNote: job.reminderNote,
+		reminderEnabled: job.reminderEnabled,
+		reminderDone: job.reminderDone,
 		notes: job.notes,
 	};
 }

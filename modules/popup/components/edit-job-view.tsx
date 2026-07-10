@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Field,
 	FieldError,
@@ -200,6 +201,103 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 								}}
 							/>
 						</div>
+						<section className="rounded-lg border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-[#202020]">
+							<div className="mb-3 flex items-start justify-between gap-3">
+								<div>
+									<h3 className="text-sm font-bold text-slate-950 dark:text-slate-100">
+										Reminder
+									</h3>
+									<p className="mt-1 text-xs font-medium leading-5 text-slate-700 dark:text-slate-400">
+										Set a follow-up reminder while saving this job.
+									</p>
+								</div>
+								<form.Field
+									name="reminderEnabled"
+									children={(field) => (
+										<label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+											<Checkbox
+												checked={field.state.value}
+												onCheckedChange={(checked) =>
+													field.handleChange(Boolean(checked))
+												}
+											/>
+											Set follow-up reminder
+										</label>
+									)}
+								/>
+							</div>
+							<div className="space-y-3">
+								<form.Field
+									name="followUpDate"
+									children={(field) => (
+										<TextField
+											label="Follow-up Date"
+											name={field.name}
+											type="date"
+											value={field.state.value}
+											errors={field.state.meta.errors}
+											isInvalid={
+												field.state.meta.isTouched && !field.state.meta.isValid
+											}
+											onBlur={field.handleBlur}
+											onChange={field.handleChange}
+										/>
+									)}
+								/>
+								<form.Field
+									name="followUpTime"
+									children={(field) => (
+										<TextField
+											label="Follow-up Time"
+											name={field.name}
+											type="time"
+											value={field.state.value}
+											errors={field.state.meta.errors}
+											isInvalid={
+												field.state.meta.isTouched && !field.state.meta.isValid
+											}
+											onBlur={field.handleBlur}
+											onChange={field.handleChange}
+										/>
+									)}
+								/>
+								<form.Field
+									name="reminderNote"
+									children={(field) => {
+										const isInvalid =
+											field.state.meta.isTouched && !field.state.meta.isValid;
+										return (
+											<Field className={fieldClassName} data-invalid={isInvalid}>
+												<FieldLabel
+													className={fieldLabelClassName}
+													htmlFor={field.name}
+												>
+													Reminder Note
+												</FieldLabel>
+												<InputGroup>
+													<InputGroupTextarea
+														id={field.name}
+														name={field.name}
+														value={field.state.value}
+														onBlur={field.handleBlur}
+														onChange={(event) =>
+															field.handleChange(event.target.value)
+														}
+														aria-invalid={isInvalid}
+														rows={3}
+														placeholder="Follow up with hiring manager"
+														className="min-h-16 resize-none text-sm font-medium text-slate-950 dark:text-slate-100"
+													/>
+												</InputGroup>
+												{isInvalid && (
+													<FieldError errors={field.state.meta.errors} />
+												)}
+											</Field>
+										);
+									}}
+								/>
+							</div>
+						</section>
 						<form.Field
 							name="notes"
 							children={(field) => {

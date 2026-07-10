@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Popover,
 	PopoverContent,
@@ -18,6 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type {
@@ -56,32 +58,12 @@ export function JobFormPanel({
 	onSave,
 }: JobFormPanelProps) {
 	const [job, setJob] = useState(initialJob);
-	const [tagInput, setTagInput] = useState("");
 
-	const updateField = (field: keyof SidePanelJobForm, value: string) => {
+	const updateField = (
+		field: keyof SidePanelJobForm,
+		value: string | boolean,
+	) => {
 		setJob((currentJob) => ({ ...currentJob, [field]: value }));
-	};
-
-	const addTag = () => {
-		const tag = tagInput.trim();
-
-		if (!tag || job.tags.includes(tag)) {
-			setTagInput("");
-			return;
-		}
-
-		setJob((currentJob) => ({
-			...currentJob,
-			tags: [...currentJob.tags, tag],
-		}));
-		setTagInput("");
-	};
-
-	const removeTag = (tag: string) => {
-		setJob((currentJob) => ({
-			...currentJob,
-			tags: currentJob.tags.filter((currentTag) => currentTag !== tag),
-		}));
 	};
 
 	return (
@@ -199,69 +181,67 @@ export function JobFormPanel({
 								onChange={(value) => updateField("followUpDate", value)}
 							/>
 						</FieldRow>
-						<FieldRow
-							label="Recruiter Name"
-							hint="Optional"
-							isDarkMode={isDarkMode}
-						>
-							<TextInput
-								value={job.recruiterName}
-								isDarkMode={isDarkMode}
-								placeholder="John Doe"
-								onChange={(value) => updateField("recruiterName", value)}
-							/>
-						</FieldRow>
-						<FieldRow
-							label="Recruiter Email"
-							hint="Optional"
-							isDarkMode={isDarkMode}
-						>
-							<TextInput
-								type="email"
-								value={job.recruiterEmail}
-								isDarkMode={isDarkMode}
-								placeholder="john.doe@google.com"
-								onChange={(value) => updateField("recruiterEmail", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Tags" hint="Optional" isDarkMode={isDarkMode}>
-							<div
-								className={cn(
-									"flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border px-2 py-1.5",
-									"border-input bg-card text-foreground placeholder:text-muted-foreground",
-								)}
-							>
-								{job.tags.map((tag) => (
-									<button
-										key={tag}
-										type="button"
-										className={cn(
-											"rounded-md px-2 py-1 text-xs font-semibold",
-											"bg-accent text-accent-foreground",
-										)}
-										onClick={() => removeTag(tag)}
+						<section className="rounded-[14px] border border-border bg-muted/20 p-3">
+							<div className="flex items-start justify-between gap-3">
+								<div>
+									<h3 className="text-sm font-semibold text-foreground">
+										Reminder
+									</h3>
+									<p className="mt-1 text-xs leading-5 text-muted-foreground">
+										Set a follow-up reminder while saving or updating this job.
+									</p>
+								</div>
+								<div className="flex items-center gap-2 pt-0.5">
+									<Label
+										htmlFor="reminder-enabled"
+										className="text-xs font-semibold text-foreground"
 									>
-										{tag} x
-									</button>
-								))}
-								<Input
-									value={tagInput}
-									placeholder={job.tags.length ? "" : "React, Next.js"}
-									className={cn(
-										"h-7 min-w-20 flex-1 border-0 bg-transparent px-1 py-0 text-sm font-medium shadow-none outline-none focus-visible:ring-0",
-										"text-[#111827] placeholder:text-[#94A3B8]",
-									)}
-									onChange={(event) => setTagInput(event.target.value)}
-									onBlur={addTag}
-									onKeyDown={(event) => {
-										if (event.key === "Enter" || event.key === ",") {
-											event.preventDefault();
-											addTag();
-										}
-									}}
-								/>
+										Set follow-up reminder
+									</Label>
+									<Switch
+										id="reminder-enabled"
+										checked={job.reminderEnabled}
+										onCheckedChange={(checked) => {
+											updateField("reminderEnabled", checked);
+											if (!checked) {
+												updateField("reminderDone", false);
+											}
+										}}
+									/>
+								</div>
 							</div>
-						</FieldRow>
+							<div className="mt-3 space-y-3">
+								<FieldRow label="Date" isDarkMode={isDarkMode}>
+									<DateInput
+										value={job.followUpDate}
+										isDarkMode={isDarkMode}
+										onChange={(value) => updateField("followUpDate", value)}
+									/>
+								</FieldRow>
+								<FieldRow label="Time" hint="Optional" isDarkMode={isDarkMode}>
+									<TextInput
+										type="time"
+										value={job.followUpTime}
+										isDarkMode={isDarkMode}
+										onChange={(value) => updateField("followUpTime", value)}
+									/>
+								</FieldRow>
+								<FieldRow label="Note" hint="Optional" isDarkMode={isDarkMode}>
+									<Textarea
+										value={job.reminderNote}
+										rows={3}
+										className={cn(
+											"min-h-20 resize-none rounded-md text-sm font-medium",
+											"border-input bg-card text-foreground placeholder:text-muted-foreground",
+										)}
+										placeholder="Follow up with hiring manager"
+										onChange={(event) =>
+											updateField("reminderNote", event.target.value)
+										}
+									/>
+								</FieldRow>
+							</div>
+						</section>
 						<FieldRow label="Notes" hint="Optional" isDarkMode={isDarkMode}>
 							<Textarea
 								value={job.notes}

@@ -13,6 +13,11 @@ const emptyJob: JobForm = {
 	salary: "",
 	status: "Interested",
 	deadline: "",
+	followUpDate: "",
+	followUpTime: "",
+	reminderNote: "",
+	reminderEnabled: false,
+	reminderDone: false,
 	notes: "",
 };
 
@@ -65,6 +70,11 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 				salary: detectedJob.salary,
 				status: fallbackJob.status,
 				deadline: fallbackJob.deadline,
+				followUpDate: fallbackJob.followUpDate,
+				followUpTime: fallbackJob.followUpTime,
+				reminderNote: fallbackJob.reminderNote,
+				reminderEnabled: fallbackJob.reminderEnabled,
+				reminderDone: fallbackJob.reminderDone,
 				notes: detectedJob.description,
 			});
 			setState({

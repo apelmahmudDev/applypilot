@@ -21,10 +21,16 @@ export type RecentJob = {
 
 export type Reminder = {
 	id: string;
+	jobId: string;
 	company: string;
 	title: string;
 	description: string;
-	time: string;
+	timeLabel: string;
+	statusLabel: string;
+	statusTone: "overdue" | "today" | "tomorrow" | "upcoming" | "completed";
+	followUpDate: string;
+	followUpTime: string;
+	isCompleted: boolean;
 	icon: ComponentType<LucideProps>;
 };
 
@@ -46,9 +52,10 @@ export type SidePanelJobForm = {
 	status: SidePanelJobStatus;
 	deadline: string;
 	followUpDate: string;
-	recruiterName: string;
-	recruiterEmail: string;
-	tags: string[];
+	followUpTime: string;
+	reminderNote: string;
+	reminderEnabled: boolean;
+	reminderDone: boolean;
 	notes: string;
 };
 

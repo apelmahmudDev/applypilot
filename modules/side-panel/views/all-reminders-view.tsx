@@ -8,7 +8,6 @@ import { reminderFilters } from "@/modules/side-panel/utils/constants";
 type AllRemindersViewProps = {
 	reminders: Reminder[];
 	filter: ReminderFilter;
-	completedReminderIds: string[];
 	isDarkMode: boolean;
 	onBack: () => void;
 	onFilterChange: (value: ReminderFilter) => void;
@@ -19,7 +18,6 @@ type AllRemindersViewProps = {
 export function AllRemindersView({
 	reminders,
 	filter,
-	completedReminderIds,
 	isDarkMode,
 	onBack,
 	onFilterChange,
@@ -57,7 +55,6 @@ export function AllRemindersView({
 						<ReminderManagementRow
 							key={reminder.id}
 							reminder={reminder}
-							isCompleted={completedReminderIds.includes(reminder.id)}
 							isDarkMode={isDarkMode}
 							onOpen={() => onOpenReminder(reminder)}
 							onMarkDone={() => onMarkDone(reminder.id)}

@@ -73,6 +73,38 @@ export async function saveJobToStorage(job: JobForm): Promise<SaveJobResult> {
 	};
 }
 
+export async function updateJobInStorage(
+	jobId: string,
+	job: JobForm,
+): Promise<SaveJobResult> {
+	const jobs = await getStoredJobs();
+	const now = new Date().toISOString();
+	const existingJob = jobs.find((storedJob) => storedJob.id === jobId);
+
+	if (!existingJob) {
+		return createJobInStorage(job);
+	}
+
+	const updatedJob: StoredJob = {
+		...existingJob,
+		...normalizeJob(job),
+		id: existingJob.id,
+		createdAt: existingJob.createdAt,
+		updatedAt: now,
+	};
+
+	const nextJobs = jobs.map((storedJob) =>
+		storedJob.id === jobId ? updatedJob : storedJob,
+	);
+
+	await setStoredJobs(nextJobs);
+
+	return {
+		job: updatedJob,
+		action: "updated",
+	};
+}
+
 export async function deleteJobFromStorage(jobId: string) {
 	const jobs = await getStoredJobs();
 	const nextJobs = jobs.filter((job) => job.id !== jobId);
@@ -93,7 +125,7 @@ export async function getStoredJobs(): Promise<StoredJob[]> {
 		return [];
 	}
 
-	return jobs.filter(isStoredJob);
+	return jobs.map(toStoredJob).filter((job): job is StoredJob => job !== null);
 }
 
 async function setStoredJobs(jobs: StoredJob[]) {
@@ -126,6 +158,13 @@ function normalizeJob(job: JobForm): JobForm {
 		salary: job.salary.trim(),
 		status: job.status,
 		deadline: job.deadline.trim(),
+		followUpDate: job.followUpDate.trim(),
+		followUpTime: job.followUpTime.trim(),
+		reminderNote: job.reminderNote.trim(),
+		reminderEnabled: job.reminderEnabled && Boolean(job.followUpDate.trim()),
+		reminderDone: job.reminderEnabled && job.followUpDate.trim()
+			? job.reminderDone
+			: false,
 		notes: job.notes.trim(),
 	};
 }
@@ -153,23 +192,47 @@ function createJobId() {
 	return `job-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-function isStoredJob(value: unknown): value is StoredJob {
+function toStoredJob(value: unknown): StoredJob | null {
 	if (!value || typeof value !== "object") {
-		return false;
+		return null;
 	}
 
 	const job = value as Partial<StoredJob>;
 
-	return (
-		typeof job.id === "string" &&
-		typeof job.title === "string" &&
-		typeof job.company === "string" &&
-		typeof job.location === "string" &&
-		typeof job.url === "string" &&
-		typeof job.platform === "string" &&
-		typeof job.status === "string" &&
-		typeof job.notes === "string" &&
-		typeof job.createdAt === "string" &&
-		typeof job.updatedAt === "string"
-	);
+	if (
+		typeof job.id !== "string" ||
+		typeof job.title !== "string" ||
+		typeof job.company !== "string" ||
+		typeof job.location !== "string" ||
+		typeof job.url !== "string" ||
+		typeof job.platform !== "string" ||
+		typeof job.status !== "string" ||
+		typeof job.notes !== "string" ||
+		typeof job.createdAt !== "string" ||
+		typeof job.updatedAt !== "string"
+	) {
+		return null;
+	}
+
+	return {
+		id: job.id,
+		title: job.title,
+		company: job.company,
+		location: job.location,
+		url: job.url,
+		platform: job.platform,
+		salary: typeof job.salary === "string" ? job.salary : "",
+		status: job.status as StoredJob["status"],
+		deadline: typeof job.deadline === "string" ? job.deadline : "",
+		followUpDate: typeof job.followUpDate === "string" ? job.followUpDate : "",
+		followUpTime: typeof job.followUpTime === "string" ? job.followUpTime : "",
+		reminderNote: typeof job.reminderNote === "string" ? job.reminderNote : "",
+		reminderEnabled:
+			typeof job.reminderEnabled === "boolean" ? job.reminderEnabled : false,
+		reminderDone:
+			typeof job.reminderDone === "boolean" ? job.reminderDone : false,
+		notes: job.notes,
+		createdAt: job.createdAt,
+		updatedAt: job.updatedAt,
+	};
 }

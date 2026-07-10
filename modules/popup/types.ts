@@ -18,6 +18,11 @@ export type JobForm = {
 	salary: string;
 	status: JobStatus;
 	deadline: string;
+	followUpDate: string;
+	followUpTime: string;
+	reminderNote: string;
+	reminderEnabled: boolean;
+	reminderDone: boolean;
 	notes: string;
 };
 

@@ -11,5 +11,22 @@ export const jobFormSchema = z.object({
 	salary: z.string(),
 	status: z.enum(jobStatuses),
 	deadline: z.string(),
+	followUpDate: z.string(),
+	followUpTime: z.string(),
+	reminderNote: z.string(),
+	reminderEnabled: z.boolean(),
+	reminderDone: z.boolean(),
 	notes: z.string(),
+}).superRefine((value, context) => {
+	if (!value.reminderEnabled) {
+		return;
+	}
+
+	if (!value.followUpDate.trim()) {
+		context.addIssue({
+			code: z.ZodIssueCode.custom,
+			path: ["followUpDate"],
+			message: "Follow-up date is required when reminder is enabled.",
+		});
+	}
 });

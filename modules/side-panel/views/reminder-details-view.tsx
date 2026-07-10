@@ -6,18 +6,18 @@ import type { Reminder } from "@/modules/side-panel/types";
 
 type ReminderDetailsViewProps = {
 	reminder: Reminder | null;
-	isCompleted: boolean;
 	isDarkMode: boolean;
 	onBack: () => void;
 	onMarkDone: (reminderId: string) => void;
+	onRemoveReminder: (reminderId: string) => void;
 };
 
 export function ReminderDetailsView({
 	reminder,
-	isCompleted,
 	isDarkMode,
 	onBack,
 	onMarkDone,
+	onRemoveReminder,
 }: ReminderDetailsViewProps) {
 	if (!reminder) {
 		return (
@@ -54,20 +54,28 @@ export function ReminderDetailsView({
 					<Button
 						type="button"
 						className="mt-4 h-9 w-full rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
-						disabled={isCompleted}
+						disabled={reminder.isCompleted}
 						onClick={() => onMarkDone(reminder.id)}
 					>
-						{isCompleted ? "Completed" : "Mark Done"}
+						{reminder.isCompleted ? "Completed" : "Mark Done"}
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						className="mt-2 h-9 w-full rounded-md text-xs font-semibold"
+						onClick={() => onRemoveReminder(reminder.id)}
+					>
+						Remove Reminder
 					</Button>
 				</section>
 
 				<section className="rounded-[14px] border border-border bg-card p-3">
 					<DetailLine label="Company" value={reminder.company} isDarkMode={isDarkMode} />
 					<DetailLine label="Role" value={reminder.title} isDarkMode={isDarkMode} />
-					<DetailLine label="When" value={reminder.time} isDarkMode={isDarkMode} />
+					<DetailLine label="When" value={reminder.timeLabel} isDarkMode={isDarkMode} />
 					<DetailLine
 						label="Status"
-						value={isCompleted ? "Completed" : "Open"}
+						value={reminder.isCompleted ? "Completed" : "Open"}
 						isDarkMode={isDarkMode}
 					/>
 				</section>

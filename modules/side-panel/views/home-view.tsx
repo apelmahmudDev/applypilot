@@ -38,7 +38,6 @@ type HomeViewProps = {
 	isDarkMode: boolean;
 	displayedJobs: RecentJob[];
 	reminders: Reminder[];
-	completedReminderIds: string[];
 	detectedJob: SidePanelJobForm | null;
 	isDetecting: boolean;
 	detectionError: string;
@@ -65,7 +64,6 @@ export function HomeView({
 	isDarkMode,
 	displayedJobs,
 	reminders,
-	completedReminderIds,
 	detectedJob,
 	isDetecting,
 	detectionError,
@@ -350,13 +348,17 @@ export function HomeView({
 						<ReminderManagementRow
 							key={reminder.id}
 							reminder={reminder}
-							isCompleted={completedReminderIds.includes(reminder.id)}
 							isDarkMode={isDarkMode}
 							showActions
 							onOpen={() => onOpenReminder(reminder.id)}
 							onMarkDone={() => onMarkReminderDone(reminder.id)}
 						/>
 					))}
+					{!reminders.length && (
+						<p className="px-4 py-5 text-sm text-muted-foreground">
+							No upcoming reminders yet. Add one from a job form or edit screen.
+						</p>
+					)}
 				</section>
 
 				<button

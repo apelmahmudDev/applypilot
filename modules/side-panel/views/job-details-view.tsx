@@ -6,7 +6,12 @@ import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
 import { DetailLine } from "@/modules/side-panel/components/detail-line";
 import { ViewHeader } from "@/modules/side-panel/components/view-header";
-import { formatDate, formatDisplayUrl } from "@/modules/side-panel/utils/format";
+import {
+	formatDate,
+	formatDateSlash,
+	formatDisplayUrl,
+	formatTime,
+} from "@/modules/side-panel/utils/format";
 import { getBrand, mapJobStatus } from "@/modules/side-panel/utils/job-mappers";
 
 type JobDetailsViewProps = {
@@ -16,6 +21,8 @@ type JobDetailsViewProps = {
 	onEdit: (job: StoredJob) => void;
 	onStatusChange: (job: StoredJob) => void;
 	onDelete: (job: StoredJob) => void;
+	onUpdateReminder: (job: StoredJob) => void;
+	onRemoveReminder: (reminderId: string) => void;
 };
 
 export function JobDetailsView({
@@ -25,6 +32,8 @@ export function JobDetailsView({
 	onEdit,
 	onStatusChange,
 	onDelete,
+	onUpdateReminder,
+	onRemoveReminder,
 }: JobDetailsViewProps) {
 	if (!job) {
 		return (
@@ -121,6 +130,63 @@ export function JobDetailsView({
 							<ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
 						</a>
 					)}
+				</section>
+
+				<section className="rounded-[14px] border border-border bg-card p-3">
+					<h3 className="text-sm font-semibold text-foreground">Reminder</h3>
+					<DetailLine
+						label="Status"
+						value={
+							job.reminderEnabled && job.followUpDate
+								? job.reminderDone
+									? "Completed"
+									: "Active"
+								: "Not set"
+						}
+						isDarkMode={isDarkMode}
+					/>
+					<DetailLine
+						label="Date"
+						value={
+							job.followUpDate ? formatDateSlash(job.followUpDate) : "Not set"
+						}
+						isDarkMode={isDarkMode}
+					/>
+					<DetailLine
+						label="Time"
+						value={job.followUpTime ? formatTime(job.followUpTime) : "Not set"}
+						isDarkMode={isDarkMode}
+					/>
+					<DetailLine
+						label="Note"
+						value={job.reminderNote || "No reminder note"}
+						isDarkMode={isDarkMode}
+					/>
+					<div className="mt-3 grid grid-cols-2 gap-2">
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								"border-input bg-card text-foreground hover:bg-muted/60",
+							)}
+							onClick={() => onUpdateReminder(job)}
+						>
+							Update Reminder
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
+							)}
+							disabled={!job.reminderEnabled && !job.followUpDate}
+							onClick={() => onRemoveReminder(job.id)}
+						>
+							Remove Reminder
+						</Button>
+					</div>
 				</section>
 
 				<section className="rounded-[14px] border border-border bg-card p-3">

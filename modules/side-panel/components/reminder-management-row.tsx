@@ -6,7 +6,6 @@ import type { Reminder } from "@/modules/side-panel/types";
 
 type ReminderManagementRowProps = {
 	reminder: Reminder;
-	isCompleted: boolean;
 	isDarkMode: boolean;
 	showActions?: boolean;
 	onOpen: () => void;
@@ -15,13 +14,22 @@ type ReminderManagementRowProps = {
 
 export function ReminderManagementRow({
 	reminder,
-	isCompleted,
 	isDarkMode,
 	showActions = false,
 	onOpen,
 	onMarkDone,
 }: ReminderManagementRowProps) {
 	const Icon = reminder.icon;
+	const badgeClassName =
+		reminder.statusTone === "overdue"
+			? "bg-red-50 text-red-700"
+			: reminder.statusTone === "today"
+				? "bg-amber-50 text-amber-700"
+				: reminder.statusTone === "tomorrow"
+					? "bg-blue-50 text-blue-700"
+					: reminder.statusTone === "completed"
+						? "bg-emerald-50 text-emerald-700"
+						: "bg-accent text-accent-foreground";
 
 	return (
 		<div
@@ -62,10 +70,18 @@ export function ReminderManagementRow({
 					<p
 						className={cn(
 							"rounded-full px-2.5 py-1 text-[11px] font-bold",
+							badgeClassName,
+						)}
+					>
+						{reminder.statusLabel}
+					</p>
+					<p
+						className={cn(
+							"rounded-full px-2.5 py-1 text-[11px] font-bold",
 							"bg-accent text-accent-foreground",
 						)}
 					>
-						{reminder.time}
+						{reminder.timeLabel}
 					</p>
 					<Button
 						type="button"
@@ -75,13 +91,13 @@ export function ReminderManagementRow({
 							"h-7 rounded-full px-3 text-[11px] font-bold",
 							"border-input bg-card text-foreground hover:bg-muted/60",
 						)}
-						disabled={isCompleted}
+						disabled={reminder.isCompleted}
 						onClick={(event) => {
 							event.stopPropagation();
 							onMarkDone();
 						}}
 					>
-						{isCompleted ? "Done" : "Mark Done"}
+						{reminder.isCompleted ? "Done" : "Mark Done"}
 					</Button>
 				</div>
 			</div>

@@ -6,12 +6,13 @@ import {
 	deleteJobFromStorage,
 	getStoredJobs,
 	saveJobToStorage,
+	updateJobInStorage,
 	type StoredJob,
 } from "@/lib/jobs/storage";
 import { cn } from "@/lib/utils";
 import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
 import { useSidePanelDetection } from "@/modules/side-panel/hooks/use-side-panel-detection";
-import { emptyJobForm, reminders } from "@/modules/side-panel/mock-data";
+import { emptyJobForm } from "@/modules/side-panel/mock-data";
 import type {
 	ApplicationFilter,
 	DetailsBackView,
@@ -26,6 +27,11 @@ import {
 	toSidePanelJobForm,
 	toStoredJobForm,
 } from "@/modules/side-panel/utils/job-mappers";
+import {
+	compareReminders,
+	isReminderUpcoming,
+	mapStoredJobToReminder,
+} from "@/modules/side-panel/utils/reminders";
 import { AllApplicationsView } from "@/modules/side-panel/views/all-applications-view";
 import { AllRemindersView } from "@/modules/side-panel/views/all-reminders-view";
 import { HomeView } from "@/modules/side-panel/views/home-view";
@@ -47,12 +53,12 @@ export function SidePanel() {
 		useState<ApplicationFilter>("All");
 	const [applicationSort, setApplicationSort] = useState("latest");
 	const [reminderFilter, setReminderFilter] = useState<ReminderFilter>("Today");
-	const [completedReminderIds, setCompletedReminderIds] = useState<string[]>([]);
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveError, setSaveError] = useState("");
 	const [saveMessage, setSaveMessage] = useState("");
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
+		jobId?: string;
 		job: SidePanelJobForm;
 	} | null>(null);
 	const {
@@ -100,10 +106,6 @@ export function SidePanel() {
 		() => storedJobs.find((job) => job.id === selectedJobId) ?? null,
 		[selectedJobId, storedJobs],
 	);
-	const selectedReminder = useMemo(
-		() => reminders.find((reminder) => reminder.id === selectedReminderId) ?? null,
-		[selectedReminderId],
-	);
 	const allApplicationJobs = useMemo(() => {
 		const search = applicationSearch.trim().toLowerCase();
 
@@ -138,18 +140,57 @@ export function SidePanel() {
 				);
 			});
 	}, [applicationFilter, applicationSearch, applicationSort, storedJobs]);
+	const reminders = useMemo(
+		() =>
+			storedJobs
+				.map(mapStoredJobToReminder)
+				.filter((reminder) => reminder !== null)
+				.sort(compareReminders),
+		[storedJobs],
+	);
+	const completedReminders = useMemo(
+		() =>
+			storedJobs
+				.filter((job) => job.reminderEnabled && job.reminderDone && job.followUpDate)
+				.map((job) => {
+					const baseReminder = mapStoredJobToReminder({
+						...job,
+						reminderDone: false,
+					});
+
+					if (!baseReminder) {
+						return null;
+					}
+
+					return {
+						...baseReminder,
+						isCompleted: true,
+						statusLabel: "Completed",
+						statusTone: "completed" as const,
+					};
+				})
+				.filter((reminder) => reminder !== null)
+				.sort(compareReminders),
+		[storedJobs],
+	);
 	const visibleReminders = useMemo(() => {
-		return reminders.filter((reminder) => {
-			const isCompleted = completedReminderIds.includes(reminder.id);
+		if (reminderFilter === "Completed") {
+			return completedReminders;
+		}
 
-			if (reminderFilter === "Completed") return isCompleted;
-			if (reminderFilter === "Upcoming") {
-				return !isCompleted && !reminder.time.toLowerCase().startsWith("today");
-			}
+		if (reminderFilter === "Upcoming") {
+			return reminders.filter(isReminderUpcoming);
+		}
 
-			return !isCompleted && reminder.time.toLowerCase().startsWith("today");
-		});
-	}, [completedReminderIds, reminderFilter]);
+		return reminders.filter((reminder) => !isReminderUpcoming(reminder));
+	}, [completedReminders, reminderFilter, reminders]);
+	const selectedReminder = useMemo(
+		() =>
+			[...reminders, ...completedReminders].find(
+				(reminder) => reminder.id === selectedReminderId,
+			) ?? null,
+		[completedReminders, reminders, selectedReminderId],
+	);
 
 	const savedCount = storedJobs.length;
 	const appliedCount = storedJobs.filter((job) => job.status === "Applied").length;
@@ -166,7 +207,9 @@ export function SidePanel() {
 			const result =
 				activeForm?.mode === "add"
 					? await createJobInStorage(toStoredJobForm(job))
-					: await saveJobToStorage(toStoredJobForm(job));
+					: activeForm?.jobId
+						? await updateJobInStorage(activeForm.jobId, toStoredJobForm(job))
+						: await saveJobToStorage(toStoredJobForm(job));
 			setStoredJobs((currentJobs) => {
 				const withoutSavedJob = currentJobs.filter(
 					(currentJob) => currentJob.id !== result.job.id,
@@ -189,16 +232,9 @@ export function SidePanel() {
 
 	const handleCycleJobStatus = async (job: StoredJob) => {
 		try {
-			const result = await saveJobToStorage({
-				title: job.title,
-				company: job.company,
-				location: job.location,
-				url: job.url,
-				platform: job.platform,
-				salary: job.salary,
+			const result = await updateJobInStorage(job.id, {
+				...job,
 				status: nextStatusByStatus[job.status],
-				deadline: job.deadline,
-				notes: job.notes,
 			});
 
 			setStoredJobs((currentJobs) =>
@@ -254,12 +290,57 @@ export function SidePanel() {
 		setPanelView("reminderDetails");
 	};
 
-	const markReminderDone = (reminderId: string) => {
-		setCompletedReminderIds((currentIds) =>
-			currentIds.includes(reminderId)
-				? currentIds
-				: [...currentIds, reminderId],
-		);
+	const markReminderDone = async (reminderId: string) => {
+		const reminderJob = storedJobs.find((job) => job.id === reminderId);
+
+		if (!reminderJob) {
+			return;
+		}
+
+		try {
+			const result = await updateJobInStorage(reminderJob.id, {
+				...reminderJob,
+				reminderDone: true,
+			});
+
+			setStoredJobs((currentJobs) =>
+				currentJobs.map((currentJob) =>
+					currentJob.id === result.job.id ? result.job : currentJob,
+				),
+			);
+		} catch {
+			setSaveError("Could not mark this reminder as done. Please try again.");
+		}
+	};
+
+	const removeReminder = async (reminderId: string) => {
+		const reminderJob = storedJobs.find((job) => job.id === reminderId);
+
+		if (!reminderJob) {
+			return;
+		}
+
+		try {
+			const result = await updateJobInStorage(reminderJob.id, {
+				...reminderJob,
+				followUpDate: "",
+				followUpTime: "",
+				reminderNote: "",
+				reminderEnabled: false,
+				reminderDone: false,
+			});
+
+			setStoredJobs((currentJobs) =>
+				currentJobs.map((currentJob) =>
+					currentJob.id === result.job.id ? result.job : currentJob,
+				),
+			);
+			if (selectedReminderId === reminderId) {
+				setPanelView(detailsBackView);
+			}
+		} catch {
+			setSaveError("Could not remove this reminder. Please try again.");
+		}
 	};
 
 	const openAddJobForm = () => {
@@ -287,22 +368,30 @@ export function SidePanel() {
 						isDarkMode={isDarkMode}
 						onBack={() => setPanelView(detailsBackView)}
 						onEdit={(job) =>
-							setActiveForm({ mode: "edit", job: toSidePanelJobForm(job) })
+							setActiveForm({
+								mode: "edit",
+								jobId: job.id,
+								job: toSidePanelJobForm(job),
+							})
 						}
 						onStatusChange={handleCycleJobStatus}
 						onDelete={handleDeleteJob}
+						onUpdateReminder={(job) =>
+							setActiveForm({
+								mode: "edit",
+								jobId: job.id,
+								job: toSidePanelJobForm(job),
+							})
+						}
+						onRemoveReminder={removeReminder}
 					/>
 				) : panelView === "reminderDetails" ? (
 					<ReminderDetailsView
 						reminder={selectedReminder}
-						isCompleted={
-							selectedReminder
-								? completedReminderIds.includes(selectedReminder.id)
-								: false
-						}
 						isDarkMode={isDarkMode}
 						onBack={() => setPanelView(detailsBackView)}
 						onMarkDone={markReminderDone}
+						onRemoveReminder={removeReminder}
 					/>
 				) : panelView === "applications" ? (
 					<AllApplicationsView
@@ -322,7 +411,6 @@ export function SidePanel() {
 					<AllRemindersView
 						reminders={visibleReminders}
 						filter={reminderFilter}
-						completedReminderIds={completedReminderIds}
 						isDarkMode={isDarkMode}
 						onBack={() => setPanelView("home")}
 						onFilterChange={setReminderFilter}
@@ -338,7 +426,6 @@ export function SidePanel() {
 						isDarkMode={isDarkMode}
 						displayedJobs={displayedJobs}
 						reminders={reminders}
-						completedReminderIds={completedReminderIds}
 						detectedJob={detectedJob}
 						isDetecting={isDetecting}
 						detectionError={detectionError}

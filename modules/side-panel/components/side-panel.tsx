@@ -626,9 +626,41 @@ export function SidePanel() {
 							/>
 						))}
 						{!displayedJobs.length && (
-							<p className={cn("px-3 py-4 text-sm", isDarkMode ? "text-slate-400" : "text-slate-500")}>
-								No saved jobs yet.
-							</p>
+							<div className="px-4 py-5">
+								<div
+									className={cn(
+										"mx-auto flex max-w-[280px] flex-col items-center text-center",
+										isDarkMode ? "text-slate-300" : "text-slate-600",
+									)}
+								>
+									<div
+										className={cn(
+											"mb-3 flex size-11 items-center justify-center rounded-lg",
+											isDarkMode
+												? "bg-blue-500/15 text-blue-200"
+												: "bg-blue-50 text-blue-600",
+										)}
+									>
+										<Bookmark className="size-5" aria-hidden="true" />
+									</div>
+									<h3
+										className={cn(
+											"text-sm font-bold",
+											isDarkMode ? "text-white" : "text-slate-950",
+										)}
+									>
+										No recent jobs yet
+									</h3>
+									<p
+										className={cn(
+											"mt-1 text-xs leading-5",
+											isDarkMode ? "text-slate-400" : "text-slate-500",
+										)}
+									>
+										Jobs you save will apppear here for quick access
+									</p>
+								</div>
+							</div>
 						)}
 					</section>
 

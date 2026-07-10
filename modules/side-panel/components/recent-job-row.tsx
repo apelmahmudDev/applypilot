@@ -3,7 +3,10 @@ import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
 import type { RecentJob } from "@/modules/side-panel/types";
-import { lightStatusStyles, statusStyles } from "@/modules/side-panel/utils/styles";
+import {
+	lightStatusStyles,
+	statusStyles,
+} from "@/modules/side-panel/utils/styles";
 
 type RecentJobRowProps = {
 	job: RecentJob;
@@ -17,10 +20,7 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b px-3 py-3.5 transition last:border-b-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-blue-500/20 active:bg-blue-50/40 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
-				isDarkMode
-					? "border-slate-800/85 hover:bg-[#303032] active:bg-[#303032]"
-					: "border-slate-100 hover:bg-slate-50",
+				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b border-border px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {
@@ -30,27 +30,25 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 				}
 			}}
 		>
-			<CompanyMark brand={job.brand} />
+			<CompanyMark brand={job.brand} appearance="soft" />
 			<div className="min-w-0">
-				<h3 className={cn("truncate text-[13px] font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>{job.title}</h3>
-				<p className={cn("truncate text-xs font-medium", isDarkMode ? "text-slate-400" : "text-slate-600")}>
+				<h3 className="truncate text-[13px] font-bold leading-5 text-foreground">{job.title}</h3>
+				<p className="truncate text-xs font-medium text-muted-foreground">
 					{job.company}
-					<span className={cn("px-1.5", isDarkMode ? "text-slate-600" : "text-slate-400")} aria-hidden="true">
+					<span className="px-1.5 text-muted-foreground/80" aria-hidden="true">
 						&middot;
 					</span>
 					{job.location}
 				</p>
 			</div>
 			<div className="flex min-w-0 flex-col items-end gap-1.5 max-[390px]:hidden">
-				<p className={cn("w-full truncate text-right text-[11px] font-medium leading-4", isDarkMode ? "text-slate-400" : "text-slate-600")}>{job.date}</p>
+				<p className="w-full truncate text-right text-[11px] font-medium leading-4 text-muted-foreground">{job.date}</p>
 				<span
 					className={cn(
 						"inline-flex h-6 min-w-[54px] items-center justify-center gap-1 rounded-md border px-2 text-[10px] font-semibold",
 						isDarkMode
 							? statusStyles[job.status]
-							: job.status === "Saved"
-								? "border-slate-200 bg-slate-50 text-slate-700"
-								: lightStatusStyles[job.status],
+							: lightStatusStyles[job.status],
 					)}
 				>
 					<Bookmark className="size-2.5 fill-current" aria-hidden="true" />

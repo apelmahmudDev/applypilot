@@ -28,10 +28,7 @@ export function ReminderManagementRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"flex cursor-pointer items-start gap-3 border-b px-3 py-3 transition last:border-b-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-blue-500/20 active:bg-blue-50/40",
-				isDarkMode
-					? "border-slate-800/85 hover:bg-[#303032] active:bg-[#303032]"
-					: "border-slate-100 hover:bg-slate-50",
+				"flex cursor-pointer items-start gap-3 border-b border-border px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {
@@ -41,14 +38,14 @@ export function ReminderManagementRow({
 				}
 			}}
 		>
-			<div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", isDarkMode ? "bg-blue-500/15 text-blue-200" : "bg-blue-50 text-blue-600")}>
+			<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
 				<Icon className="size-5" aria-hidden="true" />
 			</div>
 			<div className="min-w-0 flex-1">
 				<h3
 					className={cn(
 						"truncate text-sm font-semibold",
-						isDarkMode ? "text-white" : "text-slate-950",
+						"text-foreground",
 					)}
 				>
 					{reminder.company} - {reminder.title}
@@ -56,7 +53,7 @@ export function ReminderManagementRow({
 				<p
 					className={cn(
 						"truncate text-xs",
-						isDarkMode ? "text-slate-400" : "text-slate-500",
+						"text-muted-foreground",
 					)}
 				>
 					{reminder.description}
@@ -65,7 +62,7 @@ export function ReminderManagementRow({
 					<p
 						className={cn(
 							"rounded-full px-2.5 py-1 text-[11px] font-bold",
-							isDarkMode ? "bg-blue-500/15 text-blue-200" : "bg-blue-50 text-blue-700",
+							"bg-accent text-accent-foreground",
 						)}
 					>
 						{reminder.time}
@@ -76,9 +73,7 @@ export function ReminderManagementRow({
 						size="sm"
 						className={cn(
 							"h-7 rounded-full px-3 text-[11px] font-bold",
-							isDarkMode
-								? "border-slate-600/70 bg-[#262628] text-slate-200 hover:bg-[#303032] hover:text-white"
-								: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+							"border-input bg-card text-foreground hover:bg-muted/60",
 						)}
 						disabled={isCompleted}
 						onClick={(event) => {
@@ -97,9 +92,7 @@ export function ReminderManagementRow({
 					size="icon-sm"
 					className={cn(
 						"mt-1 shrink-0",
-						isDarkMode
-							? "text-slate-400 hover:bg-[#303032] hover:text-white"
-							: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
+						"text-muted-foreground hover:bg-muted/60 hover:text-foreground",
 					)}
 					aria-label="Reminder actions"
 					title="Actions"

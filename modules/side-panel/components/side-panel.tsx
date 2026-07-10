@@ -237,18 +237,10 @@ export function SidePanel() {
 
 	return (
 		<main
-			className={cn(
-				"h-screen min-h-[640px] w-full overflow-hidden p-2 transition-colors",
-				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-slate-50 text-slate-950",
-			)}
+			className="h-screen min-h-[640px] w-full overflow-hidden bg-background p-2 text-foreground transition-colors"
 		>
 			<div
-				className={cn(
-					"flex h-full flex-col overflow-hidden rounded-xl border transition-colors",
-					isDarkMode
-						? "border-slate-700/55 bg-[#262628] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
-						: "border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.07)]",
-				)}
+			className="flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 			>
 				{activeForm ? (
 					<JobFormPanel

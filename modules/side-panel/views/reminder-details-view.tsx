@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { DetailLine } from "@/modules/side-panel/components/detail-line";
 import { FullDashboardButton } from "@/modules/side-panel/components/full-dashboard-button";
 import { ViewHeader } from "@/modules/side-panel/components/view-header";
@@ -24,7 +23,7 @@ export function ReminderDetailsView({
 		return (
 			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 				<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
-				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
+				<p className="rounded-[14px] border border-border bg-card px-3 py-4 text-sm text-muted-foreground">
 					This reminder is no longer available.
 				</p>
 			</div>
@@ -37,33 +36,16 @@ export function ReminderDetailsView({
 		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="Reminder Details" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
-				<section
-					className={cn(
-						"rounded-lg border p-4",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
+				<section className="rounded-[14px] border border-border bg-card p-4">
 					<div className="flex items-start gap-3">
-						<div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
+						<div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
 							<Icon className="size-5" aria-hidden="true" />
 						</div>
 						<div className="min-w-0 flex-1">
-							<h2
-								className={cn(
-									"text-base font-bold leading-6",
-									isDarkMode ? "text-white" : "text-slate-950",
-								)}
-							>
+							<h2 className="text-base font-bold leading-6 text-foreground">
 								{reminder.company} - {reminder.title}
 							</h2>
-							<p
-								className={cn(
-									"mt-1 text-sm font-medium",
-									isDarkMode ? "text-slate-300" : "text-slate-700",
-								)}
-							>
+							<p className="mt-1 text-sm font-medium text-muted-foreground">
 								{reminder.description}
 							</p>
 						</div>
@@ -71,7 +53,7 @@ export function ReminderDetailsView({
 
 					<Button
 						type="button"
-						className="mt-4 h-9 w-full rounded-md bg-blue-600 text-xs font-semibold text-white hover:bg-blue-500"
+						className="mt-4 h-9 w-full rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
 						disabled={isCompleted}
 						onClick={() => onMarkDone(reminder.id)}
 					>
@@ -79,14 +61,7 @@ export function ReminderDetailsView({
 					</Button>
 				</section>
 
-				<section
-					className={cn(
-						"rounded-lg border p-3",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
+				<section className="rounded-[14px] border border-border bg-card p-3">
 					<DetailLine label="Company" value={reminder.company} isDarkMode={isDarkMode} />
 					<DetailLine label="Role" value={reminder.title} isDarkMode={isDarkMode} />
 					<DetailLine label="When" value={reminder.time} isDarkMode={isDarkMode} />
@@ -97,23 +72,11 @@ export function ReminderDetailsView({
 					/>
 				</section>
 
-				<section
-					className={cn(
-						"rounded-lg border p-3",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
-					<h3 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+				<section className="rounded-[14px] border border-border bg-card p-3">
+					<h3 className="text-sm font-semibold text-foreground">
 						Reminder Note
 					</h3>
-					<p
-						className={cn(
-							"mt-2 whitespace-pre-wrap text-xs leading-5",
-							isDarkMode ? "text-slate-300" : "text-slate-600",
-						)}
-					>
+					<p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-muted-foreground">
 						{reminder.description}
 					</p>
 				</section>

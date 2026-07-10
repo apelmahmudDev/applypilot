@@ -33,7 +33,6 @@ import type {
 } from "@/modules/side-panel/types";
 import { formatDisplayUrl } from "@/modules/side-panel/utils/format";
 import { getBrand } from "@/modules/side-panel/utils/job-mappers";
-import { lightCardShadow } from "@/modules/side-panel/utils/styles";
 
 type HomeViewProps = {
 	isDarkMode: boolean;
@@ -94,17 +93,12 @@ export function HomeView({
 				<div
 					className={cn(
 						"sticky top-0 z-10 -mx-3 flex items-center gap-2 border-b px-3 py-3 backdrop-blur sm:-mx-4 sm:px-4",
-						isDarkMode
-							? "border-slate-800/80 bg-[#262628]/95"
-							: "border-slate-200/80 bg-white/95",
+						"border-border bg-background/95",
 					)}
 				>
 					<div
 						className={cn(
-							"flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border px-3 transition-colors focus-within:ring-3 focus-within:ring-blue-500/20",
-							isDarkMode
-								? "border-slate-700/70 bg-[#202020] text-slate-400"
-								: "border-slate-200 bg-slate-50 text-slate-500",
+							"flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[14px] border border-input bg-card px-3 text-muted-foreground transition-colors focus-within:ring-3 focus-within:ring-primary/20",
 						)}
 					>
 						<Search className="size-4 shrink-0" aria-hidden="true" />
@@ -114,9 +108,7 @@ export function HomeView({
 						<kbd
 							className={cn(
 								"hidden rounded-md border px-1.5 py-0.5 text-[10px] font-semibold min-[380px]:inline",
-								isDarkMode
-									? "border-slate-700 bg-[#262628] text-slate-500"
-									: "border-slate-200 bg-white text-slate-500",
+								"border-[#D7DCE5] bg-white text-[#94A3B8]",
 							)}
 						>
 							Ctrl K
@@ -125,10 +117,8 @@ export function HomeView({
 					<button
 						type="button"
 						className={cn(
-							"flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/25 active:translate-y-px",
-							isDarkMode
-								? "bg-blue-500 text-white hover:bg-blue-400"
-								: "bg-blue-600 text-white shadow-[0_6px_14px_rgba(37,99,235,0.22)] hover:bg-blue-700",
+							"flex h-10 shrink-0 items-center gap-1.5 rounded-[14px] px-4 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[#4F46E5]/25 active:translate-y-px",
+							"bg-primary text-primary-foreground hover:brightness-95",
 						)}
 						aria-label="Add job"
 						title="Add job"
@@ -141,19 +131,13 @@ export function HomeView({
 
 				<section className="space-y-2.5">
 					<div className="flex items-center gap-3 px-1">
-						<Sparkles className={cn("size-4", isDarkMode ? "text-cyan-300" : "text-blue-600")} aria-hidden="true" />
-						<h2 className={cn("text-sm font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
+						<Sparkles className="size-4 text-primary" aria-hidden="true" />
+						<h2 className="text-sm font-bold text-foreground">
 							Detected on this page
 						</h2>
 					</div>
 					<div
-						className={cn(
-							"rounded-xl border p-4 transition-colors",
-							isDarkMode
-								? "border-slate-700/75 bg-[#262628] shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-								: "border-slate-200/80 bg-white",
-							!isDarkMode && lightCardShadow,
-						)}
+					className="rounded-[14px] border border-border bg-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 					>
 						{isDetecting ? (
 							<DetectionMessage
@@ -169,9 +153,7 @@ export function HomeView({
 									<p
 										className={cn(
 											"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
-											isDarkMode
-												? "border-amber-400/20 bg-amber-500/10 text-amber-200"
-												: "border-amber-100 bg-amber-50 text-amber-700",
+											"border-[#FFF7E6] bg-[#FFF7E6] text-[#C66A00]",
 										)}
 									>
 										Review the detected details before saving.
@@ -181,9 +163,7 @@ export function HomeView({
 									<p
 										className={cn(
 											"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
-											isDarkMode
-												? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-												: "border-emerald-100 bg-emerald-50 text-emerald-700",
+											"border-[#ECFDF3] bg-[#ECFDF3] text-[#15803D]",
 										)}
 									>
 										{saveMessage}
@@ -193,24 +173,22 @@ export function HomeView({
 									<p
 										className={cn(
 											"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
-											isDarkMode
-												? "border-red-400/20 bg-red-500/10 text-red-200"
-												: "border-red-100 bg-red-50 text-red-700",
+											"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626]",
 										)}
 									>
 										{saveError}
 									</p>
 								)}
 								<div className="flex gap-3">
-									<CompanyMark brand={getBrand(detectedJob.company, detectedJob.platform)} size="lg" />
+									<CompanyMark brand={getBrand(detectedJob.company, detectedJob.platform)} size="lg" appearance="soft" />
 									<div className="min-w-0 flex-1">
-										<h3 className={cn("truncate text-[15px] font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>
+										<h3 className="truncate text-[15px] font-bold leading-5 text-foreground">
 											{detectedJob.title || "Untitled role"}
 										</h3>
-										<p className={cn("mt-1 truncate text-sm font-medium", isDarkMode ? "text-slate-300" : "text-slate-700")}>
+										<p className="mt-1 truncate text-sm font-medium text-muted-foreground">
 											{detectedJob.company || "Unknown company"}
 										</p>
-										<p className={cn("mt-2 flex items-center gap-1.5 text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
+										<p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
 											<MapPin className="size-3.5 shrink-0" aria-hidden="true" />
 											<span className="truncate">
 												{detectedJob.location || "Location not found"}
@@ -223,9 +201,7 @@ export function HomeView({
 												rel="noreferrer"
 												className={cn(
 													"mt-2 flex min-w-0 items-center gap-2 text-xs font-medium",
-													isDarkMode
-														? "text-blue-300 hover:text-blue-200"
-														: "text-blue-600 hover:text-blue-700",
+													"text-primary hover:opacity-90",
 												)}
 											>
 												<Link className="size-3.5 shrink-0" aria-hidden="true" />
@@ -241,10 +217,8 @@ export function HomeView({
 										type="button"
 										variant="outline"
 										className={cn(
-											"h-10 rounded-lg text-sm font-semibold",
-											isDarkMode
-												? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
-												: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+											"h-10 rounded-[14px] text-sm font-semibold",
+											"border-input bg-card text-foreground hover:bg-muted/60",
 										)}
 										onClick={onEditDetectedJob}
 									>
@@ -253,7 +227,10 @@ export function HomeView({
 									</Button>
 									<Button
 										type="button"
-										className="h-10 rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(37,99,235,0.24)] hover:bg-blue-700 disabled:shadow-none"
+										className={cn(
+											"h-10 rounded-[14px] text-sm font-semibold disabled:opacity-60",
+											"bg-primary text-primary-foreground hover:brightness-95",
+										)}
 										disabled={isSaving}
 										onClick={onSaveDetectedJob}
 									>
@@ -278,10 +255,8 @@ export function HomeView({
 										type="button"
 										variant="outline"
 										className={cn(
-											"h-10 rounded-lg text-sm font-semibold",
-											isDarkMode
-												? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
-												: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+											"h-10 rounded-[14px] text-sm font-semibold",
+											"border-input bg-card text-foreground hover:bg-muted/60",
 										)}
 										onClick={onRetryDetection}
 									>
@@ -290,7 +265,7 @@ export function HomeView({
 									</Button>
 									<Button
 										type="button"
-										className="h-10 rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(37,99,235,0.24)] hover:bg-blue-700"
+										className="h-10 rounded-[14px] bg-primary text-sm font-semibold text-primary-foreground hover:brightness-95"
 										onClick={onAddJob}
 									>
 										<PlusCircle className="size-4" aria-hidden="true" />
@@ -303,13 +278,7 @@ export function HomeView({
 				</section>
 
 				<section
-					className={cn(
-						"grid grid-cols-3 rounded-xl border py-3 transition-colors",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200/80 bg-white",
-						!isDarkMode && lightCardShadow,
-					)}
+					className="grid grid-cols-3 rounded-[14px] border border-border bg-card py-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 				>
 					<StatItem icon={Bookmark} value={String(savedCount)} label="Saved" isDarkMode={isDarkMode} />
 					<StatItem icon={CheckCircle2} value={String(appliedCount)} label="Applied" bordered isDarkMode={isDarkMode} />
@@ -322,13 +291,7 @@ export function HomeView({
 					onViewAll={onOpenApplications}
 				/>
 				<section
-					className={cn(
-						"overflow-hidden rounded-xl border transition-colors",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200/80 bg-white",
-						!isDarkMode && lightCardShadow,
-					)}
+					className="overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 				>
 					{displayedJobs.map((job) => (
 						<RecentJobRow
@@ -343,15 +306,13 @@ export function HomeView({
 							<div
 								className={cn(
 									"mx-auto flex max-w-[280px] flex-col items-center text-center",
-									isDarkMode ? "text-slate-300" : "text-slate-600",
+									"text-muted-foreground",
 								)}
 							>
 								<div
 									className={cn(
 										"mb-3 flex size-11 items-center justify-center rounded-lg",
-										isDarkMode
-											? "bg-blue-500/15 text-blue-200"
-											: "bg-blue-50 text-blue-600",
+										"bg-accent text-accent-foreground",
 									)}
 								>
 									<Bookmark className="size-5" aria-hidden="true" />
@@ -359,7 +320,7 @@ export function HomeView({
 								<h3
 									className={cn(
 										"text-sm font-bold",
-										isDarkMode ? "text-white" : "text-slate-950",
+										"text-foreground",
 									)}
 								>
 									No recent jobs yet
@@ -367,7 +328,7 @@ export function HomeView({
 								<p
 									className={cn(
 										"mt-1 text-xs leading-5",
-										isDarkMode ? "text-slate-400" : "text-slate-500",
+										"text-muted-foreground",
 									)}
 								>
 									Jobs you save will apppear here for quick access
@@ -383,13 +344,7 @@ export function HomeView({
 					onViewAll={onOpenReminders}
 				/>
 				<section
-					className={cn(
-						"overflow-hidden rounded-xl border transition-colors",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200/80 bg-white",
-						!isDarkMode && lightCardShadow,
-					)}
+					className="overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 				>
 					{reminders.map((reminder) => (
 						<ReminderManagementRow
@@ -406,39 +361,33 @@ export function HomeView({
 
 				<button
 					type="button"
-					className={cn(
-						"flex w-full items-center gap-3 rounded-xl border p-3 text-left transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/20 active:translate-y-px",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628] hover:bg-[#303032]"
-							: "border-slate-200/80 bg-white hover:bg-slate-50",
-						!isDarkMode && lightCardShadow,
-					)}
+					className="flex w-full items-center gap-3 rounded-[14px] border border-border bg-card p-3 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/20 active:translate-y-px"
 					onClick={openDashboard}
 				>
-					<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
+					<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
 						<Grid2X2 className="size-5" aria-hidden="true" />
 					</div>
 					<div className="min-w-0 flex-1">
-						<h2 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+						<h2 className="truncate text-sm font-semibold text-foreground">
 							Open Full Dashboard
 						</h2>
-						<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
+						<p className="truncate text-xs text-muted-foreground">
 							View analytics, export data, and more
 						</p>
 					</div>
-					<ChevronRight className={cn("size-4", isDarkMode ? "text-slate-400" : "text-slate-500")} aria-hidden="true" />
+					<ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
 				</button>
 			</div>
 
 			<footer
 				className={cn(
 					"sticky bottom-0 z-10 flex shrink-0 items-center justify-between border-t px-4 py-3 backdrop-blur",
-					isDarkMode ? "border-slate-800/80 bg-[#262628]/95" : "border-slate-200/80 bg-white/95",
+					"border-border bg-background/95",
 				)}
 			>
 				<div className="flex min-w-0 items-center gap-3">
-					<CircleUserRound className="size-8 shrink-0 text-indigo-300" aria-hidden="true" />
-					<span className={cn("truncate text-sm font-medium", isDarkMode ? "text-slate-200" : "text-slate-700")}>
+					<CircleUserRound className="size-8 shrink-0 text-primary" aria-hidden="true" />
+					<span className="truncate text-sm font-medium text-muted-foreground">
 						Apel Mahmud
 					</span>
 				</div>
@@ -446,9 +395,7 @@ export function HomeView({
 					type="button"
 					className={cn(
 						"flex size-10 items-center justify-center rounded-lg border transition",
-						isDarkMode
-							? "border-slate-700 bg-[#262628] text-slate-300 hover:bg-[#303032] hover:text-white"
-							: "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-950",
+						"border-input bg-card text-foreground hover:bg-muted/60",
 					)}
 					aria-label="Open settings"
 					title="Settings"

@@ -45,8 +45,7 @@ const statuses: SidePanelJobStatus[] = [
 	"Offer",
 ];
 
-const inputBase =
-	"h-9 rounded-md text-sm font-medium shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+const inputBase = "h-9 rounded-md text-sm font-medium shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
 export function JobFormPanel({
 	mode,
@@ -87,23 +86,18 @@ export function JobFormPanel({
 	return (
 		<div className="flex min-h-0 flex-1 px-4 pb-4">
 			<section
-				className={cn(
-					"flex min-h-0 flex-1 flex-col rounded-lg border shadow-[0_16px_40px_rgba(15,23,42,0.12)]",
-					isDarkMode
-						? "border-slate-700/70 bg-[#262628]"
-						: "border-slate-200 bg-white",
-				)}
+			className="flex min-h-0 flex-1 flex-col rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
 			>
 				<header
 					className={cn(
 						"flex shrink-0 items-center justify-between border-b px-4 py-4",
-						isDarkMode ? "border-slate-800" : "border-slate-100",
+						"border-[#E5E7EB]",
 					)}
 				>
 					<h2
 						className={cn(
 							"text-xl font-bold",
-							isDarkMode ? "text-white" : "text-slate-950",
+							"text-foreground",
 						)}
 					>
 						{mode === "add" ? "Add New Job" : "Edit Job"}
@@ -113,9 +107,7 @@ export function JobFormPanel({
 						variant="ghost"
 						size="icon-sm"
 						className={cn(
-							isDarkMode
-								? "text-slate-300 hover:bg-[#303032] hover:text-white"
-								: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+							"text-muted-foreground hover:bg-muted/60 hover:text-foreground",
 						)}
 						aria-label="Close job form"
 						title="Close"
@@ -242,9 +234,7 @@ export function JobFormPanel({
 							<div
 								className={cn(
 									"flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border px-2 py-1.5",
-									isDarkMode
-										? "border-slate-700 bg-[#262628]"
-										: "border-slate-200 bg-white",
+									"border-input bg-card text-foreground placeholder:text-muted-foreground",
 								)}
 							>
 								{job.tags.map((tag) => (
@@ -253,9 +243,7 @@ export function JobFormPanel({
 										type="button"
 										className={cn(
 											"rounded-md px-2 py-1 text-xs font-semibold",
-											isDarkMode
-												? "bg-indigo-500/15 text-indigo-200"
-												: "bg-blue-50 text-blue-700",
+									"bg-accent text-accent-foreground",
 										)}
 										onClick={() => removeTag(tag)}
 									>
@@ -267,9 +255,7 @@ export function JobFormPanel({
 									placeholder={job.tags.length ? "" : "React, Next.js"}
 									className={cn(
 										"h-7 min-w-20 flex-1 border-0 bg-transparent px-1 py-0 text-sm font-medium shadow-none outline-none focus-visible:ring-0",
-										isDarkMode
-											? "text-slate-100 placeholder:text-slate-500"
-											: "text-slate-950 placeholder:text-slate-400",
+										"text-[#111827] placeholder:text-[#94A3B8]",
 									)}
 									onChange={(event) => setTagInput(event.target.value)}
 									onBlur={addTag}
@@ -288,9 +274,7 @@ export function JobFormPanel({
 								rows={4}
 								className={cn(
 									"min-h-24 resize-none rounded-md text-sm font-medium",
-									isDarkMode
-										? "border-slate-700 bg-[#262628] text-slate-100 placeholder:text-slate-500"
-										: "border-slate-200 bg-white text-slate-950 placeholder:text-slate-400",
+									"border-input bg-card text-foreground placeholder:text-muted-foreground",
 								)}
 								placeholder="Great role for frontend development using modern technologies."
 								onChange={(event) => updateField("notes", event.target.value)}
@@ -301,9 +285,7 @@ export function JobFormPanel({
 					<div
 						className={cn(
 							"grid shrink-0 grid-cols-2 gap-3 border-t px-4 py-4",
-							isDarkMode
-								? "border-slate-800 bg-[#202020]"
-								: "border-slate-100 bg-white",
+							"border-[#E5E7EB] bg-white",
 						)}
 					>
 						<Button
@@ -311,9 +293,7 @@ export function JobFormPanel({
 							variant="outline"
 							className={cn(
 								"h-10 rounded-md text-sm font-bold",
-								isDarkMode
-									? "border-slate-700 bg-[#262628] text-slate-100 hover:bg-[#303032]"
-									: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+								"border-input bg-card text-foreground hover:bg-muted/60",
 							)}
 							onClick={onCancel}
 						>
@@ -321,7 +301,7 @@ export function JobFormPanel({
 						</Button>
 						<Button
 							type="submit"
-							className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_10px_24px_rgba(37,99,235,0.28)] hover:bg-blue-500"
+						className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground hover:brightness-95"
 						>
 							<Save className="size-4" aria-hidden="true" />
 							{mode === "add" ? "Save Job" : "Update Job"}
@@ -352,7 +332,7 @@ function FieldRow({
 			<FieldLabel
 				className={cn(
 					"block pt-2 text-xs font-bold leading-4",
-					isDarkMode ? "text-slate-300" : "text-slate-700",
+					"text-muted-foreground",
 				)}
 			>
 				{label}
@@ -360,7 +340,7 @@ function FieldRow({
 					<span
 						className={cn(
 							"block text-[10px] font-semibold",
-							isDarkMode ? "text-slate-500" : "text-slate-400",
+							"text-muted-foreground/80",
 						)}
 					>
 						({hint})
@@ -386,9 +366,7 @@ function TextInput({
 			value={value}
 			className={cn(
 				inputBase,
-				isDarkMode
-					? "border-slate-700 bg-[#262628] text-slate-100 placeholder:text-slate-500"
-					: "border-slate-200 bg-white text-slate-950 placeholder:text-slate-400",
+				"border-input bg-card text-foreground placeholder:text-muted-foreground",
 			)}
 			onChange={(event) => onChange(event.target.value)}
 			{...props}
@@ -413,9 +391,7 @@ function SelectInput({
 				className={cn(
 					inputBase,
 					"w-full",
-					isDarkMode
-						? "border-slate-700 bg-[#262628] text-slate-100"
-						: "border-slate-200 bg-white text-slate-950",
+					"border-input bg-card text-foreground placeholder:text-muted-foreground",
 				)}
 			>
 				<SelectValue />
@@ -451,21 +427,13 @@ function DateInput({
 					className={cn(
 						inputBase,
 						"w-full justify-between px-3 font-medium",
-						isDarkMode
-							? "border-slate-700 bg-[#262628] text-slate-100"
-							: "border-slate-200 bg-white text-slate-950",
+					"border-input bg-card text-foreground placeholder:text-muted-foreground",
 					)}
 				>
-					<span className={cn(!value && "text-slate-400")}>
+					<span className={value ? "text-foreground" : "text-muted-foreground/80"}>
 						{value ? formatDateLabel(value) : "Select date"}
 					</span>
-					<CalendarDays
-						className={cn(
-							"size-4",
-							isDarkMode ? "text-slate-500" : "text-slate-400",
-						)}
-						aria-hidden="true"
-					/>
+					<CalendarDays className="size-4 text-muted-foreground/80" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent align="end" className="w-auto p-0">

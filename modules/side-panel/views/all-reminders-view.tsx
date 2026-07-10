@@ -38,12 +38,8 @@ export function AllRemindersView({
 							className={cn(
 								"rounded-md border px-2 py-2 text-xs font-semibold transition",
 								filter === item
-									? isDarkMode
-										? "border-indigo-400/30 bg-indigo-500/20 text-indigo-100"
-										: "border-blue-100 bg-blue-50 text-blue-700"
-									: isDarkMode
-										? "border-slate-700 bg-[#262628] text-slate-400 hover:text-slate-200"
-										: "border-slate-200 bg-white text-slate-500 hover:text-slate-900",
+									? "border-accent bg-accent text-accent-foreground"
+									: "border-input bg-card text-muted-foreground hover:text-foreground",
 							)}
 							onClick={() => onFilterChange(item)}
 						>
@@ -54,10 +50,7 @@ export function AllRemindersView({
 
 				<section
 					className={cn(
-						"overflow-hidden rounded-lg border",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
+						"overflow-hidden rounded-[14px] border border-border bg-card",
 					)}
 				>
 					{reminders.map((reminder) => (
@@ -71,7 +64,7 @@ export function AllRemindersView({
 						/>
 					))}
 					{!reminders.length && (
-						<p className={cn("px-3 py-4 text-sm", isDarkMode ? "text-slate-400" : "text-slate-500")}>
+						<p className="px-3 py-4 text-sm text-muted-foreground">
 							No reminders in this view.
 						</p>
 					)}

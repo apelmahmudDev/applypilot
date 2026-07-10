@@ -1,7 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 type ViewHeaderProps = {
 	title: string;
@@ -16,19 +15,14 @@ export function ViewHeader({ title, isDarkMode, onBack }: ViewHeaderProps) {
 				type="button"
 				variant="ghost"
 				size="icon-sm"
-				className={cn(
-					"-ml-1",
-					isDarkMode
-						? "text-slate-300 hover:bg-[#303032] hover:text-white"
-						: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
-				)}
+				className="-ml-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
 				aria-label="Back"
 				title="Back"
 				onClick={onBack}
 			>
 				<ArrowLeft className="size-4" aria-hidden="true" />
 			</Button>
-			<h2 className={cn("text-base font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
+			<h2 className="text-base font-bold text-foreground">
 				{title}
 			</h2>
 		</div>

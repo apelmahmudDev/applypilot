@@ -7,11 +7,13 @@ import { brandStyles } from "@/modules/side-panel/utils/styles";
 type CompanyMarkProps = {
 	brand: RecentJob["brand"];
 	size?: "sm" | "lg";
+	appearance?: "default" | "soft";
 };
 
-export function CompanyMark({ brand, size = "sm" }: CompanyMarkProps) {
+export function CompanyMark({ brand, size = "sm", appearance = "default" }: CompanyMarkProps) {
 	const sizeClass = size === "lg" ? "size-[72px] rounded-lg text-4xl" : "size-9 rounded-md text-xl";
 	const iconClass = size === "lg" ? "size-8" : "size-5";
+	const isSoftDefault = appearance === "soft" && brand === "default";
 
 	if (brand === "microsoft") {
 		return (
@@ -44,7 +46,7 @@ export function CompanyMark({ brand, size = "sm" }: CompanyMarkProps) {
 			className={cn(
 				"relative flex shrink-0 items-center justify-center font-bold",
 				sizeClass,
-				brandStyles[brand],
+				isSoftDefault ? "bg-accent text-accent-foreground" : brandStyles[brand],
 				brand === "amazon" &&
 					"after:absolute after:bottom-1 after:h-0.5 after:w-5 after:rounded-full after:bg-orange-400",
 			)}

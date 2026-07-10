@@ -28,7 +28,7 @@ export function JobDetailsView({
 		return (
 			<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 				<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
-				<p className={cn("rounded-lg border px-3 py-4 text-sm", isDarkMode ? "border-slate-700 bg-[#262628] text-slate-400" : "border-slate-200 bg-white text-slate-500")}>
+				<p className="rounded-[14px] border border-border bg-card px-3 py-4 text-sm text-muted-foreground">
 					This job is no longer available.
 				</p>
 			</div>
@@ -41,39 +41,17 @@ export function JobDetailsView({
 		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
 			<ViewHeader title="Job Details" isDarkMode={isDarkMode} onBack={onBack} />
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
-				<section
-					className={cn(
-						"rounded-lg border p-4",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
+				<section className="rounded-[14px] border border-border bg-card p-4">
 					<div className="flex items-start gap-3">
-						<CompanyMark brand={getBrand(job.company, job.platform)} size="lg" />
+						<CompanyMark brand={getBrand(job.company, job.platform)} size="lg" appearance="soft" />
 						<div className="min-w-0 flex-1">
-							<h2
-								className={cn(
-									"text-base font-bold leading-6",
-									isDarkMode ? "text-white" : "text-slate-950",
-								)}
-							>
+							<h2 className="text-base font-bold leading-6 text-foreground">
 								{job.title || "Untitled role"}
 							</h2>
-							<p
-								className={cn(
-									"mt-1 text-sm font-semibold",
-									isDarkMode ? "text-slate-300" : "text-slate-700",
-								)}
-							>
+							<p className="mt-1 text-sm font-semibold text-muted-foreground">
 								{job.company || "Unknown company"}
 							</p>
-							<p
-								className={cn(
-									"mt-2 flex items-center gap-1.5 text-xs",
-									isDarkMode ? "text-slate-400" : "text-slate-500",
-								)}
-							>
+							<p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
 								<MapPin className="size-3.5 shrink-0" aria-hidden="true" />
 								<span>{job.location || "Location not found"}</span>
 							</p>
@@ -86,9 +64,7 @@ export function JobDetailsView({
 							variant="outline"
 							className={cn(
 								"h-9 rounded-md text-xs font-semibold",
-								isDarkMode
-									? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032]"
-									: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+								"border-input bg-card text-foreground hover:bg-muted/60",
 							)}
 							onClick={() => onEdit(job)}
 						>
@@ -97,7 +73,7 @@ export function JobDetailsView({
 						</Button>
 						<Button
 							type="button"
-							className="h-9 rounded-md bg-blue-600 text-xs font-semibold text-white hover:bg-blue-500"
+						className="h-9 rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
 							onClick={() => onStatusChange(job)}
 						>
 							Status: {status}
@@ -105,14 +81,7 @@ export function JobDetailsView({
 					</div>
 				</section>
 
-				<section
-					className={cn(
-						"rounded-lg border p-3",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
+				<section className="rounded-[14px] border border-border bg-card p-3">
 					<DetailLine label="Platform" value={job.platform || "Other"} isDarkMode={isDarkMode} />
 					<DetailLine label="Saved" value={formatDate(job.createdAt) || "Unknown"} isDarkMode={isDarkMode} />
 					<DetailLine label="Updated" value={formatDate(job.updatedAt) || "Unknown"} isDarkMode={isDarkMode} />
@@ -123,9 +92,7 @@ export function JobDetailsView({
 							rel="noreferrer"
 							className={cn(
 								"mt-3 flex min-w-0 items-center gap-2 text-xs font-semibold",
-								isDarkMode
-									? "text-blue-300 hover:text-blue-200"
-									: "text-blue-600 hover:text-blue-700",
+								"text-primary hover:opacity-90",
 							)}
 						>
 							<Link className="size-3.5 shrink-0" aria-hidden="true" />
@@ -135,23 +102,11 @@ export function JobDetailsView({
 					)}
 				</section>
 
-				<section
-					className={cn(
-						"rounded-lg border p-3",
-						isDarkMode
-							? "border-slate-700/65 bg-[#262628]"
-							: "border-slate-200 bg-white",
-					)}
-				>
-					<h3 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+				<section className="rounded-[14px] border border-border bg-card p-3">
+					<h3 className="text-sm font-semibold text-foreground">
 						Job Description / Notes
 					</h3>
-					<p
-						className={cn(
-							"mt-2 whitespace-pre-wrap text-xs leading-5",
-							isDarkMode ? "text-slate-300" : "text-slate-600",
-						)}
-					>
+					<p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-muted-foreground">
 						{job.notes || "No description or notes saved yet."}
 					</p>
 				</section>

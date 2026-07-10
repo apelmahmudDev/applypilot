@@ -195,7 +195,9 @@ export function SidePanel() {
 				location: job.location,
 				url: job.url,
 				platform: job.platform,
+				salary: job.salary,
 				status: nextStatusByStatus[job.status],
+				deadline: job.deadline,
 				notes: job.notes,
 			});
 

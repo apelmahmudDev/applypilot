@@ -123,7 +123,9 @@ function normalizeJob(job: JobForm): JobForm {
 		location: job.location.trim(),
 		url: job.url.trim(),
 		platform: job.platform.trim(),
+		salary: job.salary.trim(),
 		status: job.status,
+		deadline: job.deadline.trim(),
 		notes: job.notes.trim(),
 	};
 }

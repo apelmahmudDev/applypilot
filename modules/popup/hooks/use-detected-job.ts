@@ -10,7 +10,9 @@ const emptyJob: JobForm = {
 	location: "",
 	url: "",
 	platform: "Other",
+	salary: "",
 	status: "Interested",
+	deadline: "",
 	notes: "",
 };
 
@@ -60,7 +62,9 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 				location: detectedJob.location,
 				url: detectedJob.url,
 				platform: detectedJob.platform || "Other",
+				salary: detectedJob.salary,
 				status: fallbackJob.status,
+				deadline: fallbackJob.deadline,
 				notes: detectedJob.description,
 			});
 			setState({

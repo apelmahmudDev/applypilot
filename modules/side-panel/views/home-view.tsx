@@ -339,7 +339,7 @@ export function HomeView({
 				</section>
 
 				<ListHeader
-					title="Today's Reminders"
+					title="Upcoming Reminders"
 					isDarkMode={isDarkMode}
 					onViewAll={onOpenReminders}
 				/>

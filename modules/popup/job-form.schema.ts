@@ -8,6 +8,8 @@ export const jobFormSchema = z.object({
 	location: z.string().trim().min(1, "Location is required."),
 	url: z.string().trim().url("Enter a valid job URL."),
 	platform: z.string().trim().min(1, "Platform is required."),
+	salary: z.string(),
 	status: z.enum(jobStatuses),
+	deadline: z.string(),
 	notes: z.string(),
 });

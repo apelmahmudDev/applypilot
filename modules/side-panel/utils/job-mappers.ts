@@ -49,7 +49,9 @@ export function toStoredJobForm(
 		location: job.location,
 		url: job.url,
 		platform: job.platform,
+		salary: job.salary,
 		status: mapSidePanelStatus(job.status),
+		deadline: job.deadline,
 		notes: job.notes,
 	};
 }

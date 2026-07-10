@@ -1,3 +1,5 @@
+import { BriefcaseBusiness } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import type { RecentJob } from "@/modules/side-panel/types";
 import { brandStyles } from "@/modules/side-panel/utils/styles";
@@ -9,6 +11,7 @@ type CompanyMarkProps = {
 
 export function CompanyMark({ brand, size = "sm" }: CompanyMarkProps) {
 	const sizeClass = size === "lg" ? "size-[72px] rounded-lg text-4xl" : "size-9 rounded-md text-xl";
+	const iconClass = size === "lg" ? "size-8" : "size-5";
 
 	if (brand === "microsoft") {
 		return (
@@ -34,7 +37,7 @@ export function CompanyMark({ brand, size = "sm" }: CompanyMarkProps) {
 				? "S"
 				: brand === "google"
 					? "G"
-					: "A";
+					: null;
 
 	return (
 		<div
@@ -46,7 +49,7 @@ export function CompanyMark({ brand, size = "sm" }: CompanyMarkProps) {
 					"after:absolute after:bottom-1 after:h-0.5 after:w-5 after:rounded-full after:bg-orange-400",
 			)}
 		>
-			{label}
+			{label ? <span>{label}</span> : <BriefcaseBusiness className={iconClass} aria-hidden="true" />}
 		</div>
 	);
 }

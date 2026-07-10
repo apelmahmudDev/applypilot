@@ -50,12 +50,14 @@ const statusStyles: Record<JobStatus, string> = {
 };
 
 const lightStatusStyles: Record<JobStatus, string> = {
-	Applied: "border-blue-100 bg-blue-50 text-blue-600",
-	Interview: "border-amber-100 bg-amber-50 text-amber-600",
-	Saved: "border-slate-100 bg-slate-50 text-slate-500",
-	Rejected: "border-red-100 bg-red-50 text-red-600",
-	Offer: "border-emerald-100 bg-emerald-50 text-emerald-600",
+	Applied: "border-blue-200 bg-blue-50 text-blue-700",
+	Interview: "border-amber-200 bg-amber-50 text-amber-700",
+	Saved: "border-slate-200 bg-slate-50 text-slate-700",
+	Rejected: "border-red-200 bg-red-50 text-red-700",
+	Offer: "border-emerald-200 bg-emerald-50 text-emerald-700",
 };
+
+const lightCardShadow = "shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
 const brandStyles: Record<RecentJob["brand"], string> = {
 	amazon: "bg-[#111827] text-white before:bg-blue-500",
@@ -288,16 +290,16 @@ export function SidePanel() {
 	return (
 		<main
 			className={cn(
-				"h-screen min-h-[720px] w-full overflow-hidden p-2 transition-colors",
-				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-[#f8fafc] text-slate-950",
+				"h-screen min-h-[640px] w-full overflow-hidden p-2 transition-colors",
+				isDarkMode ? "bg-[#202020] text-slate-100" : "bg-slate-50 text-slate-950",
 			)}
 		>
 			<div
 				className={cn(
-					"flex h-full flex-col overflow-hidden rounded-lg border transition-colors",
+					"flex h-full flex-col overflow-hidden rounded-xl border transition-colors",
 					isDarkMode
 						? "border-slate-700/55 bg-[#262628] shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
-						: "border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]",
+						: "border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.07)]",
 				)}
 			>
 				{activeForm ? (
@@ -373,58 +375,69 @@ export function SidePanel() {
 					<SettingsView isDarkMode={isDarkMode} onBack={() => setPanelView("home")} />
 				) : (
 					<>
-				<div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4 pt-4">
+				<div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 pb-4 pt-0 sm:px-4">
 					<div
 						className={cn(
-							"flex h-10 items-center gap-3 rounded-lg border px-3 transition-colors",
+							"sticky top-0 z-10 -mx-3 flex items-center gap-2 border-b px-3 py-3 backdrop-blur sm:-mx-4 sm:px-4",
 							isDarkMode
-								? "border-slate-700/70 bg-[#262628] text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-								: "border-slate-200 bg-white text-slate-500 shadow-[0_8px_22px_rgba(15,23,42,0.06)]",
+								? "border-slate-800/80 bg-[#262628]/95"
+								: "border-slate-200/80 bg-white/95",
 						)}
 					>
-						<Search className="size-4 shrink-0" aria-hidden="true" />
-						<span className="min-w-0 flex-1 truncate text-sm">
-							Search jobs, companies, notes...
-						</span>
-						<kbd
+						<div
 							className={cn(
-								"rounded-md border px-2 py-0.5 text-[11px] font-medium",
+								"flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border px-3 transition-colors focus-within:ring-3 focus-within:ring-blue-500/20",
 								isDarkMode
-									? "border-slate-700 bg-[#262628] text-slate-500"
-									: "border-slate-200 bg-white text-slate-500",
+									? "border-slate-700/70 bg-[#202020] text-slate-400"
+									: "border-slate-200 bg-slate-50 text-slate-500",
 							)}
 						>
-							Ctrl K
-						</kbd>
-						<span className={cn("h-5 w-px", isDarkMode ? "bg-slate-700" : "bg-slate-200")} />
+							<Search className="size-4 shrink-0" aria-hidden="true" />
+							<span className="min-w-0 flex-1 truncate text-sm font-medium">
+								Search jobs, companies, notes...
+							</span>
+							<kbd
+								className={cn(
+									"hidden rounded-md border px-1.5 py-0.5 text-[10px] font-semibold min-[380px]:inline",
+									isDarkMode
+										? "border-slate-700 bg-[#262628] text-slate-500"
+										: "border-slate-200 bg-white text-slate-500",
+								)}
+							>
+								Ctrl K
+							</kbd>
+						</div>
 						<button
 							type="button"
 							className={cn(
-								"flex shrink-0 items-center gap-1.5 text-xs font-medium",
+								"flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/25 active:translate-y-px",
 								isDarkMode
-									? "text-indigo-300 hover:text-indigo-200"
-									: "text-blue-600 hover:text-blue-700",
+									? "bg-blue-500 text-white hover:bg-blue-400"
+									: "bg-blue-600 text-white shadow-[0_6px_14px_rgba(37,99,235,0.22)] hover:bg-blue-700",
 							)}
+							aria-label="Add job"
+							title="Add job"
 							onClick={() => setActiveForm({ mode: "add", job: emptyJobForm })}
 						>
-							<PlusCircle className="size-3.5" aria-hidden="true" />
-							Add Job
+							<PlusCircle className="size-4" aria-hidden="true" />
+							<span className="hidden min-[340px]:inline">Add Job</span>
 						</button>
 					</div>
 
-					<section className="space-y-3">
+					<section className="space-y-2.5">
 						<div className="flex items-center gap-3 px-1">
-							<Sparkles className="size-4 text-cyan-300" aria-hidden="true" />
-							<h2 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>
+							<Sparkles className={cn("size-4", isDarkMode ? "text-cyan-300" : "text-blue-600")} aria-hidden="true" />
+							<h2 className={cn("text-sm font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
 								Detected on this page
 							</h2>
 						</div>
 						<div
 							className={cn(
-								"rounded-lg border p-4 transition-colors",
+								"rounded-xl border p-4 transition-colors",
 								isDarkMode
 									? "border-slate-700/75 bg-[#262628] shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-									: "border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)]",
+									: "border-slate-200/80 bg-white",
+								!isDarkMode && lightCardShadow,
 							)}
 						>
 							{isDetecting ? (
@@ -473,10 +486,10 @@ export function SidePanel() {
 											{saveError}
 										</p>
 									)}
-									<div className="flex gap-4">
+									<div className="flex gap-3">
 										<CompanyMark brand={getBrand(detectedJob.company, detectedJob.platform)} size="lg" />
 										<div className="min-w-0 flex-1">
-											<h3 className={cn("truncate text-base font-bold", isDarkMode ? "text-white" : "text-slate-950")}>
+											<h3 className={cn("truncate text-[15px] font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>
 												{detectedJob.title || "Untitled role"}
 											</h3>
 											<p className={cn("mt-1 truncate text-sm font-medium", isDarkMode ? "text-slate-300" : "text-slate-700")}>
@@ -513,10 +526,10 @@ export function SidePanel() {
 											type="button"
 											variant="outline"
 											className={cn(
-												"h-10 rounded-md text-sm font-semibold",
+												"h-10 rounded-lg text-sm font-semibold",
 												isDarkMode
 													? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
-													: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+													: "border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
 											)}
 											onClick={() =>
 												setActiveForm({ mode: "edit", job: detectedJob })
@@ -527,7 +540,7 @@ export function SidePanel() {
 										</Button>
 										<Button
 											type="button"
-											className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
+											className="h-10 rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(37,99,235,0.24)] hover:bg-blue-700 disabled:shadow-none"
 											disabled={isSaving}
 											onClick={() => handleSaveJob(detectedJob)}
 										>
@@ -552,7 +565,7 @@ export function SidePanel() {
 											type="button"
 											variant="outline"
 											className={cn(
-												"h-10 rounded-md text-sm font-semibold",
+												"h-10 rounded-lg text-sm font-semibold",
 												isDarkMode
 													? "border-slate-600/70 bg-[#262628] text-slate-100 hover:bg-[#303032] hover:text-white"
 													: "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
@@ -564,7 +577,7 @@ export function SidePanel() {
 										</Button>
 										<Button
 											type="button"
-											className="h-10 rounded-md bg-blue-600 text-sm font-semibold text-white shadow-[0_10px_26px_rgba(37,99,235,0.26)] hover:bg-blue-500"
+											className="h-10 rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(37,99,235,0.24)] hover:bg-blue-700"
 											onClick={() => setActiveForm({ mode: "add", job: emptyJobForm })}
 										>
 											<PlusCircle className="size-4" aria-hidden="true" />
@@ -578,10 +591,11 @@ export function SidePanel() {
 
 					<section
 						className={cn(
-							"grid grid-cols-3 rounded-lg border py-3 transition-colors",
+							"grid grid-cols-3 rounded-xl border py-3 transition-colors",
 							isDarkMode
 								? "border-slate-700/65 bg-[#262628]"
-								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+								: "border-slate-200/80 bg-white",
+							!isDarkMode && lightCardShadow,
 						)}
 					>
 						<StatItem icon={Bookmark} value={String(savedCount)} label="Saved" isDarkMode={isDarkMode} />
@@ -596,10 +610,11 @@ export function SidePanel() {
 					/>
 					<section
 						className={cn(
-							"overflow-hidden rounded-lg border transition-colors",
+							"overflow-hidden rounded-xl border transition-colors",
 							isDarkMode
 								? "border-slate-700/65 bg-[#262628]"
-								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+								: "border-slate-200/80 bg-white",
+							!isDarkMode && lightCardShadow,
 							)}
 					>
 						{displayedJobs.map((job) => (
@@ -624,10 +639,11 @@ export function SidePanel() {
 					/>
 					<section
 						className={cn(
-							"overflow-hidden rounded-lg border transition-colors",
+							"overflow-hidden rounded-xl border transition-colors",
 							isDarkMode
 								? "border-slate-700/65 bg-[#262628]"
-								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]",
+								: "border-slate-200/80 bg-white",
+							!isDarkMode && lightCardShadow,
 						)}
 					>
 						{reminders.map((reminder) => (
@@ -652,10 +668,11 @@ export function SidePanel() {
 					<button
 						type="button"
 						className={cn(
-							"flex w-full items-center gap-3 rounded-lg border p-3 text-left transition",
+							"flex w-full items-center gap-3 rounded-xl border p-3 text-left transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/20 active:translate-y-px",
 							isDarkMode
 								? "border-slate-700/65 bg-[#262628] hover:bg-[#303032]"
-								: "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)] hover:bg-slate-50",
+								: "border-slate-200/80 bg-white hover:bg-slate-50",
+							!isDarkMode && lightCardShadow,
 						)}
 						onClick={openDashboard}
 					>
@@ -676,8 +693,8 @@ export function SidePanel() {
 
 				<footer
 					className={cn(
-						"flex shrink-0 items-center justify-between border-t px-5 py-3",
-						isDarkMode ? "border-slate-800/80" : "border-slate-200",
+						"sticky bottom-0 z-10 flex shrink-0 items-center justify-between border-t px-4 py-3 backdrop-blur",
+						isDarkMode ? "border-slate-800/80 bg-[#262628]/95" : "border-slate-200/80 bg-white/95",
 					)}
 				>
 					<div className="flex min-w-0 items-center gap-3">
@@ -1266,14 +1283,14 @@ function ListHeader({
 }) {
 	return (
 		<div className="flex items-center justify-between px-1 pt-1">
-			<h2 className={cn("text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>{title}</h2>
+			<h2 className={cn("text-base font-bold tracking-normal", isDarkMode ? "text-white" : "text-slate-950")}>{title}</h2>
 			<button
 				type="button"
 				className={cn(
-					"flex items-center gap-1 text-xs font-medium",
+					"flex h-7 items-center gap-1 rounded-md px-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/20",
 					isDarkMode
-						? "text-slate-400 hover:text-slate-200"
-						: "text-slate-500 hover:text-slate-900",
+						? "text-blue-300 hover:bg-[#303032] hover:text-blue-200"
+						: "text-blue-600 hover:bg-blue-50 hover:text-blue-700",
 				)}
 				onClick={onViewAll}
 			>
@@ -1350,14 +1367,21 @@ function StatItem({
 	return (
 		<div
 			className={cn(
-				"flex items-center justify-center gap-3 px-2",
-				bordered && (isDarkMode ? "border-l border-slate-700/65" : "border-l border-slate-200"),
+				"flex min-w-0 flex-col items-center justify-center gap-1 px-2 text-center min-[360px]:flex-row min-[360px]:gap-2 min-[360px]:text-left",
+				bordered && (isDarkMode ? "border-l border-slate-700/65" : "border-l border-slate-100"),
 			)}
 		>
-			<Icon className="size-5 text-indigo-300" aria-hidden="true" />
-			<div>
+			<div
+				className={cn(
+					"flex size-8 shrink-0 items-center justify-center rounded-lg",
+					isDarkMode ? "bg-blue-500/15 text-blue-200" : "bg-blue-50 text-blue-600",
+				)}
+			>
+				<Icon className="size-4" aria-hidden="true" />
+			</div>
+			<div className="min-w-0">
 				<p className={cn("text-lg font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>{value}</p>
-				<p className={cn("text-[11px] font-medium", isDarkMode ? "text-slate-400" : "text-slate-500")}>{label}</p>
+				<p className={cn("truncate text-[11px] font-semibold", isDarkMode ? "text-slate-400" : "text-slate-500")}>{label}</p>
 			</div>
 		</div>
 	);
@@ -1381,9 +1405,9 @@ function ApplicationJobRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"cursor-pointer border-b px-3 py-3 transition last:border-b-0",
+				"cursor-pointer border-b px-3 py-3 transition last:border-b-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-blue-500/20 active:bg-blue-50/40",
 				isDarkMode
-					? "border-slate-800/85 hover:bg-[#303032]"
+					? "border-slate-800/85 hover:bg-[#303032] active:bg-[#303032]"
 					: "border-slate-100 hover:bg-slate-50",
 			)}
 			onClick={onOpen}
@@ -1413,11 +1437,11 @@ function ApplicationJobRow({
 					>
 						{job.company || "Unknown company"} - {job.location || "Unknown location"}
 					</p>
-					<div className="mt-2 flex items-center justify-between gap-2">
+					<div className="mt-2 flex flex-wrap items-center justify-between gap-2">
 						<button
 							type="button"
 							className={cn(
-								"rounded-md border px-2 py-1 text-[11px] font-semibold",
+								"rounded-full border px-2.5 py-1 text-[11px] font-bold transition hover:brightness-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-500/20",
 								isDarkMode ? statusStyles[status] : lightStatusStyles[status],
 							)}
 							onClick={(event) => {
@@ -1429,7 +1453,7 @@ function ApplicationJobRow({
 						</button>
 						<span
 							className={cn(
-								"truncate text-xs font-medium",
+								"min-w-0 truncate text-xs font-semibold",
 								isDarkMode ? "text-blue-300" : "text-blue-600",
 							)}
 						>
@@ -1464,9 +1488,9 @@ function ReminderManagementRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"flex cursor-pointer items-center gap-3 border-b px-3 py-3 transition last:border-b-0",
+				"flex cursor-pointer items-start gap-3 border-b px-3 py-3 transition last:border-b-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-blue-500/20 active:bg-blue-50/40",
 				isDarkMode
-					? "border-slate-800/85 hover:bg-[#303032]"
+					? "border-slate-800/85 hover:bg-[#303032] active:bg-[#303032]"
 					: "border-slate-100 hover:bg-slate-50",
 			)}
 			onClick={onOpen}
@@ -1477,7 +1501,7 @@ function ReminderManagementRow({
 				}
 			}}
 		>
-			<div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
+			<div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", isDarkMode ? "bg-blue-500/15 text-blue-200" : "bg-blue-50 text-blue-600")}>
 				<Icon className="size-5" aria-hidden="true" />
 			</div>
 			<div className="min-w-0 flex-1">
@@ -1497,39 +1521,42 @@ function ReminderManagementRow({
 				>
 					{reminder.description}
 				</p>
-				<p
-					className={cn(
-						"mt-1 text-xs font-medium",
-						isDarkMode ? "text-blue-300" : "text-blue-600",
-					)}
-				>
-					{reminder.time}
-				</p>
+				<div className="mt-2 flex flex-wrap items-center gap-2">
+					<p
+						className={cn(
+							"rounded-full px-2.5 py-1 text-[11px] font-bold",
+							isDarkMode ? "bg-blue-500/15 text-blue-200" : "bg-blue-50 text-blue-700",
+						)}
+					>
+						{reminder.time}
+					</p>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						className={cn(
+							"h-7 rounded-full px-3 text-[11px] font-bold",
+							isDarkMode
+								? "border-slate-600/70 bg-[#262628] text-slate-200 hover:bg-[#303032] hover:text-white"
+								: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+						)}
+						disabled={isCompleted}
+						onClick={(event) => {
+							event.stopPropagation();
+							onMarkDone();
+						}}
+					>
+						{isCompleted ? "Done" : "Mark Done"}
+					</Button>
+				</div>
 			</div>
-			<Button
-				type="button"
-				variant="outline"
-				size="sm"
-				className={cn(
-					"h-8 rounded-md px-3 text-xs",
-					isDarkMode
-						? "border-slate-600/70 bg-[#262628] text-slate-200 hover:bg-[#303032] hover:text-white"
-						: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-				)}
-				disabled={isCompleted}
-				onClick={(event) => {
-					event.stopPropagation();
-					onMarkDone();
-				}}
-			>
-				{isCompleted ? "Done" : "Mark Done"}
-			</Button>
 			{showActions && (
 				<Button
 					type="button"
 					variant="ghost"
 					size="icon-sm"
 					className={cn(
+						"mt-1 shrink-0",
 						isDarkMode
 							? "text-slate-400 hover:bg-[#303032] hover:text-white"
 							: "text-slate-500 hover:bg-slate-100 hover:text-slate-950",
@@ -1578,9 +1605,9 @@ function RecentJobRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"grid cursor-pointer grid-cols-[48px_minmax(0,1fr)_74px_84px] items-center gap-2 border-b px-3 py-2.5 transition last:border-b-0",
+				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b px-3 py-3.5 transition last:border-b-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-blue-500/20 active:bg-blue-50/40 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
 				isDarkMode
-					? "border-slate-800/85 hover:bg-[#303032]"
+					? "border-slate-800/85 hover:bg-[#303032] active:bg-[#303032]"
 					: "border-slate-100 hover:bg-slate-50",
 			)}
 			onClick={onOpen}
@@ -1593,37 +1620,33 @@ function RecentJobRow({
 		>
 			<CompanyMark brand={job.brand} />
 			<div className="min-w-0">
-				<h3 className={cn("truncate text-sm font-semibold", isDarkMode ? "text-white" : "text-slate-950")}>{job.title}</h3>
-				<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>
-					{job.company} - {job.location}
+				<h3 className={cn("truncate text-[13px] font-bold leading-5", isDarkMode ? "text-white" : "text-slate-950")}>{job.title}</h3>
+				<p className={cn("truncate text-xs font-medium", isDarkMode ? "text-slate-400" : "text-slate-600")}>
+					{job.company}
+					<span className="hidden" aria-hidden="true">
+						·
+					</span>
+					<span className={cn("px-1.5", isDarkMode ? "text-slate-600" : "text-slate-400")} aria-hidden="true">
+						&middot;
+					</span>
+					{job.location}
 				</p>
 			</div>
-			<span
-				className={cn(
-					"justify-self-start rounded-md border px-2 py-1 text-[11px] font-semibold",
-					isDarkMode ? statusStyles[job.status] : lightStatusStyles[job.status],
-				)}
-			>
-				{job.status}
-			</span>
-			<div className="min-w-0 text-right">
-				<p className={cn("truncate text-xs", isDarkMode ? "text-slate-400" : "text-slate-500")}>{job.date}</p>
-				<p
+			<div className="flex min-w-0 flex-col items-end gap-1.5 max-[390px]:hidden">
+				<p className={cn("w-full truncate text-right text-[11px] font-medium leading-4", isDarkMode ? "text-slate-400" : "text-slate-600")}>{job.date}</p>
+				<span
 					className={cn(
-						"mt-1 truncate text-xs font-medium",
+						"inline-flex h-6 min-w-[54px] items-center justify-center gap-1 rounded-md border px-2 text-[10px] font-semibold",
 						isDarkMode
-							? job.followUp === "Today"
-								? "text-emerald-300"
-								: "text-blue-300"
-							: job.followUp === "Today"
-								? "text-emerald-600"
-								: "text-blue-600",
-						job.followUp.includes("1d") &&
-							(isDarkMode ? "text-amber-300" : "text-amber-600"),
+							? statusStyles[job.status]
+							: job.status === "Saved"
+								? "border-slate-200 bg-slate-50 text-slate-700"
+								: lightStatusStyles[job.status],
 					)}
 				>
-					{job.followUp}
-				</p>
+					<Bookmark className="size-2.5 fill-current" aria-hidden="true" />
+					{job.status}
+				</span>
 			</div>
 		</div>
 	);

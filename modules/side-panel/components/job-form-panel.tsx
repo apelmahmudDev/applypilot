@@ -45,7 +45,8 @@ const statuses: SidePanelJobStatus[] = [
 	"Offer",
 ];
 
-const inputBase = "h-9 rounded-md text-sm font-medium shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+const inputBase =
+	"h-9 rounded-md text-sm font-medium shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
 export function JobFormPanel({
 	mode,
@@ -84,22 +85,15 @@ export function JobFormPanel({
 	};
 
 	return (
-		<div className="flex min-h-0 flex-1 px-4 pb-4">
-			<section
-			className="flex min-h-0 flex-1 flex-col rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-			>
+		<div className="flex min-h-0 flex-1 p-0">
+			<section className="flex min-h-0 flex-1 flex-col rounded-none border-0 bg-card shadow-none">
 				<header
 					className={cn(
 						"flex shrink-0 items-center justify-between border-b px-4 py-4",
 						"border-[#E5E7EB]",
 					)}
 				>
-					<h2
-						className={cn(
-							"text-xl font-bold",
-							"text-foreground",
-						)}
-					>
+					<h2 className={cn("text-xl font-bold", "text-foreground")}>
 						{mode === "add" ? "Add New Job" : "Edit Job"}
 					</h2>
 					<Button
@@ -147,7 +141,7 @@ export function JobFormPanel({
 							<TextInput
 								value={job.location}
 								isDarkMode={isDarkMode}
-								placeholder="Bengaluru, Karnataka, India"
+								placeholder="Dhaka, Bangladesh"
 								onChange={(value) => updateField("location", value)}
 							/>
 						</FieldRow>
@@ -243,7 +237,7 @@ export function JobFormPanel({
 										type="button"
 										className={cn(
 											"rounded-md px-2 py-1 text-xs font-semibold",
-									"bg-accent text-accent-foreground",
+											"bg-accent text-accent-foreground",
 										)}
 										onClick={() => removeTag(tag)}
 									>
@@ -301,7 +295,7 @@ export function JobFormPanel({
 						</Button>
 						<Button
 							type="submit"
-						className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground hover:brightness-95"
+							className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground hover:brightness-95"
 						>
 							<Save className="size-4" aria-hidden="true" />
 							{mode === "add" ? "Save Job" : "Update Job"}
@@ -427,13 +421,18 @@ function DateInput({
 					className={cn(
 						inputBase,
 						"w-full justify-between px-3 font-medium",
-					"border-input bg-card text-foreground placeholder:text-muted-foreground",
+						"border-input bg-card text-foreground placeholder:text-muted-foreground",
 					)}
 				>
-					<span className={value ? "text-foreground" : "text-muted-foreground/80"}>
+					<span
+						className={value ? "text-foreground" : "text-muted-foreground/80"}
+					>
 						{value ? formatDateLabel(value) : "Select date"}
 					</span>
-					<CalendarDays className="size-4 text-muted-foreground/80" aria-hidden="true" />
+					<CalendarDays
+						className="size-4 text-muted-foreground/80"
+						aria-hidden="true"
+					/>
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent align="end" className="w-auto p-0">

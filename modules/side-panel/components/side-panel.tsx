@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useSystemTheme } from "@/hooks/use-system-theme";
 import {
 	createJobInStorage,
@@ -56,6 +57,8 @@ export function SidePanel() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveError, setSaveError] = useState("");
 	const [saveMessage, setSaveMessage] = useState("");
+	const [jobPendingDelete, setJobPendingDelete] = useState<StoredJob | null>(null);
+	const [isDeletingJob, setIsDeletingJob] = useState(false);
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
 		jobId?: string;
@@ -248,16 +251,18 @@ export function SidePanel() {
 	};
 
 	const handleDeleteJob = async (job: StoredJob) => {
-		const shouldDelete = window.confirm(
-			`Delete "${job.title || "this job"}"? This cannot be undone.`,
-		);
+		setJobPendingDelete(job);
+	};
 
-		if (!shouldDelete) {
+	const confirmDeleteJob = async () => {
+		if (!jobPendingDelete) {
 			return;
 		}
 
+		setIsDeletingJob(true);
+
 		try {
-			const deleted = await deleteJobFromStorage(job.id);
+			const deleted = await deleteJobFromStorage(jobPendingDelete.id);
 
 			if (!deleted) {
 				setSaveError("Could not delete this job. Please try again.");
@@ -265,13 +270,16 @@ export function SidePanel() {
 			}
 
 			setStoredJobs((currentJobs) =>
-				currentJobs.filter((currentJob) => currentJob.id !== job.id),
+				currentJobs.filter((currentJob) => currentJob.id !== jobPendingDelete.id),
 			);
 			setSelectedJobId(null);
 			setPanelView(detailsBackView);
 			setSaveMessage("Deleted this job.");
+			setJobPendingDelete(null);
 		} catch {
 			setSaveError("Could not delete this job. Please try again.");
+		} finally {
+			setIsDeletingJob(false);
 		}
 	};
 
@@ -351,6 +359,28 @@ export function SidePanel() {
 		<main
 			className="h-screen min-h-[640px] w-full overflow-hidden bg-background p-2 text-foreground transition-colors"
 		>
+			<ConfirmDialog
+				open={Boolean(jobPendingDelete)}
+				title="Delete job?"
+				description={
+					<>
+						This will delete{" "}
+						<span className="font-semibold text-foreground">
+							{jobPendingDelete?.title || "this job"}
+						</span>
+						.
+					</>
+				}
+				confirmLabel="Delete"
+				confirmingLabel="Deleting..."
+				isConfirming={isDeletingJob}
+				onOpenChange={(open) => {
+					if (!open && !isDeletingJob) {
+						setJobPendingDelete(null);
+					}
+				}}
+				onConfirm={() => void confirmDeleteJob()}
+			/>
 			<div
 			className="flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
 			>

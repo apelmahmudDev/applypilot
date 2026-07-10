@@ -73,6 +73,18 @@ export async function saveJobToStorage(job: JobForm): Promise<SaveJobResult> {
 	};
 }
 
+export async function deleteJobFromStorage(jobId: string) {
+	const jobs = await getStoredJobs();
+	const nextJobs = jobs.filter((job) => job.id !== jobId);
+
+	if (nextJobs.length === jobs.length) {
+		return false;
+	}
+
+	await setStoredJobs(nextJobs);
+	return true;
+}
+
 export async function getStoredJobs(): Promise<StoredJob[]> {
 	const stored = await browser.storage.local.get(JOBS_STORAGE_KEY);
 	const jobs = stored[JOBS_STORAGE_KEY];

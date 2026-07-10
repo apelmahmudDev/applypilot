@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSystemTheme } from "@/hooks/use-system-theme";
 import {
 	createJobInStorage,
+	deleteJobFromStorage,
 	getStoredJobs,
 	saveJobToStorage,
 	type StoredJob,
@@ -208,6 +209,34 @@ export function SidePanel() {
 		}
 	};
 
+	const handleDeleteJob = async (job: StoredJob) => {
+		const shouldDelete = window.confirm(
+			`Delete "${job.title || "this job"}"? This cannot be undone.`,
+		);
+
+		if (!shouldDelete) {
+			return;
+		}
+
+		try {
+			const deleted = await deleteJobFromStorage(job.id);
+
+			if (!deleted) {
+				setSaveError("Could not delete this job. Please try again.");
+				return;
+			}
+
+			setStoredJobs((currentJobs) =>
+				currentJobs.filter((currentJob) => currentJob.id !== job.id),
+			);
+			setSelectedJobId(null);
+			setPanelView(detailsBackView);
+			setSaveMessage("Deleted this job.");
+		} catch {
+			setSaveError("Could not delete this job. Please try again.");
+		}
+	};
+
 	const openJobDetails = (jobId: string, backView: DetailsBackView) => {
 		setSelectedJobId(jobId);
 		setDetailsBackView(backView);
@@ -259,6 +288,7 @@ export function SidePanel() {
 							setActiveForm({ mode: "edit", job: toSidePanelJobForm(job) })
 						}
 						onStatusChange={handleCycleJobStatus}
+						onDelete={handleDeleteJob}
 					/>
 				) : panelView === "reminderDetails" ? (
 					<ReminderDetailsView

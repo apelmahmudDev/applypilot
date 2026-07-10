@@ -1,4 +1,4 @@
-import { ExternalLink, Link, MapPin, PencilLine } from "lucide-react";
+import { ExternalLink, Link, MapPin, PencilLine, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { StoredJob } from "@/lib/jobs/storage";
@@ -15,6 +15,7 @@ type JobDetailsViewProps = {
 	onBack: () => void;
 	onEdit: (job: StoredJob) => void;
 	onStatusChange: (job: StoredJob) => void;
+	onDelete: (job: StoredJob) => void;
 };
 
 export function JobDetailsView({
@@ -23,6 +24,7 @@ export function JobDetailsView({
 	onBack,
 	onEdit,
 	onStatusChange,
+	onDelete,
 }: JobDetailsViewProps) {
 	if (!job) {
 		return (
@@ -58,7 +60,7 @@ export function JobDetailsView({
 						</div>
 					</div>
 
-					<div className="mt-4 grid grid-cols-2 gap-2">
+					<div className="mt-4 grid grid-cols-3 gap-2">
 						<Button
 							type="button"
 							variant="outline"
@@ -67,7 +69,7 @@ export function JobDetailsView({
 								"border-input bg-card text-foreground hover:bg-muted/60",
 							)}
 							onClick={() => onEdit(job)}
-						>
+							>
 							<PencilLine className="size-4" aria-hidden="true" />
 							Edit
 						</Button>
@@ -78,11 +80,30 @@ export function JobDetailsView({
 						>
 							Status: {status}
 						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
+							)}
+							aria-label="Delete job"
+							title="Delete job"
+							onClick={() => onDelete(job)}
+						>
+							<Trash2 className="size-4" aria-hidden="true" />
+						</Button>
 					</div>
 				</section>
 
 				<section className="rounded-[14px] border border-border bg-card p-3">
 					<DetailLine label="Platform" value={job.platform || "Other"} isDarkMode={isDarkMode} />
+					<DetailLine label="Salary" value={job.salary || "Not specified"} isDarkMode={isDarkMode} />
+					<DetailLine
+						label="Deadline"
+						value={job.deadline ? formatDate(job.deadline) : "Not specified"}
+						isDarkMode={isDarkMode}
+					/>
 					<DetailLine label="Saved" value={formatDate(job.createdAt) || "Unknown"} isDarkMode={isDarkMode} />
 					<DetailLine label="Updated" value={formatDate(job.updatedAt) || "Unknown"} isDarkMode={isDarkMode} />
 					{job.url && (

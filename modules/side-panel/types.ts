@@ -51,3 +51,20 @@ export type SidePanelJobForm = {
 	tags: string[];
 	notes: string;
 };
+
+export type SidePanelView =
+	| "home"
+	| "applications"
+	| "reminders"
+	| "settings"
+	| "jobDetails"
+	| "reminderDetails";
+
+export type DetailsBackView = Exclude<
+	SidePanelView,
+	"jobDetails" | "reminderDetails"
+>;
+
+export type ApplicationFilter = "All" | JobStatus;
+
+export type ReminderFilter = "Today" | "Upcoming" | "Completed";

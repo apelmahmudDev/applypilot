@@ -15,7 +15,7 @@ function getViewFromHash(): DashboardView {
 	return isDashboardView(hashView) ? hashView : "dashboard";
 }
 
-export function DashboardPage() {
+export function DashboardView() {
 	useSystemTheme();
 	const [activeView, setActiveView] = useState<DashboardView>(getViewFromHash);
 
@@ -28,11 +28,14 @@ export function DashboardPage() {
 		return () => window.removeEventListener("hashchange", handleHashChange);
 	}, []);
 
-	const handleViewChange = useCallback((view: DashboardView) => {
-		if (view === activeView) return;
-		window.location.hash = view;
-		setActiveView(view);
-	}, [activeView]);
+	const handleViewChange = useCallback(
+		(view: DashboardView) => {
+			if (view === activeView) return;
+			window.location.hash = view;
+			setActiveView(view);
+		},
+		[activeView],
+	);
 
 	return (
 		<SidebarProvider
@@ -44,7 +47,10 @@ export function DashboardPage() {
 				} as React.CSSProperties
 			}
 		>
-			<DashboardSidebar activeView={activeView} onViewChange={handleViewChange} />
+			<DashboardSidebar
+				activeView={activeView}
+				onViewChange={handleViewChange}
+			/>
 			<SidebarInset className="bg-slate-50 dark:bg-[#202020]">
 				<main
 					className="@container/main flex min-h-screen flex-1 flex-col"

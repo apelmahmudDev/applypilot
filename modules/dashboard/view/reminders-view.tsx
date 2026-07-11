@@ -2,7 +2,7 @@ import { Bell } from "lucide-react";
 
 import { PlaceholderPage } from "@/modules/dashboard/components/placeholder-page";
 
-export function RemindersPage() {
+export function RemindersView() {
 	return (
 		<PlaceholderPage
 			icon={Bell}

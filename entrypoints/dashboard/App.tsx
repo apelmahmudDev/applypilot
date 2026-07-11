@@ -1,7 +1,7 @@
-import { DashboardPage } from "@/modules/dashboard/components/dashboard-page";
+import { DashboardView } from "@/modules/dashboard/view/dashboard-view";
 
 function App() {
-	return <DashboardPage />;
+	return <DashboardView />;
 }
 
 export default App;

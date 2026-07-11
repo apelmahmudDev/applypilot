@@ -19,7 +19,7 @@ export function useJobDetector() {
 		error: "",
 	});
 
-	const detect = useCallback(async () => {
+	const detectJob = useCallback(async () => {
 		const requestId = requestIdRef.current + 1;
 		requestIdRef.current = requestId;
 		setState((currentState) => ({ ...currentState, isDetecting: true, error: "" }));
@@ -42,7 +42,7 @@ export function useJobDetector() {
 	}, []);
 
 	useEffect(() => {
-		void detect();
+		void detectJob();
 
 		const handleMessage = (
 			message: JobDetectorMessage,
@@ -54,7 +54,7 @@ export function useJobDetector() {
 		};
 
 		const handleTabChange = () => {
-			void detect();
+			void detectJob();
 		};
 
 		browser.runtime.onMessage.addListener(handleMessage);
@@ -66,7 +66,21 @@ export function useJobDetector() {
 			browser.tabs.onActivated.removeListener(handleTabChange);
 			browser.tabs.onUpdated.removeListener(handleTabChange);
 		};
-	}, [detect]);
+	}, [detectJob]);
 
-	return { ...state, retryDetection: detect };
+	const hasDetectedJob = Boolean(
+		state.job &&
+			(state.job.title ||
+				state.job.company ||
+				state.job.location ||
+				state.job.salary ||
+				state.job.descriptionText),
+	);
+
+	return {
+		...state,
+		detectJob,
+		retryDetection: detectJob,
+		hasDetectedJob,
+	};
 }

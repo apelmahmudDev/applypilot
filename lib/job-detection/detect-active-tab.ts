@@ -72,6 +72,7 @@ function detectJobInPage(): DetectedJob | null {
 		salary: detected.salary ?? "",
 		logoUrl: detected.logoUrl,
 		employmentType: detected.employmentType,
+		workplaceType: detected.workplaceType,
 		confidence: getConfidence(detected),
 	};
 
@@ -84,6 +85,7 @@ function detectJobInPage(): DetectedJob | null {
 		if (hostname.includes("lever.co")) return "lever";
 		if (hostname.includes("workdayjobs.com")) return "workday";
 		if (hostname.includes("ashbyhq.com")) return "ashby";
+		if (hostname.includes("bdjobs.com")) return "bdjobs";
 
 		return "unknown";
 	}
@@ -96,6 +98,7 @@ function detectJobInPage(): DetectedJob | null {
 			lever: "Lever",
 			workday: "Workday",
 			ashby: "Ashby",
+			bdjobs: "Bdjobs",
 		};
 
 		if (labels[platformName]) return labels[platformName];
@@ -109,6 +112,7 @@ function detectJobInPage(): DetectedJob | null {
 		if (platformName === "lever") return parseLeverJob();
 		if (platformName === "workday") return parseWorkdayJob();
 		if (platformName === "ashby") return parseAshbyJob();
+		if (platformName === "bdjobs") return parseBdjobsJob();
 
 		return {};
 	}
@@ -177,6 +181,40 @@ function detectJobInPage(): DetectedJob | null {
 			company: getMeta("og:site_name") || getCompanyFromTitle(document.title),
 			location: text('[class*="location"]'),
 			description: text('[class*="description"]') || text("main"),
+		};
+	}
+
+	function parseBdjobsJob(): ParsedDetectedJob {
+		const title = getBdjobsTitle();
+		const company = getBdjobsCompany();
+		const location =
+			getBdjobsLabeledValue("Job Location") ||
+			text('[data-testid="job-location"]') ||
+			text('[class*="location"]');
+		const employmentType = getBdjobsLabeledValue("Employment Status");
+		const workplaceType =
+			getBdjobsLabeledValue("Workplace") ||
+			getBdjobsLabeledValue("Work Place");
+		const salary =
+			getBdjobsInlineSalary() ||
+			getBdjobsCompensation() ||
+			getBdjobsLabeledValue("Salary") ||
+			getBdjobsLabeledValue("Compensation & Other Benefits");
+		const detailsRoot =
+			document.querySelector<HTMLElement>("app-details-main") ||
+			document.querySelector<HTMLElement>("main");
+
+		return {
+			title,
+			company,
+			location,
+			description: detailsRoot ? cleanText(detailsRoot.innerText) : "",
+			salary,
+			logoUrl:
+				text('img[alt*="logo"]', "src") ||
+				text('img[src*="bdjobs/recruiter/logos"]', "src"),
+			employmentType,
+			workplaceType,
 		};
 	}
 
@@ -286,7 +324,149 @@ function detectJobInPage(): DetectedJob | null {
 			);
 		}
 
+		if (platformName === "bdjobs") {
+			return formatDescriptionElement(
+				document.querySelector<HTMLElement>("app-details-main"),
+			);
+		}
+
 		return { html: "", text: "" };
+	}
+
+	function getBdjobsTitle() {
+		const headerTitle =
+			text("button h2 + h2") ||
+			text("div.flex-col-reverse h2 + h2") ||
+			text("app-details-main h2 + h2");
+
+		if (headerTitle) {
+			return headerTitle;
+		}
+
+		const headingCandidates = Array.from(document.querySelectorAll("h1, h2"))
+			.map((element) => cleanText(element.textContent))
+			.filter(Boolean);
+
+		return (
+			headingCandidates.find(
+				(candidate) =>
+					candidate.length > 8 &&
+					!candidate.toLowerCase().includes("limited") &&
+					!candidate.toLowerCase().includes("ltd") &&
+					!candidate.toLowerCase().includes("inc") &&
+					!candidate.toLowerCase().includes("llc") &&
+					!candidate.toLowerCase().includes("application deadline") &&
+					!candidate.toLowerCase().includes("job highlights") &&
+					!candidate.toLowerCase().includes("skills & expertise") &&
+					!candidate.toLowerCase().includes("responsibilities") &&
+					!candidate.toLowerCase().includes("compensation & other benefits") &&
+					!candidate.toLowerCase().includes("company information") &&
+					!candidate.toLowerCase().includes("report this job"),
+			) || ""
+		);
+	}
+
+	function getBdjobsCompany() {
+		const companyFromCard =
+			text("button h2") ||
+			text("div.flex-col-reverse button h2") ||
+			text('app-company-info-card h2') ||
+			text('img[alt$=" logo"]', "alt").replace(/\s+logo$/i, "");
+
+		if (companyFromCard) {
+			return companyFromCard;
+		}
+
+		const headingCandidates = Array.from(document.querySelectorAll("button h2, h2"))
+			.map((element) => cleanText(element.textContent))
+			.filter(Boolean);
+
+		return (
+			headingCandidates.find(
+				(candidate) =>
+					candidate.length > 2 &&
+					!candidate.toLowerCase().includes("job highlights") &&
+					!candidate.toLowerCase().includes("matching details") &&
+					!candidate.toLowerCase().includes("skills & expertise") &&
+					!candidate.toLowerCase().includes("responsibilities"),
+			) || getCompanyFromTitle(document.title)
+		);
+	}
+
+	function getBdjobsLabeledValue(label: string) {
+		const normalizedLabel = label.trim().toLowerCase();
+		const candidates = Array.from(document.querySelectorAll("p, h3, h4"));
+
+		for (const candidate of candidates) {
+			const candidateText = cleanText(candidate.textContent).replace(/\s*:\s*$/, "");
+			if (candidateText.toLowerCase() !== normalizedLabel) {
+				continue;
+			}
+
+			const nextText = cleanText(candidate.nextElementSibling?.textContent);
+			if (nextText) {
+				return nextText;
+			}
+
+			const parent = candidate.parentElement;
+			if (!parent) {
+				continue;
+			}
+
+			const siblings = Array.from(parent.children);
+			const index = siblings.indexOf(candidate as HTMLElement);
+			const siblingText = cleanText(siblings[index + 1]?.textContent);
+			if (siblingText) {
+				return siblingText;
+			}
+		}
+
+		return "";
+	}
+
+	function getBdjobsCompensation() {
+		const heading = Array.from(document.querySelectorAll("p, h3, h4")).find(
+			(element) =>
+				cleanText(element.textContent).toLowerCase() ===
+				"compensation & other benefits",
+		);
+
+		const section = heading?.parentElement;
+		if (!section) {
+			return "";
+		}
+
+		return Array.from(section.querySelectorAll("li"))
+			.map((item) => cleanText(item.textContent))
+			.filter(Boolean)
+			.join(" | ");
+	}
+
+	function getBdjobsInlineSalary() {
+		const salaryLabel = Array.from(document.querySelectorAll("span, p, div")).find(
+			(element) => cleanText(element.textContent) === "Salary:",
+		);
+
+		if (!salaryLabel) {
+			return "";
+		}
+
+		const siblingText = cleanText(salaryLabel.nextElementSibling?.textContent);
+		if (siblingText) {
+			return siblingText;
+		}
+
+		const parent = salaryLabel.parentElement;
+		if (!parent) {
+			return "";
+		}
+
+		const values = Array.from(parent.children)
+			.map((child) => cleanText(child.textContent))
+			.filter(Boolean)
+			.filter((value) => value !== "Salary:");
+
+		return values[0] || "";
 	}
 
 	function text(selector: string, attr?: string) {

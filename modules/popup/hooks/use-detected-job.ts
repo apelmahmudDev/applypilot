@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { analyzeJobUrl, isJobAnalysisAvailable } from "@/lib/job-analysis/service";
 import { useJobDetector } from "@/lib/job-detection/use-job-detector";
-import type { DetectionConfidence } from "@/lib/job-detection/types";
 import type { JobForm } from "@/modules/popup/types";
 
 const emptyJob: JobForm = {
@@ -24,6 +24,7 @@ const emptyJob: JobForm = {
 export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 	const detector = useJobDetector();
 	const [job, setJob] = useState<JobForm>(fallbackJob);
+	const [isAnalyzing, setIsAnalyzing] = useState(false);
 
 	useEffect(() => {
 		if (!detector.job) {
@@ -58,7 +59,35 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 		job,
 		setJob,
 		isDetecting: detector.isDetecting,
+		isAnalyzing,
+		isAnalysisAvailable: isJobAnalysisAvailable(),
 		error: detector.error,
 		confidence: detector.job?.confidence ?? null,
+		analyzeCurrentJob: async () => {
+			setIsAnalyzing(true);
+			try {
+				const [activeTab] = await browser.tabs.query({
+					active: true,
+					currentWindow: true,
+				});
+				const analyzedJob = await analyzeJobUrl(activeTab?.url ?? job.url);
+				const nextJob: JobForm = {
+					...job,
+					title: analyzedJob.title || job.title,
+					company: analyzedJob.company || job.company,
+					location: analyzedJob.location || job.location,
+					url: analyzedJob.url || job.url,
+					salary: analyzedJob.salary || job.salary,
+					descriptionText: analyzedJob.descriptionText || job.descriptionText,
+					employmentType: analyzedJob.employmentType || job.employmentType,
+					workplaceType: analyzedJob.workplaceType || job.workplaceType,
+					notes: analyzedJob.descriptionText || job.notes,
+				};
+				setJob(nextJob);
+				return nextJob;
+			} finally {
+				setIsAnalyzing(false);
+			}
+		},
 	};
 }

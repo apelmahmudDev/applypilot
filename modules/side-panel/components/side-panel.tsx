@@ -67,9 +67,12 @@ export function SidePanel() {
 	const {
 		job: detectedJob,
 		isDetecting,
+		isAnalyzing,
+		isAnalysisAvailable,
 		error: detectionError,
 		confidence,
 		retryDetection,
+		analyzeCurrentJob,
 	} = useSidePanelDetection();
 
 	useEffect(() => {
@@ -459,6 +462,8 @@ export function SidePanel() {
 							isDetecting={isDetecting}
 							detectionError={detectionError}
 							confidence={confidence}
+							isAnalyzing={isAnalyzing}
+							isAnalysisAvailable={isAnalysisAvailable}
 							isSaving={isSaving}
 							savedCount={savedCount}
 							appliedCount={appliedCount}
@@ -468,6 +473,19 @@ export function SidePanel() {
 								if (detectedJob) {
 									setActiveForm({ mode: "edit", job: detectedJob });
 								}
+							}}
+							onAnalyzeDetectedJob={() => {
+								void analyzeCurrentJob()
+									.then(() => {
+										toast.success("Job details updated from the page analysis.");
+									})
+									.catch((analysisError) => {
+										const message =
+											analysisError instanceof Error
+												? analysisError.message
+												: "Could not analyze this page right now.";
+										toast.error(message);
+									});
 							}}
 							onSaveDetectedJob={() => {
 								if (detectedJob) {

@@ -13,10 +13,14 @@ export async function detectJobFromActiveTab(): Promise<DetectedJob | null> {
 
 	const isLinkedIn = new URL(tab.url).hostname.toLowerCase().includes("linkedin.com");
 	if (isLinkedIn) {
-		const response = (await browser.tabs.sendMessage(tab.id, {
-			type: "APPLYPILOT_GET_JOB",
-		} satisfies JobDetectorMessage)) as { job?: DetectedJob | null };
-		return response?.job ?? null;
+		try {
+			const response = (await browser.tabs.sendMessage(tab.id, {
+				type: "APPLYPILOT_GET_JOB",
+			} satisfies JobDetectorMessage)) as { job?: DetectedJob | null };
+			return response?.job ?? null;
+		} catch {
+			// If the content script is not ready yet, fall back to generic page parsing.
+		}
 	}
 
 	const [result] = await browser.scripting.executeScript({

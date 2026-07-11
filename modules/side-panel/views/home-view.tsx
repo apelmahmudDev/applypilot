@@ -7,7 +7,9 @@ import {
 	CircleUserRound,
 	ExternalLink,
 	Grid2X2,
+	Brain,
 	Link,
+	LoaderCircle,
 	MapPin,
 	PencilLine,
 	PlusCircle,
@@ -42,12 +44,15 @@ type HomeViewProps = {
 	isDetecting: boolean;
 	detectionError: string;
 	confidence: "high" | "medium" | "low" | null;
+	isAnalyzing: boolean;
+	isAnalysisAvailable: boolean;
 	isSaving: boolean;
 	savedCount: number;
 	appliedCount: number;
 	interviewCount: number;
 	onAddJob: () => void;
 	onEditDetectedJob: () => void;
+	onAnalyzeDetectedJob: () => void;
 	onSaveDetectedJob: () => void;
 	onRetryDetection: () => void;
 	onOpenJob: (jobId: string) => void;
@@ -66,12 +71,15 @@ export function HomeView({
 	isDetecting,
 	detectionError,
 	confidence,
+	isAnalyzing,
+	isAnalysisAvailable,
 	isSaving,
 	savedCount,
 	appliedCount,
 	interviewCount,
 	onAddJob,
 	onEditDetectedJob,
+	onAnalyzeDetectedJob,
 	onSaveDetectedJob,
 	onRetryDetection,
 	onOpenJob,
@@ -201,31 +209,52 @@ export function HomeView({
 									</div>
 								</div>
 
-								<div className="mt-5 grid grid-cols-2 gap-3">
-									<Button
-										type="button"
-										variant="outline"
-										className={cn(
-											"h-10 rounded-[14px] text-sm font-semibold",
-											"border-input bg-card text-foreground hover:bg-muted/60",
-										)}
-										onClick={onEditDetectedJob}
-									>
-										<PencilLine className="size-4" aria-hidden="true" />
-										Edit Details
-									</Button>
-									<Button
-										type="button"
-										className={cn(
-											"h-10 rounded-[14px] text-sm font-semibold disabled:opacity-60",
-											"bg-primary text-primary-foreground hover:brightness-95",
-										)}
-										disabled={isSaving}
-										onClick={onSaveDetectedJob}
-									>
-										<PlusCircle className="size-4" aria-hidden="true" />
-										{isSaving ? "Saving..." : "Save Job"}
-									</Button>
+								<div className="mt-5 space-y-3">
+									{isAnalysisAvailable && (
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 w-full rounded-[14px] text-sm font-semibold",
+												"border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200 dark:hover:bg-blue-500/15",
+											)}
+											disabled={isAnalyzing}
+											onClick={onAnalyzeDetectedJob}
+										>
+											{isAnalyzing ? (
+												<LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+											) : (
+												<Brain className="size-4" aria-hidden="true" />
+											)}
+											{isAnalyzing ? "Analyzing Job Page..." : "Analyze Job Page"}
+										</Button>
+									)}
+									<div className="grid grid-cols-2 gap-3">
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 rounded-[14px] text-sm font-semibold",
+												"border-input bg-card text-foreground hover:bg-muted/60",
+											)}
+											onClick={onEditDetectedJob}
+										>
+											<PencilLine className="size-4" aria-hidden="true" />
+											Edit Details
+										</Button>
+										<Button
+											type="button"
+											className={cn(
+												"h-10 rounded-[14px] text-sm font-semibold disabled:opacity-60",
+												"bg-primary text-primary-foreground hover:brightness-95",
+											)}
+											disabled={isSaving}
+											onClick={onSaveDetectedJob}
+										>
+											<PlusCircle className="size-4" aria-hidden="true" />
+											{isSaving ? "Saving..." : "Save Job"}
+										</Button>
+									</div>
 								</div>
 							</>
 						) : (
@@ -239,27 +268,48 @@ export function HomeView({
 									}
 									isDarkMode={isDarkMode}
 								/>
-								<div className="mt-5 grid grid-cols-2 gap-3">
-									<Button
-										type="button"
-										variant="outline"
-										className={cn(
-											"h-10 rounded-[14px] text-sm font-semibold",
-											"border-input bg-card text-foreground hover:bg-muted/60",
-										)}
-										onClick={onRetryDetection}
-									>
-										<RefreshCw className="size-4" aria-hidden="true" />
-										Retry
-									</Button>
-									<Button
-										type="button"
-										className="h-10 rounded-[14px] bg-primary text-sm font-semibold text-primary-foreground hover:brightness-95"
-										onClick={onAddJob}
-									>
-										<PlusCircle className="size-4" aria-hidden="true" />
-										Add Manually
-									</Button>
+								<div className="mt-5 space-y-3">
+									{isAnalysisAvailable && (
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 w-full rounded-[14px] text-sm font-semibold",
+												"border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200 dark:hover:bg-blue-500/15",
+											)}
+											disabled={isAnalyzing}
+											onClick={onAnalyzeDetectedJob}
+										>
+											{isAnalyzing ? (
+												<LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+											) : (
+												<Brain className="size-4" aria-hidden="true" />
+											)}
+											{isAnalyzing ? "Analyzing Job Page..." : "Analyze This Page"}
+										</Button>
+									)}
+									<div className="grid grid-cols-2 gap-3">
+										<Button
+											type="button"
+											variant="outline"
+											className={cn(
+												"h-10 rounded-[14px] text-sm font-semibold",
+												"border-input bg-card text-foreground hover:bg-muted/60",
+											)}
+											onClick={onRetryDetection}
+										>
+											<RefreshCw className="size-4" aria-hidden="true" />
+											Retry
+										</Button>
+										<Button
+											type="button"
+											className="h-10 rounded-[14px] bg-primary text-sm font-semibold text-primary-foreground hover:brightness-95"
+											onClick={onAddJob}
+										>
+											<PlusCircle className="size-4" aria-hidden="true" />
+											Add Manually
+										</Button>
+									</div>
 								</div>
 							</>
 						)}

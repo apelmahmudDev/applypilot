@@ -1,8 +1,10 @@
 import {
 	AlertCircle,
+	Brain,
 	ExternalLink,
 	FilePlus2,
 	Grid2X2,
+	LoaderCircle,
 	PanelRight,
 	Radar,
 	SearchX,
@@ -19,7 +21,10 @@ type DetectedJobViewProps = {
 	confidence: DetectionConfidence | null;
 	error: string;
 	isDetecting: boolean;
+	isAnalyzing: boolean;
+	isAnalysisAvailable: boolean;
 	isSaving: boolean;
+	onAnalyze: () => void;
 	onEdit: () => void;
 	onSave: () => void;
 };
@@ -29,7 +34,10 @@ export function DetectedJobView({
 	confidence,
 	error,
 	isDetecting,
+	isAnalyzing,
+	isAnalysisAvailable,
 	isSaving,
+	onAnalyze,
 	onEdit,
 	onSave,
 }: DetectedJobViewProps) {
@@ -105,24 +113,46 @@ export function DetectedJobView({
 				/>
 			)}
 
-			<div className="mt-5 grid grid-cols-2 gap-4">
-				<Button
-					type="button"
-					variant="outline"
-					className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
-					onClick={onEdit}
-				>
-					<FilePlus2 className="size-4" aria-hidden="true" />
-					{hasDetectedJob ? "Edit Before Saving" : "Add Manually"}
-				</Button>
-				<Button
-					type="button"
-					className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
-					disabled={isSaving || isDetecting || !hasDetectedJob}
-					onClick={() => onSave()}
-				>
-					{isSaving ? "Saving..." : "Save Job"}
-				</Button>
+			<div className="mt-5 grid grid-cols-1 gap-3">
+				{isAnalysisAvailable && (
+					<Button
+						type="button"
+						variant="outline"
+						className="h-10 rounded-md border-blue-200 bg-blue-50 text-sm font-bold text-blue-700 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200 dark:hover:bg-blue-500/15"
+						disabled={isDetecting || isAnalyzing}
+						onClick={onAnalyze}
+					>
+						{isAnalyzing ? (
+							<LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+						) : (
+							<Brain className="size-4" aria-hidden="true" />
+						)}
+						{isAnalyzing
+							? "Analyzing Job Page..."
+							: hasDetectedJob
+								? "Analyze Job Page"
+								: "Analyze This Page"}
+					</Button>
+				)}
+				<div className="grid grid-cols-2 gap-4">
+					<Button
+						type="button"
+						variant="outline"
+						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
+						onClick={onEdit}
+					>
+						<FilePlus2 className="size-4" aria-hidden="true" />
+						{hasDetectedJob ? "Edit Before Saving" : "Add Manually"}
+					</Button>
+					<Button
+						type="button"
+						className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
+						disabled={isSaving || isDetecting || !hasDetectedJob}
+						onClick={() => onSave()}
+					>
+						{isSaving ? "Saving..." : "Save Job"}
+					</Button>
+				</div>
 			</div>
 
 			<div className="mt-8 grid grid-cols-2 gap-4">

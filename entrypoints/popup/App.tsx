@@ -14,7 +14,16 @@ function App() {
 	const [view, setView] = useState<PopupView>("detected");
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveResult, setSaveResult] = useState<SaveJobResult | null>(null);
-	const { job, setJob, isDetecting, error, confidence } = useDetectedJob();
+	const {
+		job,
+		setJob,
+		isDetecting,
+		isAnalyzing,
+		isAnalysisAvailable,
+		error,
+		confidence,
+		analyzeCurrentJob,
+	} = useDetectedJob();
 
 	const saveJob = async (savedJob: JobForm = job) => {
 		setIsSaving(true);
@@ -36,6 +45,19 @@ function App() {
 		}
 	};
 
+	const analyzeJob = async () => {
+		try {
+			await analyzeCurrentJob();
+			toast.success("Job details updated from the page analysis.");
+		} catch (analysisError) {
+			const message =
+				analysisError instanceof Error
+					? analysisError.message
+					: "Could not analyze this page right now.";
+			toast.error(message);
+		}
+	};
+
 	return (
 		<>
 			<PopupShell>
@@ -45,7 +67,10 @@ function App() {
 						confidence={confidence}
 						error={error}
 						isDetecting={isDetecting}
+						isAnalyzing={isAnalyzing}
+						isAnalysisAvailable={isAnalysisAvailable}
 						isSaving={isSaving}
+						onAnalyze={analyzeJob}
 						onEdit={() => setView("edit")}
 						onSave={saveJob}
 					/>

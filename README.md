@@ -1,160 +1,204 @@
-# ApplyPilot
+<p align="center">
+  <img src="./public/logo.png" alt="ApplyPilot logo" width="92" />
+</p>
 
-ApplyPilot is a privacy-first browser extension for saving and managing job applications while browsing job boards. The current app is built with WXT, React, TypeScript, Tailwind CSS, shadcn/Radix UI components, TanStack Form, TanStack Table, and Zod.
+<h1 align="center">ApplyPilot</h1>
 
-The product goal is simple: detect a job page, let the user quickly review or edit the important fields, save the job locally, and then offer larger workspaces for deeper management.
+<p align="center">
+  A privacy-first browser extension for tracking job applications while you browse job boards.
+</p>
 
-## Current Popup Flow
+<hr />
 
-The popup currently supports three views:
+ApplyPilot helps you detect the current job page, review or edit the captured details, save the job locally, and manage your applications from a popup, side panel, and dashboard.
 
-- `Detected Job`: shows the detected job summary and quick actions.
-- `Edit Before Saving`: opens a compact in-popup form for correcting important fields before saving.
-- `Saved State`: confirms the save and offers entry points to the side panel or dashboard.
+## Highlights
 
-The compact edit form intentionally keeps only the fields that fit the popup workflow:
+- Fast popup flow for detect, review, edit, and save
+- Side panel workspace for browsing-time job tracking
+- Dashboard for larger management views and data-heavy workflows
+- Local-first storage using browser storage
+- Duplicate detection by job URL first, then company plus title
+- Reminder support with follow-up date, time, and note fields
+- Minimal extension permissions by default
 
-- Job title
-- Company
-- Location
-- Job URL
-- Platform
-- Status
-- Notes
+## Product Surfaces
 
-Larger fields and advanced workflows belong in the side panel or full dashboard.
+### Popup
+
+The popup is designed for quick actions on the current page:
+
+- Detect the job posting from the active tab
+- Show a compact summary of the detected role
+- Edit important fields before saving
+- Save immediately when the detected data looks good
+- Jump to the side panel or full dashboard after saving
+
+### Side Panel
+
+The side panel is the browsing companion for day-to-day tracking:
+
+- Detect the current job page while you browse
+- Save, edit, or review jobs without leaving the tab
+- View recent jobs and upcoming reminders
+- Open detailed job and reminder views
+- Manage application status and follow-up workflows
+
+### Dashboard
+
+The dashboard is the larger workspace for management-style tasks:
+
+- Full application browsing
+- Table-oriented views
+- Analytics and export-oriented flows
+- More room for scaling job management over time
+
+## How It Works
+
+1. Open a job posting in the browser.
+2. Open the ApplyPilot popup or side panel.
+3. ApplyPilot detects the visible job details from the active tab.
+4. Review the captured information.
+5. Save immediately or edit before saving.
+6. Manage the saved record later from the side panel or dashboard.
+
+Saved jobs are stored locally in the browser. Each record keeps `createdAt` and `updatedAt` values, and saves try to avoid duplicates by checking URL first and then company plus title.
 
 ## Tech Stack
 
-- WXT for browser extension structure and builds
-- React 19 with TypeScript
+- WXT
+- React 19
+- TypeScript
 - Tailwind CSS 4
-- shadcn/Radix UI primitives
-- Lucide React icons
-- TanStack Form for popup form state
-- Zod for form validation
-- TanStack Table for future dashboard data tables
-- pnpm for package management
+- shadcn/ui and Radix primitives
+- TanStack Form
+- TanStack Table
+- Zod
+- Sonner
+- pnpm
 
-## Project Structure
+## Current Permissions
 
-```txt
-entrypoints/
-  background.ts          Extension background entrypoint
-  content.ts             Content script entrypoint
-  popup/                 Popup HTML, React bootstrap, and app container
+The current manifest is intentionally small:
 
-modules/
-  popup/                 Popup feature module
-    components/          Popup views and shell components
-    job-form.schema.ts   Zod validation schema
-    mock-job.ts          Temporary detected job fixture
-    types.ts             Popup and job form types
+- `activeTab`
+- `scripting`
+- `sidePanel`
+- `storage`
 
-components/
-  ui/                    Shared shadcn/Radix UI components
+Current host permission:
 
-assets/
-  tailwind.css           Global Tailwind and theme styles
+- `*://*.linkedin.com/*`
 
-public/
-  icon/                  Extension icons
-```
-
-`entrypoints/popup/App.tsx` is intentionally small. Popup UI and validation logic live in `modules/popup` so the entrypoint stays focused on view orchestration.
+If detection expands to more sites later, permissions should stay as narrow as possible.
 
 ## Getting Started
 
-Install dependencies:
+### Prerequisites
+
+- Node.js
+- pnpm
+
+### Install
 
 ```bash
 pnpm install
 ```
 
-Start the Chrome development build:
+### Run In Development
+
+Chrome / Chromium:
 
 ```bash
 pnpm dev
 ```
 
-Start the Firefox development build:
+Firefox:
 
 ```bash
 pnpm dev:firefox
 ```
 
-Type-check the project:
+### Type Check
 
 ```bash
 pnpm compile
 ```
 
-Create a production build:
+### Production Build
 
 ```bash
 pnpm build
 ```
 
-Create a distributable zip:
+Firefox production build:
+
+```bash
+pnpm build:firefox
+```
+
+### Create Zip Packages
 
 ```bash
 pnpm zip
 ```
 
-## Loading The Extension
+Firefox zip:
 
-For Chrome or Chromium-based browsers:
+```bash
+pnpm zip:firefox
+```
+
+## Load The Extension
+
+### Chrome / Chromium
 
 1. Run `pnpm dev` or `pnpm build`.
 2. Open `chrome://extensions`.
 3. Enable Developer mode.
-4. Click Load unpacked.
-5. Select the generated extension output directory from WXT.
-6. Reload the extension after code changes when needed.
+4. Click `Load unpacked`.
+5. Select the WXT output directory.
+
+### Firefox
+
+1. Run `pnpm dev:firefox` or `pnpm build:firefox`.
+2. Open `about:debugging`.
+3. Choose `This Firefox`.
+4. Click `Load Temporary Add-on`.
+5. Select the generated manifest from the build output.
 
 ## Development Notes
 
-- Use `pnpm` because this repo uses `pnpm-lock.yaml`.
-- Keep browser extension permissions minimal.
-- Keep the popup fast and focused on save/edit/open actions.
-- Use the side panel for browsing-time workflows.
-- Use the dashboard for larger management tasks like full tables, filtering, analytics, import, and export.
-- Prefer local-first storage unless a feature explicitly requires a backend.
-- Use existing `components/ui` primitives before adding custom UI.
+- Use `pnpm` because the repo is locked with `pnpm-lock.yaml`.
+- Keep `entrypoints/` thin and move feature logic into `modules/`.
+- Prefer existing shared UI components from `components/ui`.
+- Keep the popup lightweight and focused on quick save flows.
+- Keep larger management flows in the side panel and dashboard.
+- Preserve local-first behavior unless a feature explicitly needs something else.
+- Avoid broad permissions, remote services, analytics, and telemetry unless intentionally added.
 
-## Form Pattern
+## Data Model Notes
 
-Popup forms should use the shared UI components and validation stack:
+Saved jobs support fields such as:
 
-- `Field`, `FieldLabel`, and `FieldError` for form structure
-- `Input`, `Textarea`, `InputGroup`, and `Select` for controls
-- TanStack Form for form state
-- Zod schemas for validation
+- title
+- company
+- location
+- url
+- platform
+- salary
+- notes
+- status
+- reminder fields
+- timestamps
 
-Validation schemas should live near the feature that owns the form, such as `modules/popup/job-form.schema.ts`.
+Storage behavior includes:
 
-## Data Table Pattern
-
-For dashboard-scale tables, follow the shadcn/Radix data-table split inside the relevant feature module:
-
-```txt
-feature/
-  columns.tsx
-  data-table.tsx
-  view.tsx
-```
-
-- `columns.tsx` defines columns, cells, headers, sorting labels, and row actions.
-- `data-table.tsx` owns reusable table UI, sorting, filtering, pagination, selection, empty state, and loading state.
-- `view.tsx` or the feature entry component loads data and renders the table.
-
-Avoid putting large tables inside the popup.
-
-## Privacy Direction
-
-ApplyPilot should treat job application data as private user data. The default direction is local-first storage, minimal permissions, and no analytics, telemetry, backend sync, AI calls, or external network features unless explicitly added for a clear product reason.
+- normalization before save
+- backward-safe stored record parsing
+- duplicate detection
+- create, update, delete, and list operations
 
 ## Status
 
-This project is under active development. The popup UI is the most developed area today; dashboard, side panel, persistent storage, real job detection, and full job management workflows are expected to grow from the same module-based architecture.
-
+ApplyPilot is under active development. The popup, side panel, local storage, and detection flow are already in place, and the dashboard is positioned to keep growing into the larger management surface.

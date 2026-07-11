@@ -2,7 +2,7 @@
   <img src="./public/logo.png" alt="ApplyPilot logo" width="92" />
 </p>
 
-<h1 align="center">ApplyPilot</h1>
+<h1 align="center">Applypilot</h1>
 
 <p align="center">
   A privacy-first browser extension for tracking job applications while you browse job boards.

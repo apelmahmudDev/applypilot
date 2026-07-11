@@ -20,7 +20,6 @@ type DetectedJobViewProps = {
 	error: string;
 	isDetecting: boolean;
 	isSaving: boolean;
-	saveError: string;
 	onEdit: () => void;
 	onSave: () => void;
 };
@@ -31,7 +30,6 @@ export function DetectedJobView({
 	error,
 	isDetecting,
 	isSaving,
-	saveError,
 	onEdit,
 	onSave,
 }: DetectedJobViewProps) {
@@ -57,12 +55,6 @@ export function DetectedJobView({
 			{hasDetectedJob && confidence === "low" && (
 				<div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
 					We detected some information, but please review before saving.
-				</div>
-			)}
-
-			{hasDetectedJob && saveError && (
-				<div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-					{saveError}
 				</div>
 			)}
 

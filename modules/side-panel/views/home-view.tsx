@@ -42,8 +42,6 @@ type HomeViewProps = {
 	isDetecting: boolean;
 	detectionError: string;
 	confidence: "high" | "medium" | "low" | null;
-	saveMessage: string;
-	saveError: string;
 	isSaving: boolean;
 	savedCount: number;
 	appliedCount: number;
@@ -68,8 +66,6 @@ export function HomeView({
 	isDetecting,
 	detectionError,
 	confidence,
-	saveMessage,
-	saveError,
 	isSaving,
 	savedCount,
 	appliedCount,
@@ -159,26 +155,6 @@ export function HomeView({
 										)}
 									>
 										Review the detected details before saving.
-									</p>
-								)}
-								{saveMessage && (
-									<p
-										className={cn(
-											"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
-											"border-[#ECFDF3] bg-[#ECFDF3] text-[#15803D]",
-										)}
-									>
-										{saveMessage}
-									</p>
-								)}
-								{saveError && (
-									<p
-										className={cn(
-											"mb-3 rounded-md border px-3 py-2 text-xs font-medium",
-											"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626]",
-										)}
-									>
-										{saveError}
 									</p>
 								)}
 								<div className="flex gap-3">

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { Toaster } from "@/components/ui/sonner";
 import { useSystemTheme } from "@/hooks/use-system-theme";
 import {
 	createJobInStorage,
@@ -55,8 +57,6 @@ export function SidePanel() {
 	const [applicationSort, setApplicationSort] = useState("latest");
 	const [reminderFilter, setReminderFilter] = useState<ReminderFilter>("Today");
 	const [isSaving, setIsSaving] = useState(false);
-	const [saveError, setSaveError] = useState("");
-	const [saveMessage, setSaveMessage] = useState("");
 	const [jobPendingDelete, setJobPendingDelete] = useState<StoredJob | null>(null);
 	const [isDeletingJob, setIsDeletingJob] = useState(false);
 	const [activeForm, setActiveForm] = useState<{
@@ -203,8 +203,6 @@ export function SidePanel() {
 
 	const handleSaveJob = async (job: SidePanelJobForm) => {
 		setIsSaving(true);
-		setSaveError("");
-		setSaveMessage("");
 
 		try {
 			const result =
@@ -220,14 +218,14 @@ export function SidePanel() {
 
 				return [result.job, ...withoutSavedJob];
 			});
-			setSaveMessage(
+			toast.success(
 				result.action === "updated"
 					? "Saved changes to this job."
 					: "Saved this job locally.",
 			);
 			setActiveForm(null);
 		} catch {
-			setSaveError("Could not save this job. Please try again.");
+			toast.error("Could not save this job. Please try again.");
 		} finally {
 			setIsSaving(false);
 		}
@@ -246,7 +244,7 @@ export function SidePanel() {
 				),
 			);
 		} catch {
-			setSaveError("Could not update this job. Please try again.");
+			toast.error("Could not update this job. Please try again.");
 		}
 	};
 
@@ -265,7 +263,7 @@ export function SidePanel() {
 			const deleted = await deleteJobFromStorage(jobPendingDelete.id);
 
 			if (!deleted) {
-				setSaveError("Could not delete this job. Please try again.");
+				toast.error("Could not delete this job. Please try again.");
 				return;
 			}
 
@@ -274,10 +272,10 @@ export function SidePanel() {
 			);
 			setSelectedJobId(null);
 			setPanelView(detailsBackView);
-			setSaveMessage("Deleted this job.");
+			toast.success("Deleted this job.");
 			setJobPendingDelete(null);
 		} catch {
-			setSaveError("Could not delete this job. Please try again.");
+			toast.error("Could not delete this job. Please try again.");
 		} finally {
 			setIsDeletingJob(false);
 		}
@@ -317,7 +315,7 @@ export function SidePanel() {
 				),
 			);
 		} catch {
-			setSaveError("Could not mark this reminder as done. Please try again.");
+			toast.error("Could not mark this reminder as done. Please try again.");
 		}
 	};
 
@@ -347,7 +345,7 @@ export function SidePanel() {
 				setPanelView(detailsBackView);
 			}
 		} catch {
-			setSaveError("Could not remove this reminder. Please try again.");
+			toast.error("Could not remove this reminder. Please try again.");
 		}
 	};
 
@@ -356,139 +354,140 @@ export function SidePanel() {
 	};
 
 	return (
-		<main
-			className="h-screen min-h-[640px] w-full overflow-hidden bg-background p-2 text-foreground transition-colors"
-		>
-			<ConfirmDialog
-				open={Boolean(jobPendingDelete)}
-				title="Delete job?"
-				description={
-					<>
-						This will delete{" "}
-						<span className="font-semibold text-foreground">
-							{jobPendingDelete?.title || "this job"}
-						</span>
-						.
-					</>
-				}
-				confirmLabel="Delete"
-				confirmingLabel="Deleting..."
-				isConfirming={isDeletingJob}
-				onOpenChange={(open) => {
-					if (!open && !isDeletingJob) {
-						setJobPendingDelete(null);
-					}
-				}}
-				onConfirm={() => void confirmDeleteJob()}
-			/>
-			<div
-			className="flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
+		<>
+			<main
+				className="h-screen min-h-[640px] w-full overflow-hidden bg-background p-2 text-foreground transition-colors"
 			>
-				{activeForm ? (
-					<JobFormPanel
-						mode={activeForm.mode}
-						initialJob={activeForm.job}
-						isDarkMode={isDarkMode}
-						onCancel={() => setActiveForm(null)}
-						onSave={handleSaveJob}
-					/>
-				) : panelView === "jobDetails" ? (
-					<JobDetailsView
-						job={selectedJob}
-						isDarkMode={isDarkMode}
-						onBack={() => setPanelView(detailsBackView)}
-						onEdit={(job) =>
-							setActiveForm({
-								mode: "edit",
-								jobId: job.id,
-								job: toSidePanelJobForm(job),
-							})
+				<ConfirmDialog
+					open={Boolean(jobPendingDelete)}
+					title="Delete job?"
+					description={
+						<>
+							This will delete{" "}
+							<span className="font-semibold text-foreground">
+								{jobPendingDelete?.title || "this job"}
+							</span>
+							.
+						</>
+					}
+					confirmLabel="Delete"
+					confirmingLabel="Deleting..."
+					isConfirming={isDeletingJob}
+					onOpenChange={(open) => {
+						if (!open && !isDeletingJob) {
+							setJobPendingDelete(null);
 						}
-						onStatusChange={handleCycleJobStatus}
-						onDelete={handleDeleteJob}
-						onUpdateReminder={(job) =>
-							setActiveForm({
-								mode: "edit",
-								jobId: job.id,
-								job: toSidePanelJobForm(job),
-							})
-						}
-						onRemoveReminder={removeReminder}
-					/>
-				) : panelView === "reminderDetails" ? (
-					<ReminderDetailsView
-						reminder={selectedReminder}
-						isDarkMode={isDarkMode}
-						onBack={() => setPanelView(detailsBackView)}
-						onMarkDone={markReminderDone}
-						onRemoveReminder={removeReminder}
-					/>
-				) : panelView === "applications" ? (
-					<AllApplicationsView
-						jobs={allApplicationJobs}
-						search={applicationSearch}
-						filter={applicationFilter}
-						sort={applicationSort}
-						isDarkMode={isDarkMode}
-						onBack={() => setPanelView("home")}
-						onSearchChange={setApplicationSearch}
-						onFilterChange={setApplicationFilter}
-						onSortChange={setApplicationSort}
-						onStatusChange={handleCycleJobStatus}
-						onOpenJob={(job) => openJobDetails(job.id, "applications")}
-					/>
-				) : panelView === "reminders" ? (
-					<AllRemindersView
-						reminders={visibleReminders}
-						filter={reminderFilter}
-						isDarkMode={isDarkMode}
-						onBack={() => setPanelView("home")}
-						onFilterChange={setReminderFilter}
-						onOpenReminder={(reminder) =>
-							openReminderDetails(reminder.id, "reminders")
-						}
-						onMarkDone={markReminderDone}
-					/>
-				) : panelView === "settings" ? (
-					<SettingsView isDarkMode={isDarkMode} onBack={() => setPanelView("home")} />
-				) : (
-					<HomeView
-						isDarkMode={isDarkMode}
-						displayedJobs={displayedJobs}
-						reminders={reminders}
-						detectedJob={detectedJob}
-						isDetecting={isDetecting}
-						detectionError={detectionError}
-						confidence={confidence}
-						saveMessage={saveMessage}
-						saveError={saveError}
-						isSaving={isSaving}
-						savedCount={savedCount}
-						appliedCount={appliedCount}
-						interviewCount={interviewCount}
-						onAddJob={openAddJobForm}
-						onEditDetectedJob={() => {
-							if (detectedJob) {
-								setActiveForm({ mode: "edit", job: detectedJob });
+					}}
+					onConfirm={() => void confirmDeleteJob()}
+				/>
+				<div
+					className="flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
+				>
+					{activeForm ? (
+						<JobFormPanel
+							mode={activeForm.mode}
+							initialJob={activeForm.job}
+							isDarkMode={isDarkMode}
+							onCancel={() => setActiveForm(null)}
+							onSave={handleSaveJob}
+						/>
+					) : panelView === "jobDetails" ? (
+						<JobDetailsView
+							job={selectedJob}
+							isDarkMode={isDarkMode}
+							onBack={() => setPanelView(detailsBackView)}
+							onEdit={(job) =>
+								setActiveForm({
+									mode: "edit",
+									jobId: job.id,
+									job: toSidePanelJobForm(job),
+								})
 							}
-						}}
-						onSaveDetectedJob={() => {
-							if (detectedJob) {
-								void handleSaveJob(detectedJob);
+							onStatusChange={handleCycleJobStatus}
+							onDelete={handleDeleteJob}
+							onUpdateReminder={(job) =>
+								setActiveForm({
+									mode: "edit",
+									jobId: job.id,
+									job: toSidePanelJobForm(job),
+								})
 							}
-						}}
-						onRetryDetection={retryDetection}
-						onOpenJob={(jobId) => openJobDetails(jobId, "home")}
-						onOpenReminder={(reminderId) =>
-							openReminderDetails(reminderId, "home")
-						}
-						onOpenApplications={() => setPanelView("applications")}
-						onOpenReminders={() => setPanelView("reminders")}
-						onOpenSettings={() => setPanelView("settings")}
-						onMarkReminderDone={markReminderDone}
-					/>
-				)}
-			</div>
-		</main>
+							onRemoveReminder={removeReminder}
+						/>
+					) : panelView === "reminderDetails" ? (
+						<ReminderDetailsView
+							reminder={selectedReminder}
+							isDarkMode={isDarkMode}
+							onBack={() => setPanelView(detailsBackView)}
+							onMarkDone={markReminderDone}
+							onRemoveReminder={removeReminder}
+						/>
+					) : panelView === "applications" ? (
+						<AllApplicationsView
+							jobs={allApplicationJobs}
+							search={applicationSearch}
+							filter={applicationFilter}
+							sort={applicationSort}
+							isDarkMode={isDarkMode}
+							onBack={() => setPanelView("home")}
+							onSearchChange={setApplicationSearch}
+							onFilterChange={setApplicationFilter}
+							onSortChange={setApplicationSort}
+							onStatusChange={handleCycleJobStatus}
+							onOpenJob={(job) => openJobDetails(job.id, "applications")}
+						/>
+					) : panelView === "reminders" ? (
+						<AllRemindersView
+							reminders={visibleReminders}
+							filter={reminderFilter}
+							isDarkMode={isDarkMode}
+							onBack={() => setPanelView("home")}
+							onFilterChange={setReminderFilter}
+							onOpenReminder={(reminder) =>
+								openReminderDetails(reminder.id, "reminders")
+							}
+							onMarkDone={markReminderDone}
+						/>
+					) : panelView === "settings" ? (
+						<SettingsView isDarkMode={isDarkMode} onBack={() => setPanelView("home")} />
+					) : (
+						<HomeView
+							isDarkMode={isDarkMode}
+							displayedJobs={displayedJobs}
+							reminders={reminders}
+							detectedJob={detectedJob}
+							isDetecting={isDetecting}
+							detectionError={detectionError}
+							confidence={confidence}
+							isSaving={isSaving}
+							savedCount={savedCount}
+							appliedCount={appliedCount}
+							interviewCount={interviewCount}
+							onAddJob={openAddJobForm}
+							onEditDetectedJob={() => {
+								if (detectedJob) {
+									setActiveForm({ mode: "edit", job: detectedJob });
+								}
+							}}
+							onSaveDetectedJob={() => {
+								if (detectedJob) {
+									void handleSaveJob(detectedJob);
+								}
+							}}
+							onRetryDetection={retryDetection}
+							onOpenJob={(jobId) => openJobDetails(jobId, "home")}
+							onOpenReminder={(reminderId) =>
+								openReminderDetails(reminderId, "home")
+							}
+							onOpenApplications={() => setPanelView("applications")}
+							onOpenReminders={() => setPanelView("reminders")}
+							onOpenSettings={() => setPanelView("settings")}
+							onMarkReminderDone={markReminderDone}
+						/>
+					)}
+				</div>
+			</main>
+			<Toaster position="top-center" richColors />
+		</>
 	);
 }

@@ -1,4 +1,4 @@
-import { Send, Settings, X } from "lucide-react";
+import { Send, Settings } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -30,16 +30,6 @@ export function PopupShell({ children }: PopupShellProps) {
 						title="Settings"
 					>
 						<Settings className="size-4" aria-hidden="true" />
-					</Button>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className="text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#262628]"
-						aria-label="Close popup"
-						title="Close"
-					>
-						<X className="size-4" aria-hidden="true" />
 					</Button>
 				</div>
 			</header>

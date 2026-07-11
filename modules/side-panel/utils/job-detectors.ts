@@ -383,7 +383,7 @@ function findLinkedInMetadataText(header: Element | null): string | undefined {
 }
 
 function cleanLinkedInLocationValue(
-	text: string,
+	text: string | undefined,
 	company?: string,
 ): string | undefined {
 	const normalized = oneLine(text)

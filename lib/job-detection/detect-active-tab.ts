@@ -32,7 +32,13 @@ function isDetectableUrl(url: string) {
 }
 
 function detectJobInPage(): DetectedJob | null {
-	type PartialDetectedJob = Partial<DetectedJob>;
+	type ParsedDetectedJob = Partial<
+		DetectedJob & {
+			description: string;
+			employmentType: string;
+			workplaceType: string;
+		}
+	>;
 
 	const url = window.location.href;
 	const platform = detectPlatform(url);
@@ -49,6 +55,7 @@ function detectJobInPage(): DetectedJob | null {
 		metaDetected,
 		genericDetected,
 	);
+	const formattedDescription = getFormattedDescription(platform);
 
 	if (!hasDetectedJobDetails(detected)) {
 		return null;
@@ -60,10 +67,11 @@ function detectJobInPage(): DetectedJob | null {
 		location: detected.location ?? "",
 		url,
 		platform: platformLabel,
-		descriptionText: detected.description ?? "",
-		descriptionHtml: "",
+		descriptionText: formattedDescription.text || (detected.description ?? ""),
+		descriptionHtml: formattedDescription.html,
 		salary: detected.salary ?? "",
 		logoUrl: detected.logoUrl,
+		employmentType: detected.employmentType,
 		confidence: getConfidence(detected),
 	};
 
@@ -95,7 +103,7 @@ function detectJobInPage(): DetectedJob | null {
 		return getMeta("og:site_name") || new URL(pageUrl).hostname.replace(/^www\./, "");
 	}
 
-	function parsePlatformJob(platformName: string): PartialDetectedJob {
+	function parsePlatformJob(platformName: string): ParsedDetectedJob {
 		if (platformName === "indeed") return parseIndeedJob();
 		if (platformName === "greenhouse") return parseGreenhouseJob();
 		if (platformName === "lever") return parseLeverJob();
@@ -105,7 +113,10 @@ function detectJobInPage(): DetectedJob | null {
 		return {};
 	}
 
-	function parseIndeedJob(): PartialDetectedJob {
+	function parseIndeedJob(): ParsedDetectedJob {
+		const compensation = text("#salaryInfoAndJobType");
+		const { salary, employmentType } = parseIndeedCompensation(compensation);
+
 		return {
 			title: text('[data-testid="jobsearch-JobInfoHeader-title"]') || text("h1"),
 			company:
@@ -115,14 +126,22 @@ function detectJobInPage(): DetectedJob | null {
 				text('[data-testid="inlineHeader-companyLocation"]') ||
 				text('[data-testid="job-location"]') ||
 				text("#jobLocationText"),
-			description: text("#jobDescriptionText"),
+			description: text("#jobDescriptionText") || text("#jobDescriptionText > div"),
+			salary:
+				salary ||
+				text('#salaryInfoAndJobType .css-1oc7tea') ||
+				text('[aria-label="Pay"] [data-testid="list-item"] span'),
+			employmentType:
+				employmentType ||
+				text('#salaryInfoAndJobType .css-1u1g3ig') ||
+				text('[aria-label="Job type"] [data-testid="list-item"] span'),
 			logoUrl:
 				text('img[data-testid="jobsearch-JobInfoHeader-logo-overlay-lower"]', "src") ||
 				text(".jobsearch-JobInfoHeader-logo", "src"),
 		};
 	}
 
-	function parseGreenhouseJob(): PartialDetectedJob {
+	function parseGreenhouseJob(): ParsedDetectedJob {
 		return {
 			title: text(".app-title") || text("h1"),
 			company: text(".company-name") || getCompanyFromTitle(document.title),
@@ -131,7 +150,7 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function parseLeverJob(): PartialDetectedJob {
+	function parseLeverJob(): ParsedDetectedJob {
 		return {
 			title: text(".posting-headline h2") || text("h1"),
 			company: text(".main-header-logo img", "alt") || getCompanyFromTitle(document.title),
@@ -140,7 +159,7 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function parseWorkdayJob(): PartialDetectedJob {
+	function parseWorkdayJob(): ParsedDetectedJob {
 		return {
 			title:
 				text('[data-automation-id="jobPostingHeader"]') ||
@@ -152,7 +171,7 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function parseAshbyJob(): PartialDetectedJob {
+	function parseAshbyJob(): ParsedDetectedJob {
 		return {
 			title: text("h1"),
 			company: getMeta("og:site_name") || getCompanyFromTitle(document.title),
@@ -161,7 +180,7 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function parseStructuredJobData(): PartialDetectedJob {
+	function parseStructuredJobData(): ParsedDetectedJob {
 		const scripts = Array.from(
 			document.querySelectorAll('script[type="application/ld+json"]'),
 		);
@@ -216,7 +235,7 @@ function detectJobInPage(): DetectedJob | null {
 		return null;
 	}
 
-	function parseMetaJobData(): PartialDetectedJob {
+	function parseMetaJobData(): ParsedDetectedJob {
 		const title = getMeta("og:title") || getMeta("twitter:title");
 		const description =
 			getMeta("description") || getMeta("og:description") || getMeta("twitter:description");
@@ -229,7 +248,7 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function parseGenericJobPage(): PartialDetectedJob {
+	function parseGenericJobPage(): ParsedDetectedJob {
 		const title = text("h1") || removeCompanyFromTitle(document.title);
 		const company =
 			text('[class*="company"]') ||
@@ -248,9 +267,9 @@ function detectJobInPage(): DetectedJob | null {
 		};
 	}
 
-	function mergeDetected(...items: PartialDetectedJob[]) {
-		return items.reduce<PartialDetectedJob>((result, item) => {
-			for (const key of Object.keys(item) as Array<keyof PartialDetectedJob>) {
+	function mergeDetected(...items: ParsedDetectedJob[]) {
+		return items.reduce<ParsedDetectedJob>((result, item) => {
+			for (const key of Object.keys(item) as Array<keyof ParsedDetectedJob>) {
 				if (!result[key] && item[key]) {
 					result[key] = item[key] as never;
 				}
@@ -258,6 +277,16 @@ function detectJobInPage(): DetectedJob | null {
 
 			return result;
 		}, {});
+	}
+
+	function getFormattedDescription(platformName: string) {
+		if (platformName === "indeed") {
+			return formatDescriptionElement(
+				document.querySelector<HTMLElement>("#jobDescriptionText"),
+			);
+		}
+
+		return { html: "", text: "" };
 	}
 
 	function text(selector: string, attr?: string) {
@@ -337,19 +366,116 @@ function detectJobInPage(): DetectedJob | null {
 		return cleanText(element.textContent);
 	}
 
+	function parseIndeedCompensation(value: string) {
+		const cleaned = cleanText(value);
+		if (!cleaned) {
+			return { salary: "", employmentType: "" };
+		}
+
+		const salary =
+			cleaned.match(
+				/(?:\$|USD|EUR|GBP|BDT)\s?[\d,.]+(?:\s*(?:-|to)\s*(?:\$|USD|EUR|GBP|BDT)?\s?[\d,.]+)?(?:\s+(?:an?\s+hour|per\s+hour|a\s+year|per\s+year|a\s+month|per\s+month))?/i,
+			)?.[0] || "";
+
+		const employmentType =
+			cleaned.match(
+				/\b(full-time|part-time|contract|temporary|internship|intern|permanent|seasonal|freelance)\b/i,
+			)?.[0] || "";
+
+		return {
+			salary: cleanText(salary),
+			employmentType: cleanText(employmentType),
+		};
+	}
+
+	function formatDescriptionElement(source: HTMLElement | null) {
+		if (!source) {
+			return { html: "", text: "" };
+		}
+
+		const clone = source.cloneNode(true) as HTMLElement;
+
+		clone
+			.querySelectorAll(
+				[
+					"script",
+					"style",
+					"noscript",
+					"iframe",
+					"svg",
+					"canvas",
+					"button",
+					"form",
+					"input",
+					"textarea",
+					"select",
+					"[hidden]",
+					'[aria-hidden="true"]',
+				].join(","),
+			)
+			.forEach((element) => element.remove());
+
+		clone.querySelectorAll<HTMLElement>("*").forEach((element) => {
+			const tagName = element.tagName.toLowerCase();
+
+			Array.from(element.attributes).forEach((attribute) => {
+				const keepHref = tagName === "a" && attribute.name === "href";
+				const keepTitle = attribute.name === "title";
+
+				if (!keepHref && !keepTitle) {
+					element.removeAttribute(attribute.name);
+				}
+			});
+
+			if (tagName === "a") {
+				const href = element.getAttribute("href");
+
+				if (href) {
+					try {
+						element.setAttribute("href", new URL(href, window.location.href).href);
+					} catch {
+						element.removeAttribute("href");
+					}
+				}
+			}
+		});
+
+		const text = (clone.innerText || clone.textContent || "")
+			.replace(/\r\n/g, "\n")
+			.split("\n")
+			.map((line) => line.replace(/[ \t]+/g, " ").trim())
+			.reduce<string[]>((lines, line) => {
+				const previousLine = lines.at(-1);
+
+				if (line === "" && previousLine === "") {
+					return lines;
+				}
+
+				lines.push(line);
+				return lines;
+			}, [])
+			.join("\n")
+			.trim();
+
+		return {
+			html: clone.innerHTML.trim(),
+			text,
+		};
+	}
+
 	function cleanText(value: unknown) {
 		return String(value ?? "")
 			.replace(/\s+/g, " ")
 			.trim();
 	}
 
-	function getConfidence(item: PartialDetectedJob): DetectedJob["confidence"] {
+	function getConfidence(item: ParsedDetectedJob): DetectedJob["confidence"] {
 		if (item.title && item.company && item.location) return "high";
 		if (item.title && item.company) return "medium";
 		return "low";
 	}
 
-	function hasDetectedJobDetails(item: PartialDetectedJob) {
+	function hasDetectedJobDetails(item: ParsedDetectedJob) {
 		return Boolean(item.title || item.company || item.location || item.description);
 	}
 }

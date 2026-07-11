@@ -1,6 +1,6 @@
 import { AllJobsView } from "@/modules/dashboard/view/all-jobs-view";
 import { AnalyticsView } from "@/modules/dashboard/view/analytics-view";
-import { DashboardOverview } from "@/modules/dashboard/components/dashboard-overview";
+import { DashboardOverview } from "@/modules/dashboard/view/dashboard-overview";
 import { ExportView } from "@/modules/dashboard/view/export-view";
 import { RemindersView } from "@/modules/dashboard/view/reminders-view";
 import { SettingsView } from "@/modules/dashboard/view/settings-view";

@@ -1,4 +1,6 @@
-import { Bell, Plus, Search, Settings } from "lucide-react";
+import type { ReactNode } from "react";
+
+import { Plus, Search, Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,62 +14,79 @@ type DashboardHeaderProps = {
 	activeView: DashboardView;
 };
 
+type UtilityButtonProps = {
+	icon: ReactNode;
+	label: string;
+	badge?: string;
+};
+
 export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 	const title = getDashboardViewTitle(activeView);
 
 	return (
-		<header className="sticky top-0 z-10 w-full bg-slate-50/85 backdrop-blur-md dark:bg-[#202020]/85">
+		<header className="sticky top-0 z-10 w-full bg-slate-50/90 backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#202020]/90">
 			<SidebarArrowTrigger />
-			<nav className="mx-auto flex h-[var(--dashboard-header-offset)] max-w-[1280px] items-center justify-between gap-4 px-4 md:px-8">
-				<div className="flex min-w-0 items-center gap-3">
-					<SidebarTrigger className="size-10 rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 md:hidden" />
+			<nav className="flex min-h-[var(--dashboard-header-offset)] w-full flex-col gap-5 px-4 py-5 md:px-8 lg:flex-row lg:items-start lg:justify-between">
+				<div className="flex min-w-0 items-start gap-3">
+					<SidebarTrigger className="mt-1 size-10 rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 md:hidden" />
 					<div className="min-w-0">
-						<p className="text-xs font-bold uppercase text-slate-500">
-							Applypilot
-						</p>
-						<h2 className="truncate text-xl font-bold tracking-normal text-slate-950">
+						<h2 className="truncate text-[2rem] font-bold tracking-[-0.04em] text-slate-950 dark:text-slate-50">
 							{title}
 						</h2>
+						<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+							Track your job applications and stay on top of your progress.
+						</p>
 					</div>
 				</div>
 
-				<div className="flex flex-1 items-center justify-end gap-3">
-					<div className="relative hidden w-full max-w-md md:block">
-						<Search
-							className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
-							aria-hidden="true"
-						/>
-						<Input
-							placeholder="Search jobs, companies, notes..."
-							className="h-10 rounded-lg border-slate-200 bg-white pl-10 text-sm font-medium shadow-sm"
-						/>
+				<div className="flex w-full flex-col gap-3 lg:max-w-[48rem] lg:items-end">
+					<div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+						<div className="relative w-full sm:max-w-[30rem]">
+							<Search
+								className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+								aria-hidden="true"
+							/>
+							<Input
+								placeholder="Search jobs, companies, notes..."
+								className="h-12 rounded-2xl border-slate-200 bg-white pl-11 pr-16 text-sm font-medium shadow-[0_10px_30px_rgba(15,23,42,0.06)] placeholder:text-slate-400 dark:border-slate-700 dark:bg-[#262626]"
+							/>
+							<div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-[#2f2f2f] dark:text-slate-400">
+								Ctrl K
+							</div>
+						</div>
+						<div className="flex items-center justify-end gap-3">
+							<UtilityButton
+								icon={<Settings className="size-4" aria-hidden="true" />}
+								label="Settings"
+							/>
+							<Button className="h-12 rounded-2xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-[0_14px_30px_color-mix(in_srgb,var(--primary)_28%,transparent)] hover:brightness-95">
+								<Plus className="size-4" aria-hidden="true" />
+								Add Job
+							</Button>
+						</div>
 					</div>
-					<Button
-						type="button"
-						variant="outline"
-						size="icon-lg"
-						className="rounded-lg border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50"
-						aria-label="Notifications"
-						title="Notifications"
-					>
-						<Bell className="size-4" aria-hidden="true" />
-					</Button>
-					<Button className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.22)] hover:bg-blue-700">
-						<Plus className="size-4" aria-hidden="true" />
-						Add Job
-					</Button>
-					<Button
-						type="button"
-						variant="outline"
-						size="icon-lg"
-						className="rounded-lg border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50"
-						aria-label="Settings"
-						title="Settings"
-					>
-						<Settings className="size-4" aria-hidden="true" />
-					</Button>
 				</div>
 			</nav>
 		</header>
+	);
+}
+
+function UtilityButton({ icon, label, badge }: UtilityButtonProps) {
+	return (
+		<Button
+			type="button"
+			variant="outline"
+			size="icon-lg"
+			className="relative size-12 rounded-2xl border-slate-200 bg-white text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262626] dark:text-slate-300 dark:hover:bg-[#2d2d2d]"
+			aria-label={label}
+			title={label}
+		>
+			{icon}
+			{badge ? (
+				<span className="absolute right-2 top-2 flex min-w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-4 text-white">
+					{badge}
+				</span>
+			) : null}
+		</Button>
 	);
 }

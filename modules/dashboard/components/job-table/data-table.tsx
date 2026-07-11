@@ -85,24 +85,6 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 
 	return (
 		<div className="space-y-5">
-			<div className="flex items-center gap-4">
-				<div className="relative flex-1">
-					<Search
-						className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
-						aria-hidden="true"
-					/>
-					<Input
-						value={search}
-						placeholder="Search jobs by title, company, location..."
-						className="h-10 rounded-md border-slate-200 bg-white pl-11 text-sm font-medium shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
-						onChange={(event) => setSearch(event.target.value)}
-					/>
-				</div>
-				<Button className="h-10 rounded-md bg-blue-600 px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.24)] hover:bg-blue-700">
-					+ Add Job
-				</Button>
-			</div>
-
 			{statsSlot}
 
 			<div className="flex items-center justify-between">

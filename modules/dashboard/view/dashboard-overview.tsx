@@ -1,8 +1,8 @@
 import { TrendingUp } from "lucide-react";
 
-import { dashboardColumns } from "@/modules/dashboard/components/columns";
-import { DataTable } from "@/modules/dashboard/components/data-table";
 import { dashboardJobs, dashboardStats } from "@/modules/dashboard/mock-data";
+import { dashboardColumns } from "../components/job-table/columns";
+import { DataTable } from "../components/job-table/data-table";
 
 export function DashboardOverview() {
 	return (

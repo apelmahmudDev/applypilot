@@ -54,14 +54,14 @@ export function DashboardView() {
 			<SidebarInset className="bg-slate-50 dark:bg-[#202020]">
 				<main
 					className="@container/main flex min-h-screen flex-1 flex-col"
-					style={{ ["--dashboard-header-offset" as string]: "4.5rem" }}
+					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
 				>
 					<DashboardHeader activeView={activeView} />
 					<div
 						data-dashboard-content
 						className="flex flex-1 flex-col px-4 pb-6 md:px-8"
 					>
-						<section className="mx-auto flex w-full max-w-[1280px] flex-1 flex-col">
+						<section className="flex w-full flex-1 flex-col">
 							<DashboardContent activeView={activeView} />
 						</section>
 					</div>

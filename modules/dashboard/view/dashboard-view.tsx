@@ -39,7 +39,7 @@ export function DashboardView() {
 
 	return (
 		<SidebarProvider
-			className="min-h-screen bg-slate-50 text-slate-950 dark:bg-[#202020] dark:text-slate-50"
+			className="h-svh bg-slate-50 text-slate-950 dark:bg-[#202020] dark:text-slate-50"
 			style={
 				{
 					"--sidebar-width": "18.5rem",
@@ -51,15 +51,15 @@ export function DashboardView() {
 				activeView={activeView}
 				onViewChange={handleViewChange}
 			/>
-			<SidebarInset className="bg-slate-50 dark:bg-[#202020]">
+			<SidebarInset className="h-svh min-h-0 overflow-hidden bg-slate-50 dark:bg-[#202020]">
 				<main
-					className="@container/main flex min-h-screen flex-1 flex-col"
+					className="@container/main flex h-svh min-h-0 flex-1 flex-col overflow-hidden"
 					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
 				>
 					<DashboardHeader activeView={activeView} />
 					<div
 						data-dashboard-content
-						className="flex flex-1 flex-col px-4 pb-6 md:px-8"
+						className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-6 md:px-8"
 					>
 						<section className="flex w-full flex-1 flex-col">
 							<DashboardContent activeView={activeView} />

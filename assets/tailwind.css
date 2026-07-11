@@ -153,6 +153,13 @@
 	#root {
 		@apply m-0 min-h-screen w-full overflow-hidden bg-transparent;
 	}
+	html[data-surface="dashboard"],
+	body[data-surface="dashboard"] {
+		@apply overflow-y-auto;
+	}
+	body[data-surface="dashboard"] #root {
+		@apply overflow-visible;
+	}
 	body {
 		@apply text-foreground antialiased;
 	}

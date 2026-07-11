@@ -63,6 +63,7 @@ function detectJobInPage(): DetectedJob | null {
 		descriptionText: detected.description ?? "",
 		descriptionHtml: "",
 		salary: detected.salary ?? "",
+		logoUrl: detected.logoUrl,
 		confidence: getConfidence(detected),
 	};
 
@@ -110,8 +111,14 @@ function detectJobInPage(): DetectedJob | null {
 			company:
 				text('[data-testid="inlineHeader-companyName"]') ||
 				text('[data-company-name="true"]'),
-			location: text('[data-testid="job-location"]') || text("#jobLocationText"),
+			location:
+				text('[data-testid="inlineHeader-companyLocation"]') ||
+				text('[data-testid="job-location"]') ||
+				text("#jobLocationText"),
 			description: text("#jobDescriptionText"),
+			logoUrl:
+				text('img[data-testid="jobsearch-JobInfoHeader-logo-overlay-lower"]', "src") ||
+				text(".jobsearch-JobInfoHeader-logo", "src"),
 		};
 	}
 

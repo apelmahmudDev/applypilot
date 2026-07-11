@@ -84,17 +84,18 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 	});
 
 	return (
-		<div className="space-y-5">
+		<div className="min-w-0 space-y-5 pb-8">
 			{statsSlot}
 
-			<div className="flex items-center justify-between">
+			<div className="flex min-w-0 items-center justify-between gap-4">
 				<Tabs
 					value={statusFilter}
 					onValueChange={(value) =>
 						setStatusFilter(value as DashboardStatusFilter)
 					}
+					className="min-w-0"
 				>
-					<TabsList className="h-10 bg-transparent p-0">
+					<TabsList className="h-10 max-w-full bg-transparent p-0">
 						{filters.map((filter) => (
 							<TabsTrigger
 								key={filter.value}
@@ -107,7 +108,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 					</TabsList>
 				</Tabs>
 
-				<div className="flex items-center gap-3 text-xs font-bold text-slate-700">
+				<div className="shrink-0 flex items-center gap-3 text-xs font-bold text-slate-700">
 					Sort by
 					<Select defaultValue="latest">
 						<SelectTrigger className="h-9 w-24 rounded-md border-slate-200 bg-white text-xs font-bold">
@@ -122,7 +123,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 				</div>
 			</div>
 
-			<div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+			<div className="min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
 				<Table>
 					<TableHeader className="sr-only">
 						{table.getHeaderGroups().map((headerGroup) => (

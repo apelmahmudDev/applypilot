@@ -24,7 +24,7 @@ export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 	const title = getDashboardViewTitle(activeView);
 
 	return (
-		<header className="sticky top-0 z-10 w-full bg-slate-50/90 backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#202020]/90">
+		<header className="sticky top-0 z-30 w-full shrink-0 border-b border-slate-200/70 bg-slate-50/90 backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#202020]/90">
 			<SidebarArrowTrigger />
 			<nav className="flex min-h-[var(--dashboard-header-offset)] w-full flex-col gap-5 px-4 py-5 md:px-8 lg:flex-row lg:items-start lg:justify-between">
 				<div className="flex min-w-0 items-start gap-3">

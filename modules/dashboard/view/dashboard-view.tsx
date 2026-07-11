@@ -51,17 +51,17 @@ export function DashboardView() {
 				activeView={activeView}
 				onViewChange={handleViewChange}
 			/>
-			<SidebarInset className="h-svh min-h-0 overflow-hidden bg-slate-50 dark:bg-[#202020]">
+			<SidebarInset className="h-svh min-h-0 min-w-0 overflow-hidden bg-slate-50 dark:bg-[#202020]">
 				<main
-					className="@container/main flex h-svh min-h-0 flex-1 flex-col overflow-hidden"
+					className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
 					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
 				>
 					<DashboardHeader activeView={activeView} />
 					<div
 						data-dashboard-content
-						className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-6 md:px-8"
+						className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-20 md:px-8 md:pb-24"
 					>
-						<section className="flex w-full flex-1 flex-col">
+						<section className="flex min-h-0 min-w-0 w-full flex-col">
 							<DashboardContent activeView={activeView} />
 						</section>
 					</div>

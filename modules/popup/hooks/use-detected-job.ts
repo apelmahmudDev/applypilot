@@ -32,17 +32,17 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 		}
 
 		setJob({
-			title: detector.job.title,
-			company: detector.job.company,
-			location: detector.job.location,
-			url: detector.job.url,
+			title: detector.job.title ?? "",
+			company: detector.job.company ?? "",
+			location: detector.job.location ?? "",
+			url: detector.job.url ?? "",
 			platform: detector.job.platform || "Other",
-			salary: detector.job.salary,
-			logoUrl: detector.job.logoUrl,
-			descriptionText: detector.job.descriptionText,
-			descriptionHtml: detector.job.descriptionHtml,
-			employmentType: detector.job.employmentType,
-			workplaceType: detector.job.workplaceType,
+			salary: detector.job.salary ?? "",
+			logoUrl: detector.job.logoUrl ?? "",
+			descriptionText: detector.job.descriptionText ?? "",
+			descriptionHtml: detector.job.descriptionHtml ?? "",
+			employmentType: detector.job.employmentType ?? "",
+			workplaceType: detector.job.workplaceType ?? "",
 			status: fallbackJob.status,
 			deadline: fallbackJob.deadline,
 			followUpDate: fallbackJob.followUpDate,
@@ -50,7 +50,7 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 			reminderNote: fallbackJob.reminderNote,
 			reminderEnabled: fallbackJob.reminderEnabled,
 			reminderDone: fallbackJob.reminderDone,
-			notes: detector.job.descriptionText,
+			notes: detector.job.descriptionText ?? "",
 		});
 	}, [detector.job, fallbackJob]);
 

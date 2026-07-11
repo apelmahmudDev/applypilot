@@ -149,28 +149,31 @@ function isDuplicateJob(storedJob: StoredJob, job: JobForm) {
 }
 
 function normalizeJob(job: JobForm): JobForm {
+	const toText = (value: unknown) => (typeof value === "string" ? value : "");
+
 	return {
-		title: job.title.trim(),
-		company: normalizeCompanyName(job.company),
-		location: job.location.trim(),
-		url: job.url.trim(),
-		platform: job.platform.trim(),
-		salary: job.salary.trim(),
-		logoUrl: job.logoUrl?.trim() || "",
-		descriptionText: job.descriptionText?.trim() || "",
-		descriptionHtml: job.descriptionHtml?.trim() || "",
-		employmentType: job.employmentType?.trim() || "",
-		workplaceType: job.workplaceType?.trim() || "",
+		title: toText(job.title).trim(),
+		company: normalizeCompanyName(toText(job.company)),
+		location: toText(job.location).trim(),
+		url: toText(job.url).trim(),
+		platform: toText(job.platform).trim(),
+		salary: toText(job.salary).trim(),
+		logoUrl: toText(job.logoUrl).trim(),
+		descriptionText: toText(job.descriptionText).trim(),
+		descriptionHtml: toText(job.descriptionHtml).trim(),
+		employmentType: toText(job.employmentType).trim(),
+		workplaceType: toText(job.workplaceType).trim(),
 		status: job.status,
-		deadline: job.deadline.trim(),
-		followUpDate: job.followUpDate.trim(),
-		followUpTime: job.followUpTime.trim(),
-		reminderNote: job.reminderNote.trim(),
-		reminderEnabled: job.reminderEnabled && Boolean(job.followUpDate.trim()),
-		reminderDone: job.reminderEnabled && job.followUpDate.trim()
-			? job.reminderDone
-			: false,
-		notes: job.notes.trim(),
+		deadline: toText(job.deadline).trim(),
+		followUpDate: toText(job.followUpDate).trim(),
+		followUpTime: toText(job.followUpTime).trim(),
+		reminderNote: toText(job.reminderNote).trim(),
+		reminderEnabled: Boolean(job.reminderEnabled) && Boolean(toText(job.followUpDate).trim()),
+		reminderDone:
+			Boolean(job.reminderEnabled) && Boolean(toText(job.followUpDate).trim())
+				? Boolean(job.reminderDone)
+				: false,
+		notes: toText(job.notes).trim(),
 	};
 }
 

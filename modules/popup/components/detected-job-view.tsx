@@ -119,7 +119,7 @@ export function DetectedJobView({
 					type="button"
 					className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
 					disabled={isSaving || isDetecting || !hasDetectedJob}
-					onClick={onSave}
+					onClick={() => onSave()}
 				>
 					{isSaving ? "Saving..." : "Save Job"}
 				</Button>

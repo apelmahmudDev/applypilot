@@ -17,6 +17,7 @@ export type RecentJob = {
 	followUp: string;
 	status: JobStatus;
 	brand: "amazon" | "microsoft" | "swiggy" | "google" | "default";
+	logoUrl?: string;
 };
 
 export type Reminder = {
@@ -49,6 +50,11 @@ export type SidePanelJobForm = {
 	url: string;
 	platform: string;
 	salary: string;
+	logoUrl?: string;
+	descriptionText?: string;
+	descriptionHtml?: string;
+	employmentType?: string;
+	workplaceType?: string;
 	status: SidePanelJobStatus;
 	deadline: string;
 	followUpDate: string;

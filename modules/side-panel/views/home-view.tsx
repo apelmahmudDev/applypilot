@@ -85,6 +85,10 @@ export function HomeView({
 	onOpenSettings,
 	onMarkReminderDone,
 }: HomeViewProps) {
+	const detectedJobMeta = [detectedJob?.workplaceType, detectedJob?.employmentType]
+		.filter(Boolean)
+		.join(" · ");
+
 	return (
 		<>
 			<div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 pb-4 pt-0 sm:px-4">
@@ -178,7 +182,13 @@ export function HomeView({
 									</p>
 								)}
 								<div className="flex gap-3">
-									<CompanyMark brand={getBrand(detectedJob.company, detectedJob.platform)} size="lg" appearance="soft" />
+									<CompanyMark
+										brand={getBrand(detectedJob.company, detectedJob.platform)}
+										logoUrl={detectedJob.logoUrl}
+										companyName={detectedJob.company}
+										size="lg"
+										appearance="soft"
+									/>
 									<div className="min-w-0 flex-1">
 										<h3 className="truncate text-[15px] font-bold leading-5 text-foreground">
 											{detectedJob.title || "Untitled role"}
@@ -192,6 +202,11 @@ export function HomeView({
 												{detectedJob.location || "Location not found"}
 											</span>
 										</p>
+										{detectedJobMeta && (
+											<p className="mt-1 truncate text-xs font-medium text-muted-foreground">
+												{detectedJobMeta}
+											</p>
+										)}
 										{detectedJob.url && (
 											<a
 												href={detectedJob.url}

@@ -8,6 +8,7 @@ export default defineConfig({
 		name: "Applypilot",
 		short_name: "Applypilot",
 		permissions: ["activeTab", "scripting", "sidePanel", "storage"],
+		host_permissions: ["*://*.linkedin.com/*"],
 	},
 	vite: () => ({
 		plugins: [tailwindcss()],

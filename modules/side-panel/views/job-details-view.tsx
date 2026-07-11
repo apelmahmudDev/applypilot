@@ -1,3 +1,4 @@
+import { FormattedJobDescription } from "@/components/formatted-job-description";
 import { ExternalLink, Link, MapPin, PencilLine, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,13 @@ export function JobDetailsView({
 			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
 				<section className="rounded-[14px] border border-border bg-card p-4">
 					<div className="flex items-start gap-3">
-						<CompanyMark brand={getBrand(job.company, job.platform)} size="lg" appearance="soft" />
+						<CompanyMark
+							brand={getBrand(job.company, job.platform)}
+							logoUrl={job.logoUrl}
+							companyName={job.company}
+							size="lg"
+							appearance="soft"
+						/>
 						<div className="min-w-0 flex-1">
 							<h2 className="text-base font-bold leading-6 text-foreground">
 								{job.title || "Untitled role"}
@@ -193,9 +200,12 @@ export function JobDetailsView({
 					<h3 className="text-sm font-semibold text-foreground">
 						Job Description / Notes
 					</h3>
-					<p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-muted-foreground">
-						{job.notes || "No description or notes saved yet."}
-					</p>
+					<div className="mt-2">
+						<FormattedJobDescription
+							descriptionHtml={job.descriptionHtml}
+							descriptionText={job.descriptionText || job.notes}
+						/>
+					</div>
 				</section>
 			</div>
 		</div>

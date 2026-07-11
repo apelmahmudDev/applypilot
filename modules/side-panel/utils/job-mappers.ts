@@ -18,6 +18,7 @@ export function mapStoredJobToRecentJob(job: StoredJob): RecentJob {
 		followUp: job.followUpDate ? formatDate(job.followUpDate) : "No reminder",
 		status: mapJobStatus(job.status),
 		brand: getBrand(job.company, job.platform),
+		logoUrl: job.logoUrl,
 	};
 }
 
@@ -41,6 +42,12 @@ export function getBrand(company: string, platform: string): RecentJob["brand"] 
 }
 
 export function toStoredJobForm(job: SidePanelJobForm): JobForm {
+	const descriptionText = job.notes;
+	const descriptionHtml =
+		job.descriptionHtml && job.descriptionText === job.notes
+			? job.descriptionHtml
+			: undefined;
+
 	return {
 		title: job.title,
 		company: job.company,
@@ -48,6 +55,11 @@ export function toStoredJobForm(job: SidePanelJobForm): JobForm {
 		url: job.url,
 		platform: job.platform,
 		salary: job.salary,
+		logoUrl: job.logoUrl,
+		descriptionText,
+		descriptionHtml,
+		employmentType: job.employmentType,
+		workplaceType: job.workplaceType,
 		status: mapSidePanelStatus(job.status),
 		deadline: job.deadline,
 		followUpDate: job.followUpDate,
@@ -60,6 +72,8 @@ export function toStoredJobForm(job: SidePanelJobForm): JobForm {
 }
 
 export function toSidePanelJobForm(job: StoredJob): SidePanelJobForm {
+	const descriptionText = job.descriptionText || job.notes;
+
 	return {
 		title: job.title,
 		company: job.company,
@@ -67,6 +81,11 @@ export function toSidePanelJobForm(job: StoredJob): SidePanelJobForm {
 		url: job.url,
 		platform: job.platform,
 		salary: "",
+		logoUrl: job.logoUrl,
+		descriptionText,
+		descriptionHtml: job.descriptionHtml,
+		employmentType: job.employmentType,
+		workplaceType: job.workplaceType,
 		status: mapStoredStatusToSidePanelStatus(job.status),
 		deadline: "",
 		followUpDate: job.followUpDate,
@@ -74,7 +93,7 @@ export function toSidePanelJobForm(job: StoredJob): SidePanelJobForm {
 		reminderNote: job.reminderNote,
 		reminderEnabled: job.reminderEnabled,
 		reminderDone: job.reminderDone,
-		notes: job.notes,
+		notes: descriptionText,
 	};
 }
 

@@ -1,0 +1,677 @@
+Yes. The best approach is to preserve the **semantic HTML structure** of the description—not LinkedIn’s generated classes or complete raw HTML.
+
+Your current result:
+
+```text
+OverviewMicrosoft is a company...
+```
+
+usually happens because the detector uses `textContent` and then runs something like:
+
+```ts
+text.replace(/\s+/g, ' ')
+```
+
+That removes paragraph breaks, headings, bullets, and spacing.
+
+## Recommended architecture
+
+Store two description formats:
+
+```ts
+descriptionText: string; // Searching, AI analysis, export
+descriptionHtml: string; // Formatted display
+```
+
+Do not save LinkedIn classes such as `_75228706`. They are unstable and unnecessary.
+
+---
+
+## 1. Update your job type
+
+```ts
+export interface DetectedJob {
+  id?: string;
+  title: string;
+  company: string;
+  sourceCompany?: string;
+
+  location?: string;
+  salary?: string;
+
+  /**
+   * Plain text version for searching, AI analysis,
+   * CSV export and other processing.
+   */
+  descriptionText: string;
+
+  /**
+   * Sanitized semantic HTML for displaying paragraphs,
+   * headings, lists, links and bold text.
+   */
+  descriptionHtml?: string;
+
+  employmentType?: string;
+  workplaceType?: string;
+  experience?: string;
+  skills?: string[];
+
+  postedAt?: string;
+  applicationDeadline?: string;
+
+  jobUrl: string;
+  applyUrl?: string;
+  logoUrl?: string;
+
+  source: 'linkedin' | 'generic';
+  sourceHost: string;
+  confidence: number;
+  detectedAt: string;
+}
+```
+
+---
+
+## 2. Install DOMPurify
+
+```bash
+npm install dompurify
+```
+
+Recent versions include TypeScript support. If your project reports missing types:
+
+```bash
+npm install -D @types/dompurify
+```
+
+---
+
+## 3. Create a formatted-description utility
+
+Create:
+
+```text
+utils/job-description.ts
+```
+
+```ts
+import DOMPurify from 'dompurify';
+
+export interface FormattedDescription {
+  html: string;
+  text: string;
+}
+
+const ALLOWED_TAGS = [
+  'p',
+  'div',
+  'span',
+  'br',
+  'ul',
+  'ol',
+  'li',
+  'strong',
+  'b',
+  'em',
+  'i',
+  'u',
+  'a',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'blockquote',
+  'pre',
+  'code',
+];
+
+const ALLOWED_ATTRIBUTES = ['href', 'title'];
+
+/**
+ * Preserves line breaks while removing unnecessary spaces.
+ *
+ * It does not use:
+ * text.replace(/\s+/g, ' ')
+ *
+ * because that would destroy paragraph formatting.
+ */
+function normalizeDescriptionText(value: string): string {
+  return value
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/[ \t]+/g, ' ').trim())
+    .reduce<string[]>((lines, line) => {
+      const previousLine = lines.at(-1);
+
+      // Avoid several consecutive blank lines.
+      if (line === '' && previousLine === '') {
+        return lines;
+      }
+
+      lines.push(line);
+      return lines;
+    }, [])
+    .join('\n')
+    .trim();
+}
+
+function prepareDescriptionElement(source: HTMLElement): HTMLElement {
+  const clone = source.cloneNode(true) as HTMLElement;
+
+  // Remove controls and content that should not appear
+  // inside the saved description.
+  clone
+    .querySelectorAll(
+      [
+        'script',
+        'style',
+        'noscript',
+        'iframe',
+        'svg',
+        'canvas',
+        'button',
+        'form',
+        'input',
+        'textarea',
+        'select',
+        '[hidden]',
+        '[aria-hidden="true"]',
+      ].join(','),
+    )
+    .forEach((element) => element.remove());
+
+  clone.querySelectorAll<HTMLElement>('*').forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+
+    // Remove LinkedIn-generated classes, inline styles,
+    // component keys, tracking attributes and test attributes.
+    Array.from(element.attributes).forEach((attribute) => {
+      const keepHref = tagName === 'a' && attribute.name === 'href';
+      const keepTitle = attribute.name === 'title';
+
+      if (!keepHref && !keepTitle) {
+        element.removeAttribute(attribute.name);
+      }
+    });
+
+    if (tagName === 'a') {
+      const href = element.getAttribute('href');
+
+      if (href) {
+        try {
+          element.setAttribute('href', new URL(href, window.location.href).href);
+        } catch {
+          element.removeAttribute('href');
+        }
+      }
+    }
+  });
+
+  return clone;
+}
+
+function sanitizeHtml(value: string): string {
+  return DOMPurify.sanitize(value, {
+    ALLOWED_TAGS,
+    ALLOWED_ATTR: ALLOWED_ATTRIBUTES,
+    ALLOW_DATA_ATTR: false,
+  });
+}
+
+/**
+ * Extracts formatted content from an existing DOM element.
+ */
+export function extractFormattedDescription(
+  source: HTMLElement | null,
+): FormattedDescription {
+  if (!source) {
+    return {
+      html: '',
+      text: '',
+    };
+  }
+
+  const preparedElement = prepareDescriptionElement(source);
+
+  const text = normalizeDescriptionText(
+    preparedElement.innerText || preparedElement.textContent || '',
+  );
+
+  const html = sanitizeHtml(preparedElement.innerHTML);
+
+  return {
+    html,
+    text,
+  };
+}
+
+/**
+ * Handles HTML descriptions from Schema.org JobPosting JSON-LD.
+ */
+export function extractFormattedDescriptionFromHtml(
+  rawHtml: string | null | undefined,
+): FormattedDescription {
+  if (!rawHtml?.trim()) {
+    return {
+      html: '',
+      text: '',
+    };
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = sanitizeHtml(rawHtml);
+
+  return extractFormattedDescription(wrapper);
+}
+```
+
+---
+
+## 4. Find the correct LinkedIn description container
+
+Use stable selectors rather than LinkedIn’s generated class names:
+
+```ts
+function findLinkedInDescriptionElement(): HTMLElement | null {
+  const selectors = [
+    // Current LinkedIn job-details structure
+    '[id^="JobDetails_AboutTheJob_"] [data-testid="expandable-text-box"]',
+
+    // Older LinkedIn layouts
+    '.jobs-description__content .jobs-box__html-content',
+    '.jobs-box__html-content',
+    '.show-more-less-html__markup',
+  ];
+
+  for (const selector of selectors) {
+    const element = document.querySelector<HTMLElement>(selector);
+
+    if (element) {
+      return element;
+    }
+  }
+
+  // Semantic fallback when LinkedIn changes its structure.
+  const aboutHeading = Array.from(
+    document.querySelectorAll<HTMLElement>('h1, h2, h3'),
+  ).find((heading) => {
+    return heading.textContent?.trim().toLowerCase() === 'about the job';
+  });
+
+  if (!aboutHeading) {
+    return null;
+  }
+
+  const section = aboutHeading.closest<HTMLElement>(
+    'section, article, [role="main"], div',
+  );
+
+  return (
+    section?.querySelector<HTMLElement>(
+      '[data-testid="expandable-text-box"]',
+    ) ??
+    section?.querySelector<HTMLElement>('.jobs-box__html-content') ??
+    null
+  );
+}
+```
+
+Then update the LinkedIn detector:
+
+```ts
+import { extractFormattedDescription } from './job-description';
+
+function detectLinkedInJob(): DetectedJob | null {
+  const descriptionElement = findLinkedInDescriptionElement();
+
+  const description = extractFormattedDescription(descriptionElement);
+
+  // Your other extraction code...
+  const title = getLinkedInTitle();
+  const company = getLinkedInCompany();
+
+  if (!title || !company) {
+    return null;
+  }
+
+  return {
+    id: getLinkedInJobId(),
+
+    title,
+    company,
+
+    location: getLinkedInLocation(),
+    salary: getLinkedInSalary(),
+
+    descriptionText: description.text,
+    descriptionHtml: description.html,
+
+    employmentType: getLinkedInEmploymentType(),
+    workplaceType: getLinkedInWorkplaceType(),
+
+    jobUrl: getCanonicalLinkedInJobUrl(),
+    applyUrl: getLinkedInApplyUrl(),
+
+    source: 'linkedin',
+    sourceHost: window.location.hostname,
+    confidence: 0.95,
+    detectedAt: new Date().toISOString(),
+  };
+}
+```
+
+---
+
+## 5. Handle descriptions from other job websites
+
+For common job pages, prioritize Schema.org `JobPosting` JSON-LD.
+
+```ts
+import {
+  extractFormattedDescriptionFromHtml,
+} from './job-description';
+
+interface JsonLdJobPosting {
+  '@type'?: string;
+  title?: string;
+  description?: string;
+  hiringOrganization?: {
+    name?: string;
+  };
+}
+
+function getJobPostingJsonLd(): JsonLdJobPosting | null {
+  const scripts = document.querySelectorAll<HTMLScriptElement>(
+    'script[type="application/ld+json"]',
+  );
+
+  for (const script of scripts) {
+    try {
+      const parsed: unknown = JSON.parse(script.textContent || '');
+
+      const candidates = Array.isArray(parsed)
+        ? parsed
+        : typeof parsed === 'object' && parsed !== null && '@graph' in parsed
+          ? (parsed as { '@graph': unknown[] })['@graph']
+          : [parsed];
+
+      const jobPosting = candidates.find((item): item is JsonLdJobPosting => {
+        if (!item || typeof item !== 'object') {
+          return false;
+        }
+
+        const type = (item as JsonLdJobPosting)['@type'];
+
+        return type === 'JobPosting';
+      });
+
+      if (jobPosting) {
+        return jobPosting;
+      }
+    } catch {
+      // Ignore invalid JSON-LD and continue.
+    }
+  }
+
+  return null;
+}
+
+function detectGenericJob(): DetectedJob | null {
+  const jsonLd = getJobPostingJsonLd();
+
+  if (jsonLd?.title) {
+    const description = extractFormattedDescriptionFromHtml(
+      jsonLd.description,
+    );
+
+    return {
+      title: jsonLd.title,
+      company:
+        jsonLd.hiringOrganization?.name ||
+        window.location.hostname,
+
+      descriptionText: description.text,
+      descriptionHtml: description.html,
+
+      jobUrl: window.location.href,
+      source: 'generic',
+      sourceHost: window.location.hostname,
+      confidence: 0.9,
+      detectedAt: new Date().toISOString(),
+    };
+  }
+
+  // Continue with your DOM fallback detector...
+  return detectGenericJobFromDom();
+}
+```
+
+---
+
+## 6. Render the formatted description safely
+
+Create:
+
+```text
+components/FormattedJobDescription.tsx
+```
+
+```tsx
+import DOMPurify from 'dompurify';
+import { useMemo } from 'react';
+
+interface FormattedJobDescriptionProps {
+  descriptionHtml?: string;
+  descriptionText?: string;
+}
+
+const ALLOWED_TAGS = [
+  'p',
+  'div',
+  'span',
+  'br',
+  'ul',
+  'ol',
+  'li',
+  'strong',
+  'b',
+  'em',
+  'i',
+  'u',
+  'a',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'blockquote',
+  'pre',
+  'code',
+];
+
+export function FormattedJobDescription({
+  descriptionHtml,
+  descriptionText,
+}: FormattedJobDescriptionProps) {
+  const safeHtml = useMemo(() => {
+    if (!descriptionHtml) {
+      return '';
+    }
+
+    // Sanitize again before rendering.
+    // This protects against older or externally stored records.
+    return DOMPurify.sanitize(descriptionHtml, {
+      ALLOWED_TAGS,
+      ALLOWED_ATTR: ['href', 'title'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }, [descriptionHtml]);
+
+  if (safeHtml) {
+    return (
+      <div
+        className="applypilot-job-description"
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
+      />
+    );
+  }
+
+  return (
+    <div className="applypilot-job-description applypilot-job-description--plain">
+      {descriptionText || 'No description available.'}
+    </div>
+  );
+}
+```
+
+Use it like this:
+
+```tsx
+<FormattedJobDescription
+  descriptionHtml={job.descriptionHtml}
+  descriptionText={job.descriptionText}
+/>
+```
+
+---
+
+## 7. Add LinkedIn-like formatting
+
+```css
+.applypilot-job-description {
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.applypilot-job-description--plain {
+  white-space: pre-wrap;
+}
+
+.applypilot-job-description p {
+  margin: 0 0 14px;
+}
+
+.applypilot-job-description p:last-child {
+  margin-bottom: 0;
+}
+
+.applypilot-job-description h1,
+.applypilot-job-description h2,
+.applypilot-job-description h3,
+.applypilot-job-description h4 {
+  color: #0f172a;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 18px 0 8px;
+}
+
+.applypilot-job-description h1:first-child,
+.applypilot-job-description h2:first-child,
+.applypilot-job-description h3:first-child,
+.applypilot-job-description h4:first-child {
+  margin-top: 0;
+}
+
+.applypilot-job-description h1 {
+  font-size: 18px;
+}
+
+.applypilot-job-description h2 {
+  font-size: 16px;
+}
+
+.applypilot-job-description h3,
+.applypilot-job-description h4 {
+  font-size: 14px;
+}
+
+.applypilot-job-description ul,
+.applypilot-job-description ol {
+  margin: 10px 0 14px;
+  padding-left: 22px;
+}
+
+.applypilot-job-description li {
+  margin-bottom: 6px;
+}
+
+.applypilot-job-description strong,
+.applypilot-job-description b {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.applypilot-job-description a {
+  color: #0a66c2;
+  text-decoration: none;
+}
+
+.applypilot-job-description a:hover {
+  text-decoration: underline;
+}
+
+.applypilot-job-description blockquote {
+  border-left: 3px solid #cbd5e1;
+  margin: 12px 0;
+  padding-left: 12px;
+}
+
+.applypilot-job-description pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+```
+
+## Important fix in your existing cleaner
+
+You probably have a function similar to this:
+
+```ts
+function cleanText(value: string): string {
+  return value.replace(/\s+/g, ' ').trim();
+}
+```
+
+That is fine for:
+
+```ts
+title
+company
+location
+salary
+employmentType
+```
+
+Do not use it for the description.
+
+Use separate cleaners:
+
+```ts
+function cleanSingleLineText(value: string): string {
+  return value.replace(/\s+/g, ' ').trim();
+}
+
+function cleanMultilineText(value: string): string {
+  return value
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/[ \t]+/g, ' ').trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+```
+
+## Best final choice
+
+Do not attempt to copy LinkedIn’s exact CSS. Preserve:
+
+* Paragraphs
+* Section headings
+* Bullets and numbered lists
+* Bold and italic content
+* Links
+* Line breaks
+
+Then apply your own ApplyPilot typography. This keeps the description readable, secure, consistent across LinkedIn, Indeed, and company career pages, while avoiding unstable LinkedIn classes.

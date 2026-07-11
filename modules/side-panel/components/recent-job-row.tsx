@@ -30,7 +30,12 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 				}
 			}}
 		>
-			<CompanyMark brand={job.brand} appearance="soft" />
+			<CompanyMark
+				brand={job.brand}
+				logoUrl={job.logoUrl}
+				companyName={job.company}
+				appearance="soft"
+			/>
 			<div className="min-w-0">
 				<h3 className="truncate text-[13px] font-bold leading-5 text-foreground">{job.title}</h3>
 				<p className="truncate text-xs font-medium text-muted-foreground">

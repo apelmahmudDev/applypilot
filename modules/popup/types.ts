@@ -16,6 +16,11 @@ export type JobForm = {
 	url: string;
 	platform: string;
 	salary: string;
+	logoUrl?: string;
+	descriptionText?: string;
+	descriptionHtml?: string;
+	employmentType?: string;
+	workplaceType?: string;
 	status: JobStatus;
 	deadline: string;
 	followUpDate: string;

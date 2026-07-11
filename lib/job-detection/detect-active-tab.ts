@@ -1,4 +1,5 @@
 import type { DetectedJob } from "@/lib/job-detection/types";
+import type { JobDetectorMessage } from "@/lib/job-detection/messages";
 
 export async function detectJobFromActiveTab(): Promise<DetectedJob | null> {
 	const [tab] = await browser.tabs.query({
@@ -8,6 +9,14 @@ export async function detectJobFromActiveTab(): Promise<DetectedJob | null> {
 
 	if (!tab?.id || !tab.url || !isDetectableUrl(tab.url)) {
 		return null;
+	}
+
+	const isLinkedIn = new URL(tab.url).hostname.toLowerCase().includes("linkedin.com");
+	if (isLinkedIn) {
+		const response = await browser.tabs.sendMessage(tab.id, {
+			type: "APPLYPILOT_GET_JOB",
+		} satisfies JobDetectorMessage) as { job?: DetectedJob | null };
+		return response?.job ?? null;
 	}
 
 	const [result] = await browser.scripting.executeScript({
@@ -51,7 +60,8 @@ function detectJobInPage(): DetectedJob | null {
 		location: detected.location ?? "",
 		url,
 		platform: platformLabel,
-		description: detected.description ?? "",
+		descriptionText: detected.description ?? "",
+		descriptionHtml: "",
 		salary: detected.salary ?? "",
 		confidence: getConfidence(detected),
 	};
@@ -85,7 +95,6 @@ function detectJobInPage(): DetectedJob | null {
 	}
 
 	function parsePlatformJob(platformName: string): PartialDetectedJob {
-		if (platformName === "linkedin") return parseLinkedInJob();
 		if (platformName === "indeed") return parseIndeedJob();
 		if (platformName === "greenhouse") return parseGreenhouseJob();
 		if (platformName === "lever") return parseLeverJob();
@@ -93,26 +102,6 @@ function detectJobInPage(): DetectedJob | null {
 		if (platformName === "ashby") return parseAshbyJob();
 
 		return {};
-	}
-
-	function parseLinkedInJob(): PartialDetectedJob {
-		return {
-			title:
-				text(".top-card-layout__title") ||
-				text(".job-details-jobs-unified-top-card__job-title") ||
-				text("h1"),
-			company:
-				text(".topcard__org-name-link") ||
-				text(".job-details-jobs-unified-top-card__company-name") ||
-				text('[data-test-job-company-name]'),
-			location:
-				text(".topcard__flavor--bullet") ||
-				text(".job-details-jobs-unified-top-card__primary-description-container"),
-			description:
-				text(".description__text") ||
-				text(".jobs-description-content__text") ||
-				text("#job-details"),
-		};
 	}
 
 	function parseIndeedJob(): PartialDetectedJob {

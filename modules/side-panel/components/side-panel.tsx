@@ -102,7 +102,7 @@ export function SidePanel() {
 	}, []);
 
 	const displayedJobs = useMemo(
-		() => storedJobs.slice(0, 5).map(mapStoredJobToRecentJob),
+		() => storedJobs.slice(0, 4).map(mapStoredJobToRecentJob),
 		[storedJobs],
 	);
 	const selectedJob = useMemo(

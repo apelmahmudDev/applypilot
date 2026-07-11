@@ -6,7 +6,11 @@ export type DetectedJob = {
 	location: string;
 	url: string;
 	platform: string;
-	description: string;
+	descriptionText: string;
+	descriptionHtml?: string;
 	salary: string;
+	logoUrl?: string;
+	employmentType?: string;
+	workplaceType?: string;
 	confidence: DetectionConfidence;
 };

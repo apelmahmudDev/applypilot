@@ -151,11 +151,16 @@ function isDuplicateJob(storedJob: StoredJob, job: JobForm) {
 function normalizeJob(job: JobForm): JobForm {
 	return {
 		title: job.title.trim(),
-		company: job.company.trim(),
+		company: normalizeCompanyName(job.company),
 		location: job.location.trim(),
 		url: job.url.trim(),
 		platform: job.platform.trim(),
 		salary: job.salary.trim(),
+		logoUrl: job.logoUrl?.trim() || "",
+		descriptionText: job.descriptionText?.trim() || "",
+		descriptionHtml: job.descriptionHtml?.trim() || "",
+		employmentType: job.employmentType?.trim() || "",
+		workplaceType: job.workplaceType?.trim() || "",
 		status: job.status,
 		deadline: job.deadline.trim(),
 		followUpDate: job.followUpDate.trim(),
@@ -182,6 +187,10 @@ function normalizeUrl(url: string) {
 
 function normalizeComparable(value: string) {
 	return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function normalizeCompanyName(value: string) {
+	return value.trim().replace(/\s+logo$/i, "");
 }
 
 function createJobId() {
@@ -217,11 +226,20 @@ function toStoredJob(value: unknown): StoredJob | null {
 	return {
 		id: job.id,
 		title: job.title,
-		company: job.company,
+		company: normalizeCompanyName(job.company),
 		location: job.location,
 		url: job.url,
 		platform: job.platform,
 		salary: typeof job.salary === "string" ? job.salary : "",
+		logoUrl: typeof job.logoUrl === "string" ? job.logoUrl : "",
+		descriptionText:
+			typeof job.descriptionText === "string" ? job.descriptionText : "",
+		descriptionHtml:
+			typeof job.descriptionHtml === "string" ? job.descriptionHtml : "",
+		employmentType:
+			typeof job.employmentType === "string" ? job.employmentType : "",
+		workplaceType:
+			typeof job.workplaceType === "string" ? job.workplaceType : "",
 		status: job.status as StoredJob["status"],
 		deadline: typeof job.deadline === "string" ? job.deadline : "",
 		followUpDate: typeof job.followUpDate === "string" ? job.followUpDate : "",

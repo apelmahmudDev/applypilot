@@ -6,14 +6,39 @@ import { brandStyles } from "@/modules/side-panel/utils/styles";
 
 type CompanyMarkProps = {
 	brand: RecentJob["brand"];
+	logoUrl?: string;
+	companyName?: string;
 	size?: "sm" | "lg";
 	appearance?: "default" | "soft";
 };
 
-export function CompanyMark({ brand, size = "sm", appearance = "default" }: CompanyMarkProps) {
+export function CompanyMark({
+	brand,
+	logoUrl,
+	companyName,
+	size = "sm",
+	appearance = "default",
+}: CompanyMarkProps) {
 	const sizeClass = size === "lg" ? "size-[72px] rounded-lg text-4xl" : "size-9 rounded-md text-xl";
 	const iconClass = size === "lg" ? "size-8" : "size-5";
 	const isSoftDefault = appearance === "soft" && brand === "default";
+
+	if (logoUrl) {
+		return (
+			<div
+				className={cn(
+					"flex shrink-0 items-center justify-center overflow-hidden border border-border bg-white",
+					sizeClass,
+				)}
+			>
+				<img
+					src={logoUrl}
+					alt={companyName ? `${companyName} logo` : "Company logo"}
+					className="size-full object-cover"
+				/>
+			</div>
+		);
+	}
 
 	if (brand === "microsoft") {
 		return (

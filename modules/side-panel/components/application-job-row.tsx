@@ -39,7 +39,12 @@ export function ApplicationJobRow({
 			}}
 		>
 			<div className="flex items-start gap-3">
-				<CompanyMark brand={getBrand(job.company, job.platform)} appearance="soft" />
+				<CompanyMark
+					brand={getBrand(job.company, job.platform)}
+					logoUrl={job.logoUrl}
+					companyName={job.company}
+					appearance="soft"
+				/>
 				<div className="min-w-0 flex-1">
 					<h3
 						className={cn(

@@ -72,6 +72,14 @@ These rules apply to all AI-agent work in this repository.
 - Use `pnpm`. Check `package.json` and `pnpm-lock.yaml` before dependency changes, and never edit the lockfile manually.
 - Ask before adding dependencies, permissions, backend services, external APIs, analytics, telemetry, or AI features.
 
+## Job Detection
+
+- Keep website-specific detectors separate from the generic fallback.
+- Prefer JSON-LD, metadata, semantic HTML, and stable attributes over generated CSS class names.
+- Do not guess missing job information.
+- Manual creation and editing must remain available when detection fails.
+- Do not collect or store unrelated page content.
+
 ## Verification and Completion
 
 - Inspect relevant files and available scripts before editing.

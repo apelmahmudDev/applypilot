@@ -1,3 +1,5 @@
+import { ShieldCheck } from "lucide-react";
+
 import {
 	Sidebar,
 	SidebarContent,
@@ -28,6 +30,12 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
 	const logoSrc = browser.runtime.getURL("/logo.png");
+	const userProfile = {
+		name: "Skylen Voss",
+		role: "Local workspace",
+		avatarLabel: "SV",
+		version: "v1.0.0",
+	};
 	const collapsedMenuButtonClass =
 		"group-data-[collapsible=icon]:h-auto! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:flex-col! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-1 group-data-[collapsible=icon]:px-1! group-data-[collapsible=icon]:py-2.5! group-data-[collapsible=icon]:text-center group-data-[collapsible=icon]:[&>span]:overflow-visible group-data-[collapsible=icon]:[&>span]:text-clip group-data-[collapsible=icon]:[&>span]:whitespace-normal group-data-[collapsible=icon]:[&>span]:text-center group-data-[collapsible=icon]:[&>span]:text-[11px] group-data-[collapsible=icon]:[&>span]:leading-4";
 
@@ -117,18 +125,38 @@ export function DashboardSidebar({
 			</SidebarContent>
 
 			<SidebarFooter className="p-3">
-				<div className="flex items-center gap-3 rounded-lg bg-slate-100 p-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2">
-					<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">
-						A
+				<div className="rounded-lg bg-slate-50 px-3 py-3 group-data-[collapsible=icon]:hidden">
+					<div className="flex items-start gap-2">
+						<ShieldCheck
+							className="mt-0.5 size-4 shrink-0 text-slate-500"
+							aria-hidden="true"
+						/>
+						<div className="min-w-0">
+							<p className="text-sm font-bold text-slate-800">
+								All your data is stored locally in your browser.
+							</p>
+							<p className="mt-1 text-xs leading-5 text-slate-500">
+								No account. No tracking. 100% private.
+							</p>
+						</div>
 					</div>
-					<div className="min-w-0 group-data-[collapsible=icon]:hidden">
+				</div>
+
+				<div className="flex items-center gap-3 rounded-lg bg-slate-100 p-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2">
+					<div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-violet-500 via-primary to-indigo-700 text-xs font-black text-white shadow-[0_10px_24px_color-mix(in_srgb,var(--primary)_28%,transparent)]">
+						{userProfile.avatarLabel}
+					</div>
+					<div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
 						<p className="truncate text-sm font-bold text-slate-800">
-							Aryan Mehta
+							{userProfile.name}
 						</p>
 						<p className="truncate text-xs font-semibold text-slate-500">
-							Local workspace
+							{userProfile.role}
 						</p>
 					</div>
+					<p className="shrink-0 text-xs font-semibold text-slate-400 group-data-[collapsible=icon]:hidden">
+						{userProfile.version}
+					</p>
 				</div>
 			</SidebarFooter>
 		</Sidebar>

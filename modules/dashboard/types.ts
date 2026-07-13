@@ -7,7 +7,17 @@ export type DashboardJobStatus =
 
 export type DashboardJobType = "Full-time" | "Contract";
 
-export type DashboardJobSource = "LinkedIn" | "Website";
+export type DashboardJobSourceName =
+	| "LinkedIn"
+	| "Company Site"
+	| "Manual"
+	| "Indeed";
+
+export type DashboardJobSource = {
+	name: DashboardJobSourceName;
+	url: string | null;
+	faviconUrl: string | null;
+};
 
 export type DashboardJob = {
 	id: string;
@@ -40,3 +50,10 @@ export type DashboardStatusFilter =
 	| "interview"
 	| "rejected"
 	| "offer";
+
+export type DashboardSourceFilter =
+	| "all"
+	| "linkedin"
+	| "company-site"
+	| "indeed"
+	| "manual";

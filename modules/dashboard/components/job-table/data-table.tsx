@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/table";
 import type {
 	DashboardJob,
+	DashboardSourceFilter,
 	DashboardStatusFilter,
 } from "@/modules/dashboard/types";
 import { DataTablePagination } from "./data-table-pagination";
@@ -48,11 +49,21 @@ const filters: Array<{ value: DashboardStatusFilter; label: string }> = [
 	{ value: "offer", label: "Offer (1)" },
 ];
 
+const sourceFilters: Array<{ value: DashboardSourceFilter; label: string }> = [
+	{ value: "all", label: "All Sources" },
+	{ value: "linkedin", label: "LinkedIn" },
+	{ value: "company-site", label: "Company Site" },
+	{ value: "indeed", label: "Indeed" },
+	{ value: "manual", label: "Manual" },
+];
+
 export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [search, setSearch] = useState("");
 	const [statusFilter, setStatusFilter] =
 		useState<DashboardStatusFilter>("all");
+	const [sourceFilter, setSourceFilter] =
+		useState<DashboardSourceFilter>("all");
 
 	const filteredData = useMemo(() => {
 		const query = search.trim().toLowerCase();
@@ -60,15 +71,18 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 		return data.filter((job) => {
 			const matchesQuery =
 				!query ||
-				[job.title, job.company, job.location].some((value) =>
+				[job.title, job.company, job.location, job.source.name].some((value) =>
 					value.toLowerCase().includes(query),
 				);
 			const matchesStatus =
 				statusFilter === "all" || job.status.toLowerCase() === statusFilter;
+			const matchesSource =
+				sourceFilter === "all" ||
+				job.source.name.toLowerCase().replace(/\s+/g, "-") === sourceFilter;
 
-			return matchesQuery && matchesStatus;
+			return matchesQuery && matchesStatus && matchesSource;
 		});
-	}, [data, search, statusFilter]);
+	}, [data, search, sourceFilter, statusFilter]);
 
 	const table = useReactTable({
 		data: filteredData,
@@ -113,18 +127,40 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 					</TabsList>
 				</Tabs>
 
-				<div className="flex shrink-0 items-center gap-3 text-xs font-bold text-slate-700">
-					Sort by
-					<Select defaultValue="latest">
-						<SelectTrigger className="h-9 w-24 rounded-md border-slate-200 bg-white text-xs font-bold">
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="latest">Latest</SelectItem>
-							<SelectItem value="applied">Applied</SelectItem>
-							<SelectItem value="company">Company</SelectItem>
-						</SelectContent>
-					</Select>
+				<div className="flex shrink-0 items-center gap-3">
+					<div className="flex items-center gap-3 text-xs font-bold text-slate-700">
+						Source
+						<Select
+							value={sourceFilter}
+							onValueChange={(value) =>
+								setSourceFilter(value as DashboardSourceFilter)
+							}
+						>
+							<SelectTrigger className="h-9 w-32 rounded-md border-slate-200 bg-white text-xs font-bold">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								{sourceFilters.map((filter) => (
+									<SelectItem key={filter.value} value={filter.value}>
+										{filter.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="flex items-center gap-3 text-xs font-bold text-slate-700">
+						Sort by
+						<Select defaultValue="latest">
+							<SelectTrigger className="h-9 w-24 rounded-md border-slate-200 bg-white text-xs font-bold">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="latest">Latest</SelectItem>
+								<SelectItem value="applied">Applied</SelectItem>
+								<SelectItem value="company">Company</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 			</div>
 

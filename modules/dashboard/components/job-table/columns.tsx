@@ -1,6 +1,12 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Bell, Globe } from "lucide-react";
 
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type {
 	DashboardJob,
@@ -67,17 +73,7 @@ export const dashboardColumns: ColumnDef<DashboardJob>[] = [
 	{
 		accessorKey: "source",
 		header: "Source",
-		cell: ({ row }) => (
-			<div className="flex min-w-12 items-center">
-				{row.original.source === "LinkedIn" ? (
-					<span className="inline-flex size-4 items-center justify-center rounded-[3px] bg-[#16a34a] text-[9px] font-black text-white">
-						in
-					</span>
-				) : (
-					<Globe className="size-4 text-slate-600" />
-				)}
-			</div>
-		),
+		cell: ({ row }) => <SourceCell job={row.original} />,
 	},
 	{
 		accessorKey: "status",
@@ -188,5 +184,63 @@ function CompanyMark({ brand }: { brand: DashboardJob["brand"] }) {
 		>
 			{content.label}
 		</div>
+	);
+}
+
+function SourceCell({ job }: { job: DashboardJob }) {
+	const extensionChrome = globalThis as typeof globalThis & {
+		chrome?: {
+			tabs?: {
+				create: (options: { url: string }) => void;
+			};
+		};
+	};
+	const isDisabled = !job.source.url;
+	const title = job.source.name === "Manual" ? "Manual" : "Open Job Link";
+
+	const handleOpenSource = () => {
+		if (!job.source.url) {
+			return;
+		}
+
+		extensionChrome.chrome?.tabs?.create({ url: job.source.url });
+	};
+
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<button
+						type="button"
+						onClick={handleOpenSource}
+						disabled={isDisabled}
+						aria-label={title}
+						className={cn(
+							"flex size-8 items-center justify-center rounded-md transition-colors",
+							isDisabled
+								? "cursor-not-allowed text-slate-400"
+								: "hover:bg-slate-100 hover:text-slate-950",
+						)}
+					>
+						{job.source.faviconUrl ? (
+							<img
+								src={job.source.faviconUrl}
+								alt=""
+								className="size-4 rounded-sm object-cover"
+							/>
+						) : job.source.name === "Manual" ? (
+							<span className="inline-flex size-4 items-center justify-center rounded-[4px] bg-slate-100 text-[10px] font-black uppercase text-slate-500">
+								M
+							</span>
+						) : (
+							<Globe className="size-4 text-slate-500" />
+						)}
+					</button>
+				</TooltipTrigger>
+				<TooltipContent side="top" sideOffset={6}>
+					{title}
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }

@@ -98,7 +98,7 @@ export const dashboardColumns: ColumnDef<DashboardJob>[] = [
 	},
 	{
 		accessorKey: "appliedDate",
-		header: "Applied Date",
+		header: "Date Added",
 		cell: ({ row }) => (
 			<p className="min-w-[110px] text-sm font-medium text-slate-700">
 				{row.original.appliedDate}

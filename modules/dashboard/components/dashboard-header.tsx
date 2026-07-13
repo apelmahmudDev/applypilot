@@ -15,10 +15,10 @@ export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 
 	return (
 		<header className="sticky top-0 z-30 w-full shrink-0 backdrop-blur-xl">
-			<SidebarArrowTrigger />
-			<nav className="flex w-full px-4 py-5 md:px-8">
+			{/* <SidebarArrowTrigger /> */}
+			<nav className="flex w-full px-4 pt-5 pb-1.5 md:px-8">
 				<div className="flex w-full min-w-0 items-start gap-3">
-					<SidebarTrigger className="mt-1 size-10 rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 md:hidden" />
+					<SidebarTrigger className="mt-1 size-10 rounded-md border border-slate-200 bg-white text-slate-600 md:hidden" />
 					<div className="min-w-0 flex-1">{content.markup}</div>
 				</div>
 			</nav>

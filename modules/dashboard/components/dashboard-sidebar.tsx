@@ -46,7 +46,7 @@ export function DashboardSidebar({
 	return (
 		<Sidebar collapsible="icon" variant="sidebar">
 			<SidebarHeader className="px-3 pb-2 pt-4">
-				<div className="flex items-center gap-3 rounded-lg px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+				<div className="flex items-center gap-3 rounded-lg px-1.5 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
 					<img
 						src={logoSrc}
 						alt=""
@@ -75,8 +75,7 @@ export function DashboardSidebar({
 								{section.items.map((item) => {
 									const Icon = item.icon;
 									const isActive = activeView === item.value;
-									const reminderCount =
-										item.value === "reminders" ? "3" : null;
+									const reminderCount = item.value === "reminders" ? "3" : null;
 
 									return (
 										<SidebarMenuItem key={item.value}>
@@ -85,16 +84,20 @@ export function DashboardSidebar({
 												size="lg"
 												isActive={isActive}
 												className={cn(
-													"h-10 rounded-lg font-bold",
+													"h-10 rounded-md font-bold",
 													reminderCount && "pr-3",
+													"group-data-[collapsible=icon]:px-1!",
 													collapsedMenuButtonClass,
 													isActive
-														? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
+														? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
 														: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
 												)}
 												onClick={() => handleViewChange(item.value)}
 											>
-												<Icon className="size-4 group-data-[collapsible=icon]:size-5" aria-hidden="true" />
+												<Icon
+													className="size-4 group-data-[collapsible=icon]:size-5"
+													aria-hidden="true"
+												/>
 												<span className="flex-1">{item.label}</span>
 												{reminderCount ? (
 													<div

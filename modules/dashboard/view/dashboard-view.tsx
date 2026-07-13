@@ -61,10 +61,7 @@ export function DashboardView() {
 				onViewChange={handleViewChange}
 			/>
 			<SidebarInset className="h-svh min-h-0 min-w-0 overflow-hidden bg-slate-50 dark:bg-[#202020]">
-				<main
-					className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
-					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
-				>
+				<main className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
 					{usesCustomHeader(activeView) ? null : (
 						<DashboardHeader activeView={activeView} />
 					)}

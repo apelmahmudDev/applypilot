@@ -5,11 +5,19 @@ import { ExportInfoSection } from "@/modules/dashboard/components/export/export-
 
 export function getExportDashboardHeaderContent(): DashboardHeaderContent {
 	return {
-		title: "Export",
-		description:
-			"Download a backup of your data. You can import it anytime to restore.",
-		searchSlot: <></>,
-		actions: <></>,
+		markup: (
+			<section className="flex w-full flex-col justify-center">
+				<div className="min-w-0">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+						Export
+					</h1>
+					<p className="mt-2 text-sm text-slate-500">
+						Download a backup of your data. You can import it anytime to
+						restore.
+					</p>
+				</div>
+			</section>
+		),
 	};
 }
 

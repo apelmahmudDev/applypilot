@@ -4,12 +4,10 @@ import {
 	BriefcaseBusiness,
 	Download,
 	Grid2X2,
-	LayoutDashboard,
 	Settings,
 } from "lucide-react";
 
 export type DashboardView =
-	| "dashboard"
 	| "all-jobs"
 	| "analytics"
 	| "reminders"
@@ -31,7 +29,6 @@ export const dashboardNavSections: DashboardNavSection[] = [
 	{
 		label: "Overview",
 		items: [
-			{ label: "Dashboard", value: "dashboard", icon: LayoutDashboard },
 			{ label: "All Jobs", value: "all-jobs", icon: BriefcaseBusiness },
 			{ label: "Analytics", value: "analytics", icon: BarChart3 },
 		],
@@ -63,6 +60,6 @@ export function getDashboardViewTitle(view: DashboardView) {
 	return (
 		dashboardNavSections
 			.flatMap((section) => section.items)
-			.find((item) => item.value === view)?.label ?? "Dashboard"
+			.find((item) => item.value === view)?.label ?? "All Jobs"
 	);
 }

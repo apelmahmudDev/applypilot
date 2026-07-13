@@ -12,7 +12,7 @@ import {
 
 function getViewFromHash(): DashboardView {
 	const hashView = window.location.hash.replace(/^#/, "");
-	return isDashboardView(hashView) ? hashView : "dashboard";
+	return isDashboardView(hashView) ? hashView : "all-jobs";
 }
 
 function usesCustomHeader(view: DashboardView) {

@@ -46,7 +46,6 @@ export function RemindersDatePicker() {
 					mode="single"
 					selected={selectedDate}
 					onSelect={setSelectedDate}
-					initialFocus
 				/>
 			</PopoverContent>
 		</Popover>

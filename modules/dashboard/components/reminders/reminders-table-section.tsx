@@ -50,7 +50,7 @@ export function RemindersTableSection({ section }: RemindersTableSectionProps) {
 				) : null}
 			</div>
 
-			<div className="overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+			<div className="overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.01)]">
 				<Table>
 					<TableBody>
 						{section.rows.map((row) => (

@@ -111,7 +111,7 @@ export function AnalyticsView() {
 
 			<StatsCardGrid stats={analyticsStats} />
 
-			<section className="mt-6 mb-10 space-y-4">
+			<section className="mt-6 mb-8 space-y-4">
 				<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
 					<ApplicationsOverTimeChart />
 					<ApplicationFunnelChart />

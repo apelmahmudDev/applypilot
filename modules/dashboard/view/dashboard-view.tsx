@@ -12,7 +12,17 @@ import {
 
 function getViewFromHash(): DashboardView {
 	const hashView = window.location.hash.replace(/^#/, "");
-	return isDashboardView(hashView) ? hashView : "dashboard";
+	return isDashboardView(hashView) ? hashView : "all-jobs";
+}
+
+function usesCustomHeader(view: DashboardView) {
+	return (
+		view === "all-jobs" ||
+		view === "analytics" ||
+		view === "reminders" ||
+		view === "settings" ||
+		view === "export"
+	);
 }
 
 export function DashboardView() {
@@ -52,11 +62,10 @@ export function DashboardView() {
 				onViewChange={handleViewChange}
 			/>
 			<SidebarInset className="h-svh min-h-0 min-w-0 overflow-hidden bg-slate-50 dark:bg-[#202020]">
-				<main
-					className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
-					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
-				>
-					<DashboardHeader activeView={activeView} />
+				<main className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+					{usesCustomHeader(activeView) ? null : (
+						<DashboardHeader activeView={activeView} />
+					)}
 					<div
 						data-dashboard-content
 						className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-20 md:px-8 md:pb-24"

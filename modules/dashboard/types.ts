@@ -5,15 +5,42 @@ export type DashboardJobStatus =
 	| "Rejected"
 	| "Offer";
 
+export type DashboardJobType = "Full-time" | "Contract";
+
+export type DashboardJobSourceName =
+	| "LinkedIn"
+	| "Company Site"
+	| "Manual"
+	| "Indeed";
+
+export type DashboardJobSource = {
+	name: DashboardJobSourceName;
+	url: string | null;
+	faviconUrl: string | null;
+};
+
 export type DashboardJob = {
 	id: string;
 	title: string;
 	company: string;
 	location: string;
-	deadline: string;
-	followUp: string;
+	workMode: string;
+	jobType: DashboardJobType;
+	source: DashboardJobSource;
+	appliedDate: string;
+	reminder: string;
 	status: DashboardJobStatus;
-	brand: "google" | "microsoft" | "swiggy" | "amazon" | "zomato";
+	brand:
+		| "figma"
+		| "vercel"
+		| "airbnb"
+		| "hubspot"
+		| "notion"
+		| "spotify"
+		| "linear"
+		| "calendly"
+		| "plaid"
+		| "canva";
 };
 
 export type DashboardStatusFilter =
@@ -23,3 +50,10 @@ export type DashboardStatusFilter =
 	| "interview"
 	| "rejected"
 	| "offer";
+
+export type DashboardSourceFilter =
+	| "all"
+	| "linkedin"
+	| "company-site"
+	| "indeed"
+	| "manual";

@@ -1,16 +1,13 @@
 import {
 	BriefcaseBusiness,
-	CircleCheckBig,
-	MoveUpRight,
-	Plus,
-	Search,
-	Sparkles,
+	CalendarDays,
+	ChartNoAxesCombined,
+	Download,
+	Trophy,
 	Users,
-	type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -18,172 +15,94 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { dashboardJobs } from "@/modules/dashboard/mock-data";
-import type { DashboardStatusFilter } from "@/modules/dashboard/types";
-import { getDashboardColumns } from "../components/job-table/columns";
-import { DataTable } from "../components/job-table/data-table";
+import {
+	StatsCardGrid,
+	type StatsCardItem,
+} from "@/modules/dashboard/components/stats-card-grid";
 
-const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
-	{ value: "saved", label: "Saved" },
-	{ value: "applied", label: "Applied" },
-	{ value: "interview", label: "Interview" },
-	{ value: "rejected", label: "Rejected" },
-	{ value: "offer", label: "Offer" },
+const analyticsRanges = [
+	{ value: "last-30-days", label: "Last 30 days" },
+	{ value: "last-90-days", label: "Last 90 days" },
+	{ value: "this-year", label: "This year" },
 ];
 
-const allJobsStats = [
+const analyticsStats = [
 	{
-		label: "Total Jobs",
-		value: "42",
-		description: "All saved jobs",
-		trend: "12%",
+		label: "Total Applications",
+		value: "56",
+		description: "vs previous 30 days",
+		trend: "16%",
 		icon: BriefcaseBusiness,
 		accentClassName: "bg-blue-50 text-blue-600",
-		trendClassName: "text-blue-600",
+		trendClassName: "text-emerald-600",
 	},
 	{
-		label: "Applied",
-		value: "18",
-		description: "Applications sent",
-		trend: "18%",
-		icon: CircleCheckBig,
+		label: "Response Rate",
+		value: "28.6%",
+		description: "vs previous 30 days",
+		trend: "8.4%",
+		icon: ChartNoAxesCombined,
 		accentClassName: "bg-emerald-50 text-emerald-600",
 		trendClassName: "text-emerald-600",
 	},
 	{
-		label: "Interviewing",
-		value: "4",
-		description: "In progress",
-		trend: "14%",
+		label: "Interview Rate",
+		value: "17.9%",
+		description: "vs previous 30 days",
+		trend: "5.1%",
 		icon: Users,
 		accentClassName: "bg-violet-50 text-violet-600",
-		trendClassName: "text-violet-600",
+		trendClassName: "text-emerald-600",
 	},
 	{
 		label: "Offers",
-		value: "1",
-		description: "Offers received",
-		trend: "50%",
-		icon: Sparkles,
+		value: "5",
+		description: "vs previous 30 days",
+		trend: "2",
+		icon: Trophy,
 		accentClassName: "bg-amber-50 text-amber-500",
-		trendClassName: "text-amber-500",
+		trendClassName: "text-emerald-600",
 	},
-] satisfies Array<{
-	label: string;
-	value: string;
-	description: string;
-	trend: string;
-	icon: LucideIcon;
-	accentClassName: string;
-	trendClassName: string;
-}>;
+] satisfies StatsCardItem[];
 
 export function AnalyticsView() {
 	return (
-		<DataTable
-			columns={({ statusFilter }) =>
-				getDashboardColumns({
-					showStatus: false,
-					statusFilter,
-				})
-			}
-			data={dashboardJobs}
-			toolbarMode="tabs-only"
-			showStatusTabs={false}
-			initialStatusFilter="saved"
-			headerSlot={({ statusFilter, setStatusFilter }) => (
-				<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
-					<div className="min-w-0">
-						<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
-							All Jobs
-						</h1>
-						<p className="mt-2 text-sm text-slate-500">
-							Track and manage all your job applications in one place.
-						</p>
-					</div>
-
-					<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
-						<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
-							<Search
-								className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
-								aria-hidden="true"
-							/>
-							<Input
-								placeholder="Search jobs, companies, roles..."
-								className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
-							/>
-						</div>
-
-						<Select
-							value={statusFilter}
-							onValueChange={(value) =>
-								setStatusFilter(value as DashboardStatusFilter)
-							}
-						>
-							<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{statusFilters.map((filter) => (
-									<SelectItem key={filter.value} value={filter.value}>
-										{filter.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						<Button className="h-11 px-4">
-							<Plus className="size-4" aria-hidden="true" />
-							Save New Job
-						</Button>
-					</div>
-				</section>
-			)}
-			statsSlot={
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-					{allJobsStats.map((stat) => {
-						const Icon = stat.icon;
-
-						return (
-							<article
-								key={stat.label}
-								className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4" //shadow-[0_4px_16px_rgba(15,23,42,0.04)]
-							>
-								<div
-									className={cn(
-										"flex size-12 shrink-0 items-center justify-center rounded-full",
-										stat.accentClassName,
-									)}
-								>
-									<Icon className="size-5" aria-hidden="true" />
-								</div>
-
-								<div className="min-w-0 flex-1">
-									<p className="text-sm font-medium text-slate-500">
-										{stat.label}
-									</p>
-									<p className="text-2xl font-bold leading-tight text-slate-900">
-										{stat.value}
-									</p>
-									<div className="mt-1 flex items-center justify-between gap-2">
-										<p className="text-xs text-slate-400">{stat.description}</p>
-										<span
-											className={cn(
-												"flex items-center gap-0.5 text-xs font-semibold",
-												stat.trendClassName,
-											)}
-										>
-											<MoveUpRight className="size-3" aria-hidden="true" />
-											{stat.trend}
-										</span>
-									</div>
-								</div>
-							</article>
-						);
-					})}
+		<div>
+			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
+				<div className="min-w-0">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+						Analytics
+					</h1>
+					<p className="mt-2 text-sm text-slate-500">
+						Track performance and insights across your job search.
+					</p>
 				</div>
-			}
-		/>
+
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
+					<Select defaultValue="last-30-days">
+						<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+							<div className="flex items-center gap-2">
+								<CalendarDays className="size-4" aria-hidden="true" />
+								<SelectValue />
+							</div>
+						</SelectTrigger>
+						<SelectContent>
+							{analyticsRanges.map((range) => (
+								<SelectItem key={range.value} value={range.value}>
+									{range.label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					<Button variant="outline" className="h-11 px-4 bg-white">
+						<Download className="size-4" aria-hidden="true" />
+						Export
+					</Button>
+				</div>
+			</section>
+
+			<StatsCardGrid stats={analyticsStats} />
+		</div>
 	);
 }

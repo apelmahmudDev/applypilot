@@ -1,12 +1,10 @@
 import {
 	BriefcaseBusiness,
 	CircleCheckBig,
-	MoveUpRight,
 	Plus,
 	Search,
 	Sparkles,
 	Users,
-	type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,8 +16,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { dashboardJobs } from "@/modules/dashboard/mock-data";
+import {
+	StatsCardGrid,
+	type StatsCardItem,
+} from "@/modules/dashboard/components/stats-card-grid";
 import type { DashboardStatusFilter } from "@/modules/dashboard/types";
 import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
@@ -69,15 +70,7 @@ const allJobsStats = [
 		accentClassName: "bg-amber-50 text-amber-500",
 		trendClassName: "text-amber-500",
 	},
-] satisfies Array<{
-	label: string;
-	value: string;
-	description: string;
-	trend: string;
-	icon: LucideIcon;
-	accentClassName: string;
-	trendClassName: string;
-}>;
+] satisfies StatsCardItem[];
 
 export function AllJobsView() {
 	return (
@@ -140,50 +133,7 @@ export function AllJobsView() {
 					</div>
 				</section>
 			)}
-			statsSlot={
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-					{allJobsStats.map((stat) => {
-						const Icon = stat.icon;
-
-						return (
-							<article
-								key={stat.label}
-								className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4" //shadow-[0_4px_16px_rgba(15,23,42,0.04)]
-							>
-								<div
-									className={cn(
-										"flex size-12 shrink-0 items-center justify-center rounded-full",
-										stat.accentClassName,
-									)}
-								>
-									<Icon className="size-5" aria-hidden="true" />
-								</div>
-
-								<div className="min-w-0 flex-1">
-									<p className="text-sm font-medium text-slate-500">
-										{stat.label}
-									</p>
-									<p className="text-2xl font-bold leading-tight text-slate-900">
-										{stat.value}
-									</p>
-									<div className="mt-1 flex items-center justify-between gap-2">
-										<p className="text-xs text-slate-400">{stat.description}</p>
-										<span
-											className={cn(
-												"flex items-center gap-0.5 text-xs font-semibold",
-												stat.trendClassName,
-											)}
-										>
-											<MoveUpRight className="size-3" aria-hidden="true" />
-											{stat.trend}
-										</span>
-									</div>
-								</div>
-							</article>
-						);
-					})}
-				</div>
-			}
+			statsSlot={<StatsCardGrid stats={allJobsStats} />}
 		/>
 	);
 }

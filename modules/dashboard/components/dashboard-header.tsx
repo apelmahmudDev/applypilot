@@ -9,6 +9,7 @@ import {
 	getDashboardViewTitle,
 	type DashboardView,
 } from "@/modules/dashboard/navigation";
+import { getExportDashboardHeaderContent } from "@/modules/dashboard/view/export-view";
 
 type DashboardHeaderProps = {
 	activeView: DashboardView;
@@ -60,6 +61,10 @@ export function DashboardHeader({ activeView }: DashboardHeaderProps) {
 export function getDefaultDashboardHeaderContent(
 	activeView: DashboardView,
 ): DashboardHeaderContent {
+	if (activeView === "export") {
+		return getExportDashboardHeaderContent();
+	}
+
 	return {
 		title: getDashboardViewTitle(activeView),
 		description: "Track your job applications and stay on top of your progress.",

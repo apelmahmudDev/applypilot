@@ -1,57 +1,11 @@
-import {
-	Bell,
-	CalendarClock,
-	CalendarDays,
-	CheckCircle2,
-	Clock3,
-	Plus,
-	Search,
-} from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-	StatsCardGrid,
-	type StatsCardItem,
-} from "@/modules/dashboard/components/stats-card-grid";
-
-const reminderStats = [
-	{
-		label: "All Reminders",
-		value: "12",
-		description: "Across all tracked jobs",
-		icon: Bell,
-		accentClassName: "bg-blue-50 text-blue-600",
-	},
-	{
-		label: "Due Today",
-		value: "5",
-		description: "Need attention today",
-		icon: CalendarDays,
-		accentClassName: "bg-emerald-50 text-emerald-600",
-	},
-	{
-		label: "Due This Week",
-		value: "4",
-		description: "Upcoming follow-ups",
-		icon: Clock3,
-		accentClassName: "bg-amber-50 text-amber-500",
-	},
-	{
-		label: "Overdue",
-		value: "3",
-		description: "Past scheduled date",
-		icon: CalendarClock,
-		accentClassName: "bg-violet-50 text-violet-600",
-	},
-	{
-		label: "Completed",
-		value: "8",
-		description: "Marked done this week",
-		icon: CheckCircle2,
-		accentClassName: "bg-slate-100 text-slate-600",
-	},
-] satisfies StatsCardItem[];
+import { RemindersDatePicker } from "@/modules/dashboard/components/reminders/reminders-date-picker";
+import { RemindersStats } from "@/modules/dashboard/components/reminders/reminders-stats";
+import { RemindersTableSection } from "@/modules/dashboard/components/reminders/reminders-table-section";
+import { reminderSections } from "@/modules/dashboard/components/reminders/data";
 
 export function RemindersView() {
 	return (
@@ -78,6 +32,8 @@ export function RemindersView() {
 						/>
 					</div>
 
+					<RemindersDatePicker />
+
 					<Button className="h-11 px-4">
 						<Plus className="size-4" aria-hidden="true" />
 						Add Reminder
@@ -85,12 +41,26 @@ export function RemindersView() {
 				</div>
 			</section>
 
-			<StatsCardGrid
-				stats={reminderStats}
-				className="xl:grid-cols-5"
-			/>
+			<RemindersStats />
 
-			<section className="mt-6 mb-8 space-y-4">{/* reminder content */}</section>
+			<section className="mt-6 mb-8 space-y-6">
+				<div className="space-y-5">
+					{reminderSections.map((section) => (
+						<RemindersTableSection key={section.id} section={section} />
+					))}
+
+					<div className="flex flex-col gap-4 text-sm font-medium text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+						<p>Showing 1 to 6 of 12 reminders</p>
+						<Button
+							type="button"
+							variant="outline"
+							className="h-10 rounded-md border-slate-100 bg-white px-4 font-semibold text-slate-700 shadow-none"
+						>
+							Load More
+						</Button>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }

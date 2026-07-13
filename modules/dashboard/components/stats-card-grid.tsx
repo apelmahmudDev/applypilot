@@ -15,13 +15,21 @@ export type StatsCardItem = {
 type StatsCardGridProps = {
 	stats: StatsCardItem[];
 	className?: string;
+	layout?: "default" | "value-first";
+	showDescription?: boolean;
 };
 
-export function StatsCardGrid({ stats, className }: StatsCardGridProps) {
+export function StatsCardGrid({
+	stats,
+	className,
+	layout = "default",
+	showDescription = true,
+}: StatsCardGridProps) {
 	return (
 		<div className={cn("grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4", className)}>
 			{stats.map((stat) => {
 				const Icon = stat.icon;
+				const isValueFirst = layout === "value-first";
 
 				return (
 					<article
@@ -38,12 +46,29 @@ export function StatsCardGrid({ stats, className }: StatsCardGridProps) {
 						</div>
 
 						<div className="min-w-0 flex-1">
-							<p className="text-sm font-medium text-slate-500">{stat.label}</p>
-							<p className="text-2xl font-bold leading-tight text-slate-900">
-								{stat.value}
-							</p>
+							{isValueFirst ? (
+								<>
+									<p className="text-2xl font-bold leading-tight text-slate-900">
+										{stat.value}
+									</p>
+									<p className="mt-1 text-sm font-medium text-slate-500">
+										{stat.label}
+									</p>
+								</>
+							) : (
+								<>
+									<p className="text-sm font-medium text-slate-500">{stat.label}</p>
+									<p className="text-2xl font-bold leading-tight text-slate-900">
+										{stat.value}
+									</p>
+								</>
+							)}
 							<div className="mt-1 flex items-center justify-between gap-2">
-								<p className="text-xs text-slate-400">{stat.description}</p>
+								{showDescription ? (
+									<p className="text-xs text-slate-400">{stat.description}</p>
+								) : (
+									<span />
+								)}
 								{stat.trend ? (
 									<span
 										className={cn(

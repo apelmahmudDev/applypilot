@@ -1,55 +1,91 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreVertical, Pencil } from "lucide-react";
+import { Bell, Globe } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type {
 	DashboardJob,
 	DashboardJobStatus,
 } from "@/modules/dashboard/types";
+import { DataTableRowActions } from "./data-table-row-actions";
 
 const statusStyles: Record<DashboardJobStatus, string> = {
-	Applied: "bg-blue-50 text-blue-600",
-	Interview: "bg-orange-50 text-orange-600",
-	Saved: "bg-slate-100 text-slate-600",
+	Applied: "bg-emerald-50 text-emerald-600",
+	Interview: "bg-violet-50 text-violet-600",
+	Saved: "bg-blue-50 text-blue-600",
 	Rejected: "bg-red-50 text-red-600",
-	Offer: "bg-emerald-50 text-emerald-600",
+	Offer: "bg-amber-50 text-amber-600",
 };
 
 export const dashboardColumns: ColumnDef<DashboardJob>[] = [
 	{
 		accessorKey: "title",
-		header: "",
+		header: "Job Title",
 		cell: ({ row }) => {
 			const job = row.original;
 			return (
-				<div className="flex min-w-[260px] items-center gap-4">
-					<CompanyMark brand={job.brand} />
-					<div className="min-w-0">
-						<p className="truncate text-sm font-bold text-slate-950">
-							{job.title}
-						</p>
-						<p className="truncate text-xs font-semibold text-slate-700">
-							{job.company} - {job.location}
-						</p>
-					</div>
+				<div className="min-w-[220px]">
+					<p className="truncate text-sm font-bold text-slate-950">
+						{job.title}
+					</p>
+					<p className="mt-1 truncate text-xs font-medium text-slate-500">
+						{job.jobType}
+					</p>
 				</div>
 			);
 		},
 	},
 	{
+		accessorKey: "company",
+		header: "Company",
+		cell: ({ row }) => {
+			const job = row.original;
+			return (
+				<div className="flex min-w-[150px] items-center gap-3">
+					<CompanyMark brand={job.brand} />
+					<p className="truncate text-sm font-semibold text-slate-900">
+						{job.company}
+					</p>
+				</div>
+			);
+		},
+	},
+	{
+		accessorKey: "location",
+		header: "Location",
+		cell: ({ row }) => {
+			const job = row.original;
+			return (
+				<div className="min-w-[150px]">
+					<p className="text-sm font-semibold text-slate-900">{job.location}</p>
+					<p className="mt-1 text-xs font-medium text-slate-500">
+						{job.workMode}
+					</p>
+				</div>
+			);
+		},
+	},
+	{
+		accessorKey: "source",
+		header: "Source",
+		cell: ({ row }) => (
+			<div className="flex min-w-12 items-center">
+				{row.original.source === "LinkedIn" ? (
+					<span className="inline-flex size-4 items-center justify-center rounded-[3px] bg-[#16a34a] text-[9px] font-black text-white">
+						in
+					</span>
+				) : (
+					<Globe className="size-4 text-slate-600" />
+				)}
+			</div>
+		),
+	},
+	{
 		accessorKey: "status",
-		header: "",
+		header: "Status",
 		cell: ({ row }) => (
 			<span
 				className={cn(
-					"inline-flex min-w-20 justify-center rounded-md px-3 py-1 text-xs font-bold",
+					"inline-flex min-w-20 justify-center rounded-full px-3 py-1 text-xs font-bold",
 					statusStyles[row.original.status],
 				)}
 			>
@@ -65,98 +101,92 @@ export const dashboardColumns: ColumnDef<DashboardJob>[] = [
 		},
 	},
 	{
-		accessorKey: "deadline",
-		header: "",
+		accessorKey: "appliedDate",
+		header: "Applied Date",
 		cell: ({ row }) => (
-			<div className="min-w-24">
-				<p className="text-xs font-semibold text-slate-500">Deadline</p>
-				<p className="mt-1 text-xs font-bold text-slate-950">
-					{row.original.deadline}
-				</p>
-			</div>
+			<p className="min-w-[110px] text-sm font-medium text-slate-700">
+				{row.original.appliedDate}
+			</p>
 		),
 	},
 	{
-		accessorKey: "followUp",
-		header: "",
+		accessorKey: "reminder",
+		header: "Reminder",
 		cell: ({ row }) => (
-			<div className="min-w-24">
-				<p className="text-xs font-semibold text-slate-500">Follow-up</p>
-				<p className="mt-1 text-xs font-bold text-slate-950">
-					{row.original.followUp}
-				</p>
+			<div className="min-w-[90px]">
+				{row.original.reminder === "-" ? (
+					<span className="text-sm font-medium text-slate-400">-</span>
+				) : (
+					<span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-500">
+						<Bell className="size-3.5" />
+						{row.original.reminder}
+					</span>
+				)}
 			</div>
 		),
 	},
 	{
 		id: "actions",
-		header: "",
-		cell: () => (
-			<div className="flex items-center justify-end gap-2">
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					className="text-slate-600 hover:bg-slate-100 hover:text-slate-950"
-					aria-label="Edit job"
-					title="Edit"
-				>
-					<Pencil className="size-4" aria-hidden="true" />
-				</Button>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon-sm"
-							className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
-							aria-label="More job actions"
-							title="More actions"
-						>
-							<MoreVertical className="size-4" aria-hidden="true" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuItem>Edit</DropdownMenuItem>
-						<DropdownMenuItem>Open Job Link</DropdownMenuItem>
-						<DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</div>
+		header: () => (
+			<div className="flex min-w-[76px] justify-end text-right">Actions</div>
 		),
+		cell: () => <DataTableRowActions />,
 	},
 ];
 
 function CompanyMark({ brand }: { brand: DashboardJob["brand"] }) {
-	if (brand === "microsoft") {
-		return (
-			<div className="grid size-8 shrink-0 grid-cols-2 gap-0.5 rounded-md bg-white p-1 shadow-sm">
-				<span className="bg-red-500" />
-				<span className="bg-green-500" />
-				<span className="bg-blue-500" />
-				<span className="bg-yellow-400" />
-			</div>
-		);
-	}
-
 	const content = {
-		google: "G",
-		swiggy: "S",
-		amazon: "a",
-		zomato: "zomato",
+		figma: {
+			label: "F",
+			className:
+				"bg-gradient-to-br from-orange-500 via-pink-500 to-blue-500 text-white",
+		},
+		vercel: {
+			label: "V",
+			className: "bg-black text-white",
+		},
+		airbnb: {
+			label: "A",
+			className: "bg-rose-500 text-white",
+		},
+		hubspot: {
+			label: "H",
+			className: "bg-orange-500 text-white",
+		},
+		notion: {
+			label: "N",
+			className: "bg-white text-black shadow-sm ring-1 ring-slate-300",
+		},
+		spotify: {
+			label: "S",
+			className: "bg-green-500 text-white",
+		},
+		linear: {
+			label: "L",
+			className: "bg-slate-950 text-white",
+		},
+		calendly: {
+			label: "C",
+			className: "bg-blue-600 text-white",
+		},
+		plaid: {
+			label: "P",
+			className: "bg-black text-white",
+		},
+		canva: {
+			label: "C",
+			className: "bg-cyan-500 text-white",
+		},
 	}[brand];
 
 	return (
 		<div
 			className={cn(
-				"flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-black",
-				brand === "google" && "bg-white text-blue-600 shadow-sm",
-				brand === "swiggy" && "bg-orange-500 text-white",
-				brand === "amazon" && "bg-white text-slate-950 shadow-sm",
-				brand === "zomato" && "bg-red-500 text-[9px] text-white",
+				"flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-black",
+				content.className,
 			)}
 		>
-			{content}
+			{content.label}
 		</div>
 	);
 }

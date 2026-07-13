@@ -2,17 +2,15 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
+	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
 	type ColumnDef,
 	type SortingState,
 } from "@tanstack/react-table";
-import { Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -33,6 +31,7 @@ import type {
 	DashboardJob,
 	DashboardStatusFilter,
 } from "@/modules/dashboard/types";
+import { DataTablePagination } from "./data-table-pagination";
 
 type DataTableProps = {
 	columns: ColumnDef<DashboardJob>[];
@@ -76,8 +75,14 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		onSortingChange: setSorting,
+		initialState: {
+			pagination: {
+				pageSize: 10,
+			},
+		},
 		state: {
 			sorting,
 		},
@@ -108,7 +113,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 					</TabsList>
 				</Tabs>
 
-				<div className="shrink-0 flex items-center gap-3 text-xs font-bold text-slate-700">
+				<div className="flex shrink-0 items-center gap-3 text-xs font-bold text-slate-700">
 					Sort by
 					<Select defaultValue="latest">
 						<SelectTrigger className="h-9 w-24 rounded-md border-slate-200 bg-white text-xs font-bold">
@@ -116,20 +121,26 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="latest">Latest</SelectItem>
-							<SelectItem value="deadline">Deadline</SelectItem>
+							<SelectItem value="applied">Applied</SelectItem>
 							<SelectItem value="company">Company</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 			</div>
 
-			<div className="min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+			<div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_18px_48px_rgba(15,23,42,0.08)]">
 				<Table>
-					<TableHeader className="sr-only">
+					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
+							<TableRow
+								key={headerGroup.id}
+								className="border-slate-200 bg-slate-50/60"
+							>
 								{headerGroup.headers.map((header) => (
-									<TableHead key={header.id}>
+									<TableHead
+										key={header.id}
+										className="h-12 px-5 text-xs font-bold text-slate-500"
+									>
 										{header.isPlaceholder
 											? null
 											: flexRender(
@@ -146,7 +157,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									className="h-[72px] border-slate-100 hover:bg-slate-50/80 dark:hover:bg-[#303032]"
+									className="h-[72px] border-slate-100 hover:bg-slate-50/80"
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="px-5 py-3">
@@ -171,6 +182,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 					</TableBody>
 				</Table>
 			</div>
+			<DataTablePagination table={table} />
 		</div>
 	);
 }

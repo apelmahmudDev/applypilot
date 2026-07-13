@@ -5,15 +5,32 @@ export type DashboardJobStatus =
 	| "Rejected"
 	| "Offer";
 
+export type DashboardJobType = "Full-time" | "Contract";
+
+export type DashboardJobSource = "LinkedIn" | "Website";
+
 export type DashboardJob = {
 	id: string;
 	title: string;
 	company: string;
 	location: string;
-	deadline: string;
-	followUp: string;
+	workMode: string;
+	jobType: DashboardJobType;
+	source: DashboardJobSource;
+	appliedDate: string;
+	reminder: string;
 	status: DashboardJobStatus;
-	brand: "google" | "microsoft" | "swiggy" | "amazon" | "zomato";
+	brand:
+		| "figma"
+		| "vercel"
+		| "airbnb"
+		| "hubspot"
+		| "notion"
+		| "spotify"
+		| "linear"
+		| "calendly"
+		| "plaid"
+		| "canva";
 };
 
 export type DashboardStatusFilter =

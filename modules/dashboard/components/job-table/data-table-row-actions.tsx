@@ -1,12 +1,21 @@
 "use client";
 
-import { Eye, MoreHorizontal } from "lucide-react";
+import {
+	Archive,
+	Bell,
+	Eye,
+	FilePenLine,
+	Link2,
+	MoreHorizontal,
+	Trash2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -36,10 +45,31 @@ export function DataTableRowActions() {
 						<MoreHorizontal className="size-4" aria-hidden="true" />
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuItem>Edit</DropdownMenuItem>
-					<DropdownMenuItem>Open Job Link</DropdownMenuItem>
-					<DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+				<DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5">
+					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+						<FilePenLine className="size-4" aria-hidden="true" />
+						Edit job
+					</DropdownMenuItem>
+					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+						<Link2 className="size-4" aria-hidden="true" />
+						Open original
+					</DropdownMenuItem>
+					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+						<Bell className="size-4" aria-hidden="true" />
+						Set reminder
+					</DropdownMenuItem>
+					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+						<Archive className="size-4" aria-hidden="true" />
+						Archive
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						variant="destructive"
+						className="gap-2.5 rounded-lg py-2 font-medium"
+					>
+						<Trash2 className="size-4" aria-hidden="true" />
+						Delete
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

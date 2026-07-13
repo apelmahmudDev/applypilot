@@ -75,6 +75,8 @@ export function DashboardSidebar({
 								{section.items.map((item) => {
 									const Icon = item.icon;
 									const isActive = activeView === item.value;
+									const reminderCount =
+										item.value === "reminders" ? "3" : null;
 
 									return (
 										<SidebarMenuItem key={item.value}>
@@ -84,6 +86,7 @@ export function DashboardSidebar({
 												isActive={isActive}
 												className={cn(
 													"h-10 rounded-lg font-bold",
+													reminderCount && "pr-3",
 													collapsedMenuButtonClass,
 													isActive
 														? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
@@ -92,7 +95,19 @@ export function DashboardSidebar({
 												onClick={() => handleViewChange(item.value)}
 											>
 												<Icon className="size-4 group-data-[collapsible=icon]:size-5" aria-hidden="true" />
-												<span>{item.label}</span>
+												<span className="flex-1">{item.label}</span>
+												{reminderCount ? (
+													<div
+														className={cn(
+															"ml-auto flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-[11px] font-bold tabular-nums ring-1 ring-inset transition-colors group-data-[collapsible=icon]:hidden",
+															isActive
+																? "bg-primary text-primary-foreground ring-primary/20"
+																: "bg-primary text-primary-foreground ring-primary/15 shadow-[0_1px_2px_color-mix(in_srgb,var(--primary)_22%,transparent)]",
+														)}
+													>
+														{reminderCount}
+													</div>
+												) : null}
 											</SidebarMenuButton>
 										</SidebarMenuItem>
 									);

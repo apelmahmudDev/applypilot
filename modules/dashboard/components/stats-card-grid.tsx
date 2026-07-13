@@ -6,10 +6,10 @@ export type StatsCardItem = {
 	label: string;
 	value: string;
 	description: string;
-	trend: string;
+	trend?: string;
 	icon: LucideIcon;
 	accentClassName: string;
-	trendClassName: string;
+	trendClassName?: string;
 };
 
 type StatsCardGridProps = {
@@ -44,15 +44,17 @@ export function StatsCardGrid({ stats, className }: StatsCardGridProps) {
 							</p>
 							<div className="mt-1 flex items-center justify-between gap-2">
 								<p className="text-xs text-slate-400">{stat.description}</p>
-								<span
-									className={cn(
-										"flex items-center gap-0.5 text-xs font-semibold",
-										stat.trendClassName,
-									)}
-								>
-									<MoveUpRight className="size-3" aria-hidden="true" />
-									{stat.trend}
-								</span>
+								{stat.trend ? (
+									<span
+										className={cn(
+											"flex items-center gap-0.5 text-xs font-semibold",
+											stat.trendClassName,
+										)}
+									>
+										<MoveUpRight className="size-3" aria-hidden="true" />
+										{stat.trend}
+									</span>
+								) : null}
 							</div>
 						</div>
 					</article>

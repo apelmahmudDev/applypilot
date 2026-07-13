@@ -16,7 +16,7 @@ function getViewFromHash(): DashboardView {
 }
 
 function usesCustomHeader(view: DashboardView) {
-	return view === "all-jobs" || view === "analytics";
+	return view === "all-jobs" || view === "analytics" || view === "reminders";
 }
 
 export function DashboardView() {

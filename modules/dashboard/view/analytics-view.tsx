@@ -20,6 +20,13 @@ import {
 	type StatsCardItem,
 } from "@/modules/dashboard/components/stats-card-grid";
 
+import { ApplicationsOverTimeChart } from "../components/analytics/applications-over-time-chart";
+import { ApplicationFunnelChart } from "../components/analytics/application-funnel-chart";
+import { ApplicationsByStatusChart } from "../components/analytics/applications-by-status-chart";
+import { TopSourcesChart } from "../components/analytics/top-sources-chart";
+import { BestPerformingCompaniesCard } from "../components/analytics/best-performing-companies-card";
+import { AnalyticsSummaryMetrics } from "../components/analytics/analytics-summary-metrics";
+
 const analyticsRanges = [
 	{ value: "last-30-days", label: "Last 30 days" },
 	{ value: "last-90-days", label: "Last 90 days" },
@@ -103,6 +110,18 @@ export function AnalyticsView() {
 			</section>
 
 			<StatsCardGrid stats={analyticsStats} />
+
+			<section className="mt-6 mb-10 space-y-4">
+				<div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
+					<ApplicationsOverTimeChart />
+					<ApplicationFunnelChart />
+					<ApplicationsByStatusChart />
+					<TopSourcesChart />
+					<BestPerformingCompaniesCard />
+				</div>
+
+				{/* <AnalyticsSummaryMetrics /> */}
+			</section>
 		</div>
 	);
 }

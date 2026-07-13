@@ -1,215 +1,189 @@
-import { Circle } from "lucide-react";
+import {
+	BriefcaseBusiness,
+	CircleCheckBig,
+	MoveUpRight,
+	Plus,
+	Search,
+	Sparkles,
+	Users,
+	type LucideIcon,
+} from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { analyticsMonthlyActivity } from "@/modules/dashboard/mock-data";
+import { dashboardJobs } from "@/modules/dashboard/mock-data";
+import type { DashboardStatusFilter } from "@/modules/dashboard/types";
+import { getDashboardColumns } from "../components/job-table/columns";
+import { DataTable } from "../components/job-table/data-table";
 
-const overviewStats = [
-	{ label: "Total Jobs", value: "42" },
-	{ label: "Applied", value: "18" },
-	{ label: "Interview", value: "4" },
-	{ label: "Offers", value: "1" },
+const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
+	{ value: "saved", label: "Saved" },
+	{ value: "applied", label: "Applied" },
+	{ value: "interview", label: "Interview" },
+	{ value: "rejected", label: "Rejected" },
+	{ value: "offer", label: "Offer" },
 ];
 
-const funnelSteps = [
-	{ label: "Saved", value: "42", className: "w-full bg-blue-500" },
-	{ label: "Applied", value: "18", className: "w-[82%] bg-orange-400" },
-	{ label: "Interview", value: "4", className: "w-[58%] bg-emerald-400" },
-	{ label: "Offer", value: "1", className: "w-[36%] bg-emerald-500" },
-];
-
-const chartLines = [
+const allJobsStats = [
 	{
-		label: "Saved",
-		color: "#2563eb",
-		points:
-			"0,114 90,70 180,84 270,70 360,84 450,66 540,78 630,48 720,84 810,64",
+		label: "Total Jobs",
+		value: "42",
+		description: "All saved jobs",
+		trend: "12%",
+		icon: BriefcaseBusiness,
+		accentClassName: "bg-blue-50 text-blue-600",
+		trendClassName: "text-blue-600",
 	},
 	{
 		label: "Applied",
-		color: "#fb923c",
-		points:
-			"0,130 90,104 180,120 270,100 360,120 450,104 540,104 630,128 720,124 810,110",
+		value: "18",
+		description: "Applications sent",
+		trend: "18%",
+		icon: CircleCheckBig,
+		accentClassName: "bg-emerald-50 text-emerald-600",
+		trendClassName: "text-emerald-600",
 	},
 	{
-		label: "Interview",
-		color: "#34d399",
-		points:
-			"0,144 90,128 180,134 270,130 360,140 450,134 540,136 630,144 720,142 810,134",
+		label: "Interviewing",
+		value: "4",
+		description: "In progress",
+		trend: "14%",
+		icon: Users,
+		accentClassName: "bg-violet-50 text-violet-600",
+		trendClassName: "text-violet-600",
 	},
 	{
-		label: "Offer",
-		color: "#a78bfa",
-		points:
-			"0,152 90,150 180,151 270,150 360,152 450,150 540,151 630,150 720,152 810,150",
+		label: "Offers",
+		value: "1",
+		description: "Offers received",
+		trend: "50%",
+		icon: Sparkles,
+		accentClassName: "bg-amber-50 text-amber-500",
+		trendClassName: "text-amber-500",
 	},
-];
+] satisfies Array<{
+	label: string;
+	value: string;
+	description: string;
+	trend: string;
+	icon: LucideIcon;
+	accentClassName: string;
+	trendClassName: string;
+}>;
 
 export function AnalyticsView() {
 	return (
-		<div className="space-y-5">
-			<h2 className="text-sm font-bold text-slate-950">Application Overview</h2>
-
-			<section className="grid grid-cols-4 gap-5">
-				{overviewStats.map((stat) => (
-					<article
-						key={stat.label}
-						className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)]"
-					>
-						<p className="text-xs font-bold text-slate-700">{stat.label}</p>
-						<p className="mt-4 text-3xl font-bold tracking-normal text-slate-950">
-							{stat.value}
+		<DataTable
+			columns={({ statusFilter }) =>
+				getDashboardColumns({
+					showStatus: false,
+					statusFilter,
+				})
+			}
+			data={dashboardJobs}
+			toolbarMode="tabs-only"
+			showStatusTabs={false}
+			initialStatusFilter="saved"
+			headerSlot={({ statusFilter, setStatusFilter }) => (
+				<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
+					<div className="min-w-0">
+						<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+							All Jobs
+						</h1>
+						<p className="mt-2 text-sm text-slate-500">
+							Track and manage all your job applications in one place.
 						</p>
-					</article>
-				))}
-			</section>
-
-			<section className="grid grid-cols-[1.15fr_1fr] gap-5">
-				<article className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
-					<h3 className="text-sm font-bold text-slate-950">
-						Application Funnel
-					</h3>
-					<div className="mt-6 grid grid-cols-[minmax(0,1fr)_120px] items-center gap-6">
-						<div className="space-y-1">
-							{funnelSteps.map((step) => (
-								<div
-									key={step.label}
-									className={cn(
-										"mx-auto h-12 shadow-sm",
-										step.className,
-										"[clip-path:polygon(10%_0,90%_0,78%_100%,22%_100%)]",
-									)}
-								/>
-							))}
-						</div>
-						<div className="space-y-[26px]">
-							{funnelSteps.map((step) => (
-								<div
-									key={step.label}
-									className="flex items-center justify-between gap-5 text-xs"
-								>
-									<span className="font-bold text-blue-500">{step.label}</span>
-									<span className="font-bold text-slate-900">{step.value}</span>
-								</div>
-							))}
-						</div>
 					</div>
-				</article>
 
-				<article className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
-					<h3 className="text-sm font-bold text-slate-950">Success Rates</h3>
-					<div className="mt-7 flex items-center justify-center gap-10">
-						<div className="relative size-36 rounded-full bg-[conic-gradient(#2563eb_0_25%,#34d399_25%_31%,#e5e7eb_31%_100%)]">
-							<div className="absolute inset-5 rounded-full bg-white" />
-						</div>
-						<div className="space-y-5">
-							<RateItem
-								color="bg-blue-600"
-								label="Interview Rate"
-								value="22.22%"
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
+						<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
+							<Search
+								className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+								aria-hidden="true"
 							/>
-							<RateItem
-								color="bg-emerald-400"
-								label="Offer Rate"
-								value="5.56%"
+							<Input
+								placeholder="Search jobs, companies, roles..."
+								className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
 							/>
 						</div>
-					</div>
-				</article>
-			</section>
 
-			<section className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.04)]">
-				<div className="flex items-center justify-between">
-					<h3 className="text-sm font-bold text-slate-950">Monthly Activity</h3>
-					<div className="flex items-center gap-5">
-						{chartLines.map((line) => (
-							<div
-								key={line.label}
-								className="flex items-center gap-1.5 text-xs font-bold text-slate-600"
-							>
-								<Circle
-									className="size-2.5 fill-current"
-									style={{ color: line.color }}
-									aria-hidden="true"
-								/>
-								{line.label}
-							</div>
-						))}
-					</div>
-				</div>
-
-				<div className="mt-5 grid grid-cols-[40px_minmax(0,1fr)] gap-3">
-					<div className="flex h-48 flex-col justify-between text-right text-xs font-semibold text-slate-500">
-						<span>30</span>
-						<span>20</span>
-						<span>10</span>
-						<span>0</span>
-					</div>
-					<div className="relative h-48">
-						<div className="absolute inset-0 flex flex-col justify-between">
-							{[0, 1, 2, 3].map((line) => (
-								<span key={line} className="h-px bg-slate-100" />
-							))}
-						</div>
-						<svg
-							viewBox="0 0 810 160"
-							className="absolute inset-0 h-full w-full overflow-visible"
-							role="img"
-							aria-label="Monthly application activity chart"
+						<Select
+							value={statusFilter}
+							onValueChange={(value) =>
+								setStatusFilter(value as DashboardStatusFilter)
+							}
 						>
-							{chartLines.map((line) => (
-								<polyline
-									key={line.label}
-									points={line.points}
-									fill="none"
-									stroke={line.color}
-									strokeWidth="4"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							))}
-							{chartLines.flatMap((line) =>
-								line.points.split(" ").map((point) => {
-									const [cx, cy] = point.split(",");
-									return (
-										<circle
-											key={`${line.label}-${point}`}
-											cx={cx}
-											cy={cy}
-											r="4"
-											fill={line.color}
-										/>
-									);
-								}),
-							)}
-						</svg>
-					</div>
-				</div>
-				<div className="ml-[52px] mt-2 grid grid-cols-6 text-xs font-semibold text-slate-500">
-					{analyticsMonthlyActivity.map((month) => (
-						<span key={month}>{month}</span>
-					))}
-				</div>
-			</section>
-		</div>
-	);
-}
+							<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								{statusFilters.map((filter) => (
+									<SelectItem key={filter.value} value={filter.value}>
+										{filter.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 
-function RateItem({
-	color,
-	label,
-	value,
-}: {
-	color: string;
-	label: string;
-	value: string;
-}) {
-	return (
-		<div className="flex items-start gap-3">
-			<span className={cn("mt-1 size-3 rounded-full", color)} />
-			<div>
-				<p className="text-xs font-bold text-slate-800">{label}</p>
-				<p className="mt-1 text-lg font-bold text-slate-950">{value}</p>
-			</div>
-		</div>
+						<Button className="h-11 px-4">
+							<Plus className="size-4" aria-hidden="true" />
+							Save New Job
+						</Button>
+					</div>
+				</section>
+			)}
+			statsSlot={
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+					{allJobsStats.map((stat) => {
+						const Icon = stat.icon;
+
+						return (
+							<article
+								key={stat.label}
+								className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4" //shadow-[0_4px_16px_rgba(15,23,42,0.04)]
+							>
+								<div
+									className={cn(
+										"flex size-12 shrink-0 items-center justify-center rounded-full",
+										stat.accentClassName,
+									)}
+								>
+									<Icon className="size-5" aria-hidden="true" />
+								</div>
+
+								<div className="min-w-0 flex-1">
+									<p className="text-sm font-medium text-slate-500">
+										{stat.label}
+									</p>
+									<p className="text-2xl font-bold leading-tight text-slate-900">
+										{stat.value}
+									</p>
+									<div className="mt-1 flex items-center justify-between gap-2">
+										<p className="text-xs text-slate-400">{stat.description}</p>
+										<span
+											className={cn(
+												"flex items-center gap-0.5 text-xs font-semibold",
+												stat.trendClassName,
+											)}
+										>
+											<MoveUpRight className="size-3" aria-hidden="true" />
+											{stat.trend}
+										</span>
+									</div>
+								</div>
+							</article>
+						);
+					})}
+				</div>
+			}
+		/>
 	);
 }

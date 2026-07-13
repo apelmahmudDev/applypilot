@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import type {
 	DashboardJob,
 	DashboardJobStatus,
+	DashboardStatusFilter,
 } from "@/modules/dashboard/types";
 import { DataTableRowActions } from "./data-table-row-actions";
 
@@ -22,113 +23,143 @@ const statusStyles: Record<DashboardJobStatus, string> = {
 	Offer: "bg-amber-50 text-amber-600",
 };
 
-export const dashboardColumns: ColumnDef<DashboardJob>[] = [
-	{
-		accessorKey: "title",
-		header: "Job Title",
-		cell: ({ row }) => {
-			const job = row.original;
-			return (
-				<div className="min-w-[220px]">
-					<p className="truncate text-sm font-bold text-slate-950">
-						{job.title}
-					</p>
-					<p className="mt-1 truncate text-xs font-medium text-slate-500">
-						{job.jobType}
-					</p>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: "company",
-		header: "Company",
-		cell: ({ row }) => {
-			const job = row.original;
-			return (
-				<div className="flex min-w-[150px] items-center gap-3">
-					<CompanyMark brand={job.brand} />
-					<p className="truncate text-sm font-semibold text-slate-900">
-						{job.company}
-					</p>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: "location",
-		header: "Location",
-		cell: ({ row }) => {
-			const job = row.original;
-			return (
-				<div className="min-w-[150px]">
-					<p className="text-sm font-semibold text-slate-900">{job.location}</p>
-					<p className="mt-1 text-xs font-medium text-slate-500">
-						{job.workMode}
-					</p>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: "source",
-		header: "Source",
-		cell: ({ row }) => <SourceCell job={row.original} />,
-	},
-	{
-		accessorKey: "status",
-		header: "Status",
-		cell: ({ row }) => (
-			<span
-				className={cn(
-					"inline-flex min-w-20 justify-center rounded-full px-3 py-1 text-xs font-bold",
-					statusStyles[row.original.status],
-				)}
-			>
-				{row.original.status}
-			</span>
-		),
-		filterFn: (row, id, value) => {
-			if (value === "all") {
-				return true;
-			}
+type DashboardColumnsOptions = {
+	showStatus?: boolean;
+	statusFilter?: DashboardStatusFilter;
+};
 
-			return String(row.getValue(id)).toLowerCase() === value;
+export function getDashboardColumns({
+	showStatus = true,
+	statusFilter = "all",
+}: DashboardColumnsOptions = {}): ColumnDef<DashboardJob>[] {
+	const dateColumnLabel = getDateColumnLabel(statusFilter);
+
+	const columns: ColumnDef<DashboardJob>[] = [
+		{
+			accessorKey: "title",
+			header: "Job Title",
+			cell: ({ row }) => {
+				const job = row.original;
+				return (
+					<div className="min-w-[220px]">
+						<p className="truncate text-sm font-bold text-slate-950">
+							{job.title}
+						</p>
+						<p className="mt-1 truncate text-xs font-medium text-slate-500">
+							{job.jobType}
+						</p>
+					</div>
+				);
+			},
 		},
-	},
-	{
-		accessorKey: "appliedDate",
-		header: "Date Added",
-		cell: ({ row }) => (
-			<p className="min-w-[110px] text-sm font-medium text-slate-700">
-				{row.original.appliedDate}
-			</p>
-		),
-	},
-	{
-		accessorKey: "reminder",
-		header: "Reminder",
-		cell: ({ row }) => (
-			<div className="min-w-[90px]">
-				{row.original.reminder === "-" ? (
-					<span className="text-sm font-medium text-slate-400">-</span>
-				) : (
-					<span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-500">
-						<Bell className="size-3.5" />
-						{row.original.reminder}
-					</span>
-				)}
-			</div>
-		),
-	},
-	{
-		id: "actions",
-		header: () => (
-			<div className="flex min-w-[76px] justify-end text-right">Actions</div>
-		),
-		cell: () => <DataTableRowActions />,
-	},
-];
+		{
+			accessorKey: "company",
+			header: "Company",
+			cell: ({ row }) => {
+				const job = row.original;
+				return (
+					<div className="flex min-w-[150px] items-center gap-3">
+						<CompanyMark brand={job.brand} />
+						<p className="truncate text-sm font-semibold text-slate-900">
+							{job.company}
+						</p>
+					</div>
+				);
+			},
+		},
+		{
+			accessorKey: "location",
+			header: "Location",
+			cell: ({ row }) => {
+				const job = row.original;
+				return (
+					<div className="min-w-[150px]">
+						<p className="text-sm font-semibold text-slate-900">{job.location}</p>
+						<p className="mt-1 text-xs font-medium text-slate-500">
+							{job.workMode}
+						</p>
+					</div>
+				);
+			},
+		},
+		{
+			accessorKey: "source",
+			header: "Source",
+			cell: ({ row }) => <SourceCell job={row.original} />,
+		},
+	];
+
+	if (showStatus) {
+		columns.push({
+			accessorKey: "status",
+			header: "Status",
+			cell: ({ row }) => (
+				<span
+					className={cn(
+						"inline-flex min-w-20 justify-center rounded-full px-3 py-1 text-xs font-bold",
+						statusStyles[row.original.status],
+					)}
+				>
+					{row.original.status}
+				</span>
+			),
+			filterFn: (row, id, value) => {
+				if (value === "all") {
+					return true;
+				}
+
+				return String(row.getValue(id)).toLowerCase() === value;
+			},
+		});
+	}
+
+	columns.push(
+		{
+			accessorKey: "appliedDate",
+			header: dateColumnLabel,
+			cell: ({ row }) => (
+				<p className="min-w-[110px] text-sm font-medium text-slate-700">
+					{row.original.appliedDate}
+				</p>
+			),
+		},
+		{
+			accessorKey: "reminder",
+			header: "Reminder",
+			cell: ({ row }) => (
+				<div className="min-w-[90px]">
+					{row.original.reminder === "-" ? (
+						<span className="text-sm font-medium text-slate-400">-</span>
+					) : (
+						<span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-500">
+							<Bell className="size-3.5" />
+							{row.original.reminder}
+						</span>
+					)}
+				</div>
+			),
+		},
+		{
+			id: "actions",
+			header: () => (
+				<div className="flex min-w-[76px] justify-end text-right">Actions</div>
+			),
+			cell: () => <DataTableRowActions />,
+		},
+	);
+
+	return columns;
+}
+
+function getDateColumnLabel(statusFilter: DashboardStatusFilter) {
+	if (statusFilter === "saved") return "Saved Date";
+	if (statusFilter === "rejected") return "Rejected Date";
+	if (statusFilter === "offer") return "Offer Date";
+	if (statusFilter === "applied") return "Applied Date";
+	if (statusFilter === "interview") return "Interview Date";
+
+	return "Date Added";
+}
 
 function CompanyMark({ brand }: { brand: DashboardJob["brand"] }) {
 	const content = {

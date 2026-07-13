@@ -44,7 +44,7 @@ export function DashboardSidebar({
 	}
 
 	return (
-		<Sidebar collapsible="icon" variant="inset">
+		<Sidebar collapsible="icon" variant="sidebar">
 			<SidebarHeader className="px-3 pb-2 pt-4">
 				<div className="flex items-center gap-3 rounded-lg px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
 					<img

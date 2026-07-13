@@ -10,7 +10,10 @@ import {
 } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -35,9 +38,22 @@ import type {
 import { DataTablePagination } from "./data-table-pagination";
 
 type DataTableProps = {
-	columns: ColumnDef<DashboardJob>[];
+	columns:
+		| ColumnDef<DashboardJob>[]
+		| ((props: {
+				statusFilter: DashboardStatusFilter;
+		  }) => ColumnDef<DashboardJob>[]);
 	data: DashboardJob[];
 	statsSlot?: ReactNode;
+	headerSlot?:
+		| ReactNode
+		| ((props: {
+				statusFilter: DashboardStatusFilter;
+				setStatusFilter: (value: DashboardStatusFilter) => void;
+		  }) => ReactNode);
+	toolbarMode?: "full" | "tabs-only";
+	showStatusTabs?: boolean;
+	initialStatusFilter?: DashboardStatusFilter;
 };
 
 const filters: Array<{ value: DashboardStatusFilter; label: string }> = [
@@ -57,11 +73,19 @@ const sourceFilters: Array<{ value: DashboardSourceFilter; label: string }> = [
 	{ value: "manual", label: "Manual" },
 ];
 
-export function DataTable({ columns, data, statsSlot }: DataTableProps) {
+export function DataTable({
+	columns,
+	data,
+	statsSlot,
+	headerSlot,
+	toolbarMode = "full",
+	showStatusTabs = true,
+	initialStatusFilter = "all",
+}: DataTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [search, setSearch] = useState("");
 	const [statusFilter, setStatusFilter] =
-		useState<DashboardStatusFilter>("all");
+		useState<DashboardStatusFilter>(initialStatusFilter);
 	const [sourceFilter, setSourceFilter] =
 		useState<DashboardSourceFilter>("all");
 
@@ -84,9 +108,14 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 		});
 	}, [data, search, sourceFilter, statusFilter]);
 
+	const resolvedColumns = useMemo(
+		() => (typeof columns === "function" ? columns({ statusFilter }) : columns),
+		[columns, statusFilter],
+	);
+
 	const table = useReactTable({
 		data: filteredData,
-		columns,
+		columns: resolvedColumns,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -104,67 +133,13 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 
 	return (
 		<div className="min-w-0 space-y-5 pb-8">
+			{typeof headerSlot === "function"
+				? headerSlot({ statusFilter, setStatusFilter })
+				: headerSlot}
 			{statsSlot}
 
-			<div className="flex min-w-0 items-center justify-between gap-4">
-				<Tabs
-					value={statusFilter}
-					onValueChange={(value) =>
-						setStatusFilter(value as DashboardStatusFilter)
-					}
-					className="min-w-0"
-				>
-					<TabsList className="h-10 max-w-full bg-transparent p-0">
-						{filters.map((filter) => (
-							<TabsTrigger
-								key={filter.value}
-								value={filter.value}
-								className="h-8 rounded-md px-4 text-xs font-bold text-slate-600 data-[state=active]:bg-cyan-100 data-[state=active]:text-blue-600 data-[state=active]:shadow-none"
-							>
-								{filter.label}
-							</TabsTrigger>
-						))}
-					</TabsList>
-				</Tabs>
-
-				<div className="flex shrink-0 items-center gap-3">
-					<div className="flex items-center gap-3 text-xs font-bold text-slate-700">
-						Source
-						<Select
-							value={sourceFilter}
-							onValueChange={(value) =>
-								setSourceFilter(value as DashboardSourceFilter)
-							}
-						>
-							<SelectTrigger className="h-9 w-32 rounded-md border-slate-200 bg-white text-xs font-bold">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{sourceFilters.map((filter) => (
-									<SelectItem key={filter.value} value={filter.value}>
-										{filter.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-					<div className="flex items-center gap-3 text-xs font-bold text-slate-700">
-						Sort by
-						<Select defaultValue="latest">
-							<SelectTrigger className="h-9 w-24 rounded-md border-slate-200 bg-white text-xs font-bold">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="latest">Latest</SelectItem>
-								<SelectItem value="applied">Applied</SelectItem>
-								<SelectItem value="company">Company</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-			</div>
-
-			<div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_18px_48px_rgba(15,23,42,0.08)]">
+			{/* shadow-[0_4px_16px_rgba(15,23,42,0.04)] */}
+			<div className="min-w-0 overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -208,7 +183,7 @@ export function DataTable({ columns, data, statsSlot }: DataTableProps) {
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={columns.length}
+									colSpan={resolvedColumns.length}
 									className="h-28 text-center text-sm font-semibold text-slate-500"
 								>
 									No jobs found.

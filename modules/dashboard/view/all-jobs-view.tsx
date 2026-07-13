@@ -1,31 +1,187 @@
-import { TrendingUp } from "lucide-react";
+import {
+	BriefcaseBusiness,
+	CircleCheckBig,
+	MoveUpRight,
+	Plus,
+	Search,
+	Sparkles,
+	Users,
+	type LucideIcon,
+} from "lucide-react";
 
-import { dashboardJobs, dashboardStats } from "@/modules/dashboard/mock-data";
-import { dashboardColumns } from "../components/job-table/columns";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { dashboardJobs } from "@/modules/dashboard/mock-data";
+import type { DashboardStatusFilter } from "@/modules/dashboard/types";
+import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
+
+const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
+	{ value: "saved", label: "Saved" },
+	{ value: "applied", label: "Applied" },
+	{ value: "interview", label: "Interview" },
+	{ value: "rejected", label: "Rejected" },
+	{ value: "offer", label: "Offer" },
+];
+
+const allJobsStats = [
+	{
+		label: "Total Jobs",
+		value: "42",
+		description: "All saved jobs",
+		trend: "12%",
+		icon: BriefcaseBusiness,
+		accentClassName: "bg-blue-50 text-blue-600",
+		trendClassName: "text-blue-600",
+	},
+	{
+		label: "Applied",
+		value: "18",
+		description: "Applications sent",
+		trend: "18%",
+		icon: CircleCheckBig,
+		accentClassName: "bg-emerald-50 text-emerald-600",
+		trendClassName: "text-emerald-600",
+	},
+	{
+		label: "Interviewing",
+		value: "4",
+		description: "In progress",
+		trend: "14%",
+		icon: Users,
+		accentClassName: "bg-violet-50 text-violet-600",
+		trendClassName: "text-violet-600",
+	},
+	{
+		label: "Offers",
+		value: "1",
+		description: "Offers received",
+		trend: "50%",
+		icon: Sparkles,
+		accentClassName: "bg-amber-50 text-amber-500",
+		trendClassName: "text-amber-500",
+	},
+] satisfies Array<{
+	label: string;
+	value: string;
+	description: string;
+	trend: string;
+	icon: LucideIcon;
+	accentClassName: string;
+	trendClassName: string;
+}>;
 
 export function AllJobsView() {
 	return (
 		<DataTable
-			columns={dashboardColumns}
+			columns={({ statusFilter }) =>
+				getDashboardColumns({
+					showStatus: false,
+					statusFilter,
+				})
+			}
 			data={dashboardJobs}
-			statsSlot={
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
-					{dashboardStats.map((stat) => (
-						<article
-							key={stat.label}
-							className="rounded-lg border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]"
+			toolbarMode="tabs-only"
+			showStatusTabs={false}
+			initialStatusFilter="saved"
+			headerSlot={({ statusFilter, setStatusFilter }) => (
+				<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
+					<div className="min-w-0">
+						<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+							All Jobs
+						</h1>
+						<p className="mt-2 text-sm text-slate-500">
+							Track and manage all your job applications in one place.
+						</p>
+					</div>
+
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
+						<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
+							<Search
+								className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+								aria-hidden="true"
+							/>
+							<Input
+								placeholder="Search jobs, companies, roles..."
+								className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
+							/>
+						</div>
+
+						<Select
+							value={statusFilter}
+							onValueChange={(value) =>
+								setStatusFilter(value as DashboardStatusFilter)
+							}
 						>
-							<p className="text-xs font-bold text-slate-700">{stat.label}</p>
-							<p className="mt-3 text-3xl font-bold tracking-normal text-slate-950">
-								{stat.value}
-							</p>
-							<p className="mt-3 flex items-center gap-1 text-xs font-bold text-emerald-600">
-								<TrendingUp className="size-3.5" aria-hidden="true" />
-								{stat.trend}
-							</p>
-						</article>
-					))}
+							<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								{statusFilters.map((filter) => (
+									<SelectItem key={filter.value} value={filter.value}>
+										{filter.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+
+						<Button className="h-11 px-4">
+							<Plus className="size-4" aria-hidden="true" />
+							Save New Job
+						</Button>
+					</div>
+				</section>
+			)}
+			statsSlot={
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+					{allJobsStats.map((stat) => {
+						const Icon = stat.icon;
+
+						return (
+							<article
+								key={stat.label}
+								className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4" //shadow-[0_4px_16px_rgba(15,23,42,0.04)]
+							>
+								<div
+									className={cn(
+										"flex size-12 shrink-0 items-center justify-center rounded-full",
+										stat.accentClassName,
+									)}
+								>
+									<Icon className="size-5" aria-hidden="true" />
+								</div>
+
+								<div className="min-w-0 flex-1">
+									<p className="text-sm font-medium text-slate-500">
+										{stat.label}
+									</p>
+									<p className="text-2xl font-bold leading-tight text-slate-900">
+										{stat.value}
+									</p>
+									<div className="mt-1 flex items-center justify-between gap-2">
+										<p className="text-xs text-slate-400">{stat.description}</p>
+										<span
+											className={cn(
+												"flex items-center gap-0.5 text-xs font-semibold",
+												stat.trendClassName,
+											)}
+										>
+											<MoveUpRight className="size-3" aria-hidden="true" />
+											{stat.trend}
+										</span>
+									</div>
+								</div>
+							</article>
+						);
+					})}
 				</div>
 			}
 		/>

@@ -1,13 +1,13 @@
 import { TrendingUp } from "lucide-react";
 
 import { dashboardJobs, dashboardStats } from "@/modules/dashboard/mock-data";
-import { dashboardColumns } from "../components/job-table/columns";
+import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
 
 export function DashboardOverview() {
 	return (
 		<DataTable
-			columns={dashboardColumns}
+			columns={getDashboardColumns()}
 			data={dashboardJobs}
 			statsSlot={
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">

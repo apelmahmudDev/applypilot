@@ -11,7 +11,9 @@ type DashboardContentProps = {
 };
 
 export function DashboardContent({ activeView }: DashboardContentProps) {
-	if (activeView === "all-jobs") return <AllJobsView />;
+	if (activeView === "all-jobs") {
+		return <AllJobsView />;
+	}
 	if (activeView === "analytics") return <AnalyticsView />;
 	if (activeView === "reminders") return <RemindersView />;
 	if (activeView === "export") return <ExportView />;

@@ -15,6 +15,10 @@ function getViewFromHash(): DashboardView {
 	return isDashboardView(hashView) ? hashView : "dashboard";
 }
 
+function usesCustomHeader(view: DashboardView) {
+	return view === "all-jobs";
+}
+
 export function DashboardView() {
 	useSystemTheme();
 	const [activeView, setActiveView] = useState<DashboardView>(getViewFromHash);
@@ -56,7 +60,9 @@ export function DashboardView() {
 					className="@container/main flex h-svh min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
 					style={{ ["--dashboard-header-offset" as string]: "8rem" }}
 				>
-					<DashboardHeader activeView={activeView} />
+					{usesCustomHeader(activeView) ? null : (
+						<DashboardHeader activeView={activeView} />
+					)}
 					<div
 						data-dashboard-content
 						className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-20 md:px-8 md:pb-24"

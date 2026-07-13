@@ -20,7 +20,8 @@ function usesCustomHeader(view: DashboardView) {
 		view === "all-jobs" ||
 		view === "analytics" ||
 		view === "reminders" ||
-		view === "settings"
+		view === "settings" ||
+		view === "export"
 	);
 }
 

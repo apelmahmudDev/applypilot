@@ -3,6 +3,7 @@ import { ExportContentsSection } from "@/modules/dashboard/components/export/exp
 import { ExportControlsSection } from "@/modules/dashboard/components/export/export-controls-section";
 import { ExportInfoSection } from "@/modules/dashboard/components/export/export-info-section";
 
+// only visible based on permission (currently is not showing)
 export function getExportDashboardHeaderContent(): DashboardHeaderContent {
 	return {
 		markup: (
@@ -24,6 +25,18 @@ export function getExportDashboardHeaderContent(): DashboardHeaderContent {
 export function ExportView() {
 	return (
 		<div>
+			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
+				<div className="min-w-0">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+						Export
+					</h1>
+					<p className="mt-2 text-sm text-slate-500">
+						Download a backup of your data. You can import it anytime to
+						restore.
+					</p>
+				</div>
+			</section>
+
 			<section className="mt-6 mb-8 space-y-6">
 				<div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
 					<ExportContentsSection />

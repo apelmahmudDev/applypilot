@@ -76,7 +76,7 @@ type JobFormDrawerProps = {
 const fieldLabelClassName =
 	"text-sm font-semibold text-slate-700 dark:text-foreground";
 const inputClassName =
-	"h-11! rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground";
+	"h-11! rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground";
 
 export function JobFormDrawer({
 	job,
@@ -432,7 +432,7 @@ export function JobFormDrawer({
 											<Button
 												type="button"
 												variant="outline"
-												className="h-11! w-full justify-start rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground"
+												className="h-11! w-full justify-start rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
 												onClick={() => setIsReminderOpen(true)}
 											>
 												<Bell
@@ -457,7 +457,7 @@ export function JobFormDrawer({
 													<FieldLabel className={fieldLabelClassName}>
 														Note (Optional)
 													</FieldLabel>
-													<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-border dark:bg-card">
+													<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
 														<Textarea
 															value={field.state.value}
 															rows={4}
@@ -491,7 +491,7 @@ export function JobFormDrawer({
 								<Button
 									type="button"
 									variant="outline"
-									className="h-11 rounded-md border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
+									className="h-11 rounded-md border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
 									onClick={() => onOpenChange(false)}
 								>
 									Cancel
@@ -680,7 +680,7 @@ function DateField({
 						/>
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-border dark:bg-popover">
+				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-[#454040] dark:bg-popover">
 					<Calendar
 						mode="single"
 						selected={value ? new Date(`${value}T12:00:00`) : undefined}

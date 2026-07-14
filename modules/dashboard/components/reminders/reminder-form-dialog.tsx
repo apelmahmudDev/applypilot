@@ -57,7 +57,7 @@ const fieldClassName = "gap-1.5";
 const fieldLabelClassName =
 	"text-sm font-semibold text-slate-700 dark:text-foreground";
 const inputTriggerClassName =
-	"h-11! rounded-md border-slate-200 bg-white px-3 text-left text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground";
+	"h-11! rounded-md border-slate-200 bg-white px-3 text-left text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground";
 
 export function ReminderFormDialog({
 	open,
@@ -162,7 +162,7 @@ export function ReminderFormDialog({
 															/>
 														</Button>
 													</PopoverTrigger>
-													<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-border dark:bg-popover">
+													<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-[#454040] dark:bg-popover">
 														<Calendar
 															mode="single"
 															selected={
@@ -215,7 +215,7 @@ export function ReminderFormDialog({
 														field.handleChange(event.target.value)
 													}
 													aria-invalid={isInvalid}
-													className="h-11 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground"
+													className="h-11 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
 												/>
 												{isInvalid && (
 													<FieldError errors={field.state.meta.errors} />
@@ -260,7 +260,7 @@ export function ReminderFormDialog({
 											>
 												Note
 											</FieldLabel>
-											<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-border dark:bg-card">
+											<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
 												<Textarea
 													id={field.name}
 													name={field.name}
@@ -297,7 +297,7 @@ export function ReminderFormDialog({
 						<Button
 							type="button"
 							variant="outline"
-							className="h-11 rounded-xl border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
+							className="h-11 rounded-xl border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
 							onClick={() => onOpenChange(false)}
 						>
 							Cancel

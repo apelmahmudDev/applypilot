@@ -1,6 +1,8 @@
 import {
-	BellRing,
 	CalendarCheck2,
+	Check,
+	Eye,
+	FilePenLine,
 	MoreHorizontal,
 	Send,
 	Users,
@@ -34,9 +36,15 @@ const reminderKindIcons: Record<ReminderRow["kind"], LucideIcon> = {
 
 type RemindersTableSectionProps = {
 	section: ReminderSection;
+	onEditReminder?: (row: ReminderRow) => void;
+	onOpenJob?: (row: ReminderRow) => void;
 };
 
-export function RemindersTableSection({ section }: RemindersTableSectionProps) {
+export function RemindersTableSection({
+	section,
+	onEditReminder,
+	onOpenJob,
+}: RemindersTableSectionProps) {
 	return (
 		<section className="space-y-3">
 			<div className="flex items-center gap-2 px-1">
@@ -103,9 +111,10 @@ export function RemindersTableSection({ section }: RemindersTableSectionProps) {
 											variant="ghost"
 											size="icon"
 											className="size-9 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-											aria-label={`Notification settings for ${row.title}`}
+											aria-label={`Open job details for ${row.title}`}
+											onClick={() => onOpenJob?.(row)}
 										>
-											<BellRing className="size-4" aria-hidden="true" />
+											<Eye className="size-4" aria-hidden="true" />
 										</Button>
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
@@ -123,9 +132,17 @@ export function RemindersTableSection({ section }: RemindersTableSectionProps) {
 												</Button>
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
-												<DropdownMenuItem>Edit reminder</DropdownMenuItem>
-												<DropdownMenuItem>Mark completed</DropdownMenuItem>
-												<DropdownMenuItem>Open job</DropdownMenuItem>
+												<DropdownMenuItem
+													className="gap-2.5"
+													onClick={() => onEditReminder?.(row)}
+												>
+													<FilePenLine className="size-4" aria-hidden="true" />
+													Edit reminder
+												</DropdownMenuItem>
+												<DropdownMenuItem className="gap-2.5">
+													<Check className="size-4" aria-hidden="true" />
+													Mark completed
+												</DropdownMenuItem>
 											</DropdownMenuContent>
 										</DropdownMenu>
 									</div>

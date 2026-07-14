@@ -214,7 +214,7 @@ export function ReminderFormDialog({
 														field.handleChange(event.target.value)
 													}
 													aria-invalid={isInvalid}
-													className="h-11 rounded-xl border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none"
+													className="h-11 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none"
 												/>
 												{isInvalid && (
 													<FieldError errors={field.state.meta.errors} />
@@ -354,10 +354,12 @@ function SelectField({
 						isInvalid && "border-destructive",
 					)}
 				>
-					<div className="flex min-w-0 items-center justify-between gap-3">
-						<div className="flex min-w-0 items-center gap-3">
+					<div className="flex min-w-0 w-full items-center justify-between gap-3">
+						<div className="flex min-w-0 flex-1 items-center gap-3">
 							<Icon className="size-4 shrink-0 text-slate-500" aria-hidden />
-							<SelectValue>{selectedLabel}</SelectValue>
+							<span className="truncate">
+								<SelectValue>{selectedLabel}</SelectValue>
+							</span>
 						</div>
 						<ChevronDown
 							className="size-4 shrink-0 text-slate-400"

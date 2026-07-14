@@ -1,13 +1,25 @@
+import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
+import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
+import { getReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.utils";
 import { RemindersDatePicker } from "@/modules/dashboard/components/reminders/reminders-date-picker";
 import { RemindersStats } from "@/modules/dashboard/components/reminders/reminders-stats";
 import { RemindersTableSection } from "@/modules/dashboard/components/reminders/reminders-table-section";
 import { reminderSections } from "@/modules/dashboard/components/reminders/data";
+import type { ReminderRow } from "@/modules/dashboard/components/reminders/types";
+import { dashboardJobs } from "@/modules/dashboard/mock-data";
 
 export function RemindersView() {
+	const [jobs] = useState(dashboardJobs);
+	const [editingReminder, setEditingReminder] = useState<ReminderRow | null>(null);
+	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+	const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? null;
+
 	return (
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
@@ -46,7 +58,12 @@ export function RemindersView() {
 			<section className="mt-6 mb-8 space-y-6">
 				<div className="space-y-5">
 					{reminderSections.map((section) => (
-						<RemindersTableSection key={section.id} section={section} />
+						<RemindersTableSection
+							key={section.id}
+							section={section}
+							onEditReminder={setEditingReminder}
+							onOpenJob={(row) => setSelectedJobId(row.jobId)}
+						/>
 					))}
 
 					<div className="flex flex-col gap-4 text-sm font-medium text-slate-500 sm:flex-row sm:items-center sm:justify-between">
@@ -61,6 +78,50 @@ export function RemindersView() {
 					</div>
 				</div>
 			</section>
+
+			{editingReminder ? (
+				<ReminderFormDialog
+					open={editingReminder !== null}
+					title="Edit Reminder"
+					submitLabel="Update Reminder"
+					initialValues={editingReminder.reminderDetails}
+					onOpenChange={(open) => {
+						if (!open) {
+							setEditingReminder(null);
+						}
+					}}
+					onSubmit={() => {
+						setEditingReminder(null);
+					}}
+				/>
+			) : null}
+
+			<JobDetailsDrawer
+				job={selectedJob}
+				open={selectedJob !== null}
+				onAddReminder={(job) => {
+					setEditingReminder({
+						id: `job-${job.id}`,
+						jobId: job.id,
+						title: job.title,
+						company: job.company,
+						companyMark: job.company.charAt(0).toUpperCase(),
+						companyMarkClassName: "bg-slate-100 text-slate-700",
+						kind: "Follow-up",
+						note:
+							job.reminderDetails?.note ??
+							"Follow up on the application status and next steps.",
+						dueLabel: job.reminder,
+						timeLabel: job.reminderDetails?.time ?? "10:00 AM",
+						reminderDetails: getReminderFormValues(job.reminderDetails ?? null),
+					});
+				}}
+				onOpenChange={(open) => {
+					if (!open) {
+						setSelectedJobId(null);
+					}
+				}}
+			/>
 		</div>
 	);
 }

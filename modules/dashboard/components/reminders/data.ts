@@ -10,6 +10,20 @@ import type {
 	ReminderSection,
 	ReminderStat,
 } from "./types";
+import type { ReminderFormValues } from "./reminder-form.types";
+
+function createReminderDetails(
+	values: Partial<ReminderFormValues>,
+): ReminderFormValues {
+	return {
+		type: "Follow up",
+		date: "2026-07-14",
+		time: "10:00",
+		isActive: true,
+		note: "Follow up on the application status and next steps.",
+		...values,
+	};
+}
 
 export const reminderStats: ReminderStat[] = [
 	{
@@ -57,6 +71,7 @@ export const reminderSections: ReminderSection[] = [
 		rows: [
 			{
 				id: "openai-frontend",
+				jobId: "vercel-frontend-developer",
 				title: "Frontend Engineer",
 				company: "OpenAI",
 				companyMark: "O",
@@ -65,9 +80,16 @@ export const reminderSections: ReminderSection[] = [
 				note: "Follow up on application status",
 				dueLabel: "Today",
 				timeLabel: "10:00 AM",
+				reminderDetails: createReminderDetails({
+					type: "Follow up",
+					date: "2026-07-14",
+					time: "10:00",
+					note: "Follow up on application status",
+				}),
 			},
 			{
 				id: "notion-product",
+				jobId: "notion-ux-researcher",
 				title: "Product Designer",
 				company: "Notion",
 				companyMark: "N",
@@ -76,6 +98,12 @@ export const reminderSections: ReminderSection[] = [
 				note: "Prepare for design interview",
 				dueLabel: "Today",
 				timeLabel: "02:00 PM",
+				reminderDetails: createReminderDetails({
+					type: "Interview prep",
+					date: "2026-07-14",
+					time: "14:00",
+					note: "Prepare for design interview",
+				}),
 			},
 		],
 	},
@@ -85,6 +113,7 @@ export const reminderSections: ReminderSection[] = [
 		rows: [
 			{
 				id: "spotify-backend",
+				jobId: "spotify-marketing-manager",
 				title: "Backend Developer",
 				company: "Spotify",
 				companyMark: "S",
@@ -93,9 +122,16 @@ export const reminderSections: ReminderSection[] = [
 				note: "Complete coding assignment",
 				dueLabel: "May 22, 2025",
 				timeLabel: "11:00 AM",
+				reminderDetails: createReminderDetails({
+					type: "Application update",
+					date: "2026-07-22",
+					time: "11:00",
+					note: "Complete coding assignment",
+				}),
 			},
 			{
 				id: "linear-fullstack",
+				jobId: "linear-product-manager",
 				title: "Full Stack Developer",
 				company: "Linear",
 				companyMark: "L",
@@ -104,6 +140,12 @@ export const reminderSections: ReminderSection[] = [
 				note: "Send thank you email",
 				dueLabel: "May 23, 2025",
 				timeLabel: "09:30 AM",
+				reminderDetails: createReminderDetails({
+					type: "Follow up",
+					date: "2026-07-23",
+					time: "09:30",
+					note: "Send thank you email",
+				}),
 			},
 		],
 	},
@@ -113,6 +155,7 @@ export const reminderSections: ReminderSection[] = [
 		rows: [
 			{
 				id: "hubspot-data",
+				jobId: "hubspot-business-development",
 				title: "Data Analyst",
 				company: "HubSpot",
 				companyMark: "H",
@@ -121,9 +164,16 @@ export const reminderSections: ReminderSection[] = [
 				note: "Technical interview round",
 				dueLabel: "May 28, 2025",
 				timeLabel: "01:00 PM",
+				reminderDetails: createReminderDetails({
+					type: "Interview prep",
+					date: "2026-07-28",
+					time: "13:00",
+					note: "Technical interview round",
+				}),
 			},
 			{
 				id: "duolingo-mobile",
+				jobId: "canva-content-designer",
 				title: "Mobile Developer",
 				company: "Duolingo",
 				companyMark: "D",
@@ -132,6 +182,12 @@ export const reminderSections: ReminderSection[] = [
 				note: "Check application status",
 				dueLabel: "May 31, 2025",
 				timeLabel: "10:00 AM",
+				reminderDetails: createReminderDetails({
+					type: "Follow up",
+					date: "2026-07-31",
+					time: "10:00",
+					note: "Check application status",
+				}),
 			},
 		],
 	},

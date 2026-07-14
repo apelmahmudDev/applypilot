@@ -28,7 +28,7 @@ export function SettingsStorageSection() {
 					<Button
 						type="button"
 						variant="outline"
-						className="h-11 rounded-md border-slate-200 bg-white px-4 font-semibold text-primary shadow-none"
+						className="h-11 rounded-md border-slate-200 bg-white px-4 font-semibold text-primary shadow-none dark:border-border dark:bg-card"
 						onClick={() => setIsConfirmOpen(true)}
 					>
 						<Trash2 className="size-4" aria-hidden="true" />
@@ -36,12 +36,12 @@ export function SettingsStorageSection() {
 					</Button>
 				}
 			>
-				<div className="space-y-4 border-t border-slate-100 pt-6">
+				<div className="space-y-4 border-t border-slate-100 pt-6 dark:border-border/60">
 					<div className="flex items-center justify-between gap-4">
-						<p className="text-sm font-semibold text-slate-700">Storage Used</p>
-						<p className="text-sm font-bold text-slate-900">~ 320 KB</p>
+						<p className="text-sm font-semibold text-slate-700 dark:text-foreground/90">Storage Used</p>
+						<p className="text-sm font-bold text-slate-900 dark:text-foreground">~ 320 KB</p>
 					</div>
-					<Progress value={22} className="h-2.5 bg-slate-100" />
+					<Progress value={22} className="h-2.5 bg-slate-100 dark:bg-muted/60" />
 				</div>
 			</SettingsSectionCard>
 		</>

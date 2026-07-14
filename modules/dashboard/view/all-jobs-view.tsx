@@ -49,8 +49,9 @@ const allJobsStats = [
 		description: "All saved jobs",
 		trend: "12%",
 		icon: BriefcaseBusiness,
-		accentClassName: "bg-blue-50 text-blue-600",
-		trendClassName: "text-blue-600",
+		accentClassName:
+			"bg-blue-100 text-blue-700 dark:bg-blue-500/18 dark:text-blue-200",
+		trendClassName: "text-blue-600 dark:text-blue-300",
 	},
 	{
 		label: "Applied",
@@ -58,8 +59,9 @@ const allJobsStats = [
 		description: "Applications sent",
 		trend: "18%",
 		icon: CircleCheckBig,
-		accentClassName: "bg-emerald-50 text-emerald-600",
-		trendClassName: "text-emerald-600",
+		accentClassName:
+			"bg-emerald-100 text-emerald-700 dark:bg-emerald-500/18 dark:text-emerald-200",
+		trendClassName: "text-emerald-600 dark:text-emerald-300",
 	},
 	{
 		label: "Interviewing",
@@ -67,8 +69,9 @@ const allJobsStats = [
 		description: "In progress",
 		trend: "14%",
 		icon: Users,
-		accentClassName: "bg-violet-50 text-violet-600",
-		trendClassName: "text-violet-600",
+		accentClassName:
+			"bg-violet-100 text-violet-700 dark:bg-violet-500/18 dark:text-violet-200",
+		trendClassName: "text-violet-600 dark:text-violet-300",
 	},
 	{
 		label: "Offers",
@@ -76,8 +79,9 @@ const allJobsStats = [
 		description: "Offers received",
 		trend: "50%",
 		icon: Sparkles,
-		accentClassName: "bg-amber-50 text-amber-500",
-		trendClassName: "text-amber-500",
+		accentClassName:
+			"bg-amber-100 text-amber-700 dark:bg-amber-500/18 dark:text-amber-200",
+		trendClassName: "text-amber-600 dark:text-amber-300",
 	},
 ] satisfies StatsCardItem[];
 
@@ -114,10 +118,10 @@ export function AllJobsView() {
 				headerSlot={({ statusFilter, setStatusFilter }) => (
 					<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 						<div className="min-w-0">
-							<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+							<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 								All Jobs
 							</h1>
-							<p className="mt-2 text-sm text-slate-500">
+							<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 								Track and manage all your job applications in one place.
 							</p>
 						</div>
@@ -125,12 +129,12 @@ export function AllJobsView() {
 						<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
 							<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
 								<Search
-									className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+									className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground"
 									aria-hidden="true"
 								/>
 								<Input
 									placeholder="Search jobs, companies, roles..."
-									className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
+									className="h-11 bg-white pl-11 pr-14 text-sm shadow-none dark:border-border dark:bg-card"
 								/>
 							</div>
 
@@ -140,7 +144,7 @@ export function AllJobsView() {
 									setStatusFilter(value as DashboardStatusFilter)
 								}
 							>
-								<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+								<SelectTrigger className="h-11! w-full bg-white font-semibold shadow-none sm:w-40 dark:border-border dark:bg-card">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>

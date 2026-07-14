@@ -39,7 +39,7 @@ export function DataTableRowActions({
 				type="button"
 				variant="ghost"
 				size="icon-sm"
-				className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+				className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 				aria-label="View job details"
 				title="View details"
 				onClick={() => onViewDetails?.(job)}
@@ -52,7 +52,7 @@ export function DataTableRowActions({
 						type="button"
 						variant="ghost"
 						size="icon-sm"
-						className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+						className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 						aria-label="More job actions"
 						title="More actions"
 					>

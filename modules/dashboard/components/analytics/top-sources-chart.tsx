@@ -29,7 +29,7 @@ export function TopSourcesChart() {
 			title="Top Sources"
 			action={
 				<Select defaultValue="applications">
-					<SelectTrigger className="h-9 w-38 bg-white text-sm font-medium shadow-none">
+					<SelectTrigger className="h-9 w-38 bg-white text-sm font-medium shadow-none dark:border-border dark:bg-card">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

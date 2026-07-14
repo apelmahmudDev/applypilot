@@ -24,11 +24,11 @@ import { JobBrandMark } from "@/modules/dashboard/components/job-table/job-brand
 import type { DashboardJob } from "@/modules/dashboard/types";
 
 const statusStyles: Record<DashboardJob["status"], string> = {
-	Applied: "bg-emerald-50 text-emerald-600",
-	Interview: "bg-violet-50 text-violet-600",
-	Saved: "bg-blue-50 text-blue-600",
-	Rejected: "bg-red-50 text-red-600",
-	Offer: "bg-amber-50 text-amber-600",
+	Applied: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
+	Interview: "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
+	Saved: "bg-blue-50 text-blue-600 dark:bg-blue-500/18 dark:text-blue-200",
+	Rejected: "bg-red-50 text-red-600 dark:bg-red-500/18 dark:text-red-200",
+	Offer: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
 };
 
 type JobDetailsDrawerProps = {
@@ -57,10 +57,10 @@ export function JobDetailsDrawer({
 			<SheetContent
 				side="right"
 				showCloseButton={false}
-				overlayClassName="bg-white/6 backdrop-blur-[0.8px]"
-				className="w-full gap-0 border-l border-slate-200 bg-white p-0 sm:max-w-lg"
+				overlayClassName="bg-white/6 backdrop-blur-[0.8px] dark:bg-black/28 dark:backdrop-blur-[0.8px]"
+				className="w-full gap-0 border-l border-slate-200 bg-white p-0 dark:border-border/60 dark:bg-card sm:max-w-lg"
 			>
-				<SheetHeader className="border-b border-slate-100 px-6 py-5">
+				<SheetHeader className="border-b border-slate-100 px-6 py-5 dark:border-border/60">
 					<div className="flex items-start justify-between gap-4">
 						<div>
 							<SheetTitle className="text-lg font-bold tracking-[-0.04em]">
@@ -96,7 +96,7 @@ export function JobDetailsDrawer({
 								type="button"
 								variant="ghost"
 								size="icon"
-								className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+								className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 								onClick={() => onOpenChange(false)}
 								aria-label="Close job details"
 								title="Close"
@@ -108,7 +108,7 @@ export function JobDetailsDrawer({
 				</SheetHeader>
 
 				<div className="flex-1 overflow-y-auto px-6 py-6">
-					<div className="flex items-start gap-4 border-b border-slate-100 pb-6">
+					<div className="flex items-start gap-4 border-b border-slate-100 pb-6 dark:border-border/60">
 						<JobBrandMark
 							brand={job.brand}
 							className="size-14 rounded-md text-2xl"
@@ -116,10 +116,10 @@ export function JobDetailsDrawer({
 						<div className="min-w-0 flex-1">
 							<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 								<div className="min-w-0">
-									<h2 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950">
+									<h2 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950 dark:text-foreground">
 										{job.title}
 									</h2>
-									<p className="mt-1 text-base font-medium text-slate-500">
+									<p className="mt-1 text-base font-medium text-slate-500 dark:text-muted-foreground">
 										{job.company}
 									</p>
 								</div>
@@ -168,10 +168,10 @@ export function JobDetailsDrawer({
 						<JobDetailsSection title="Job Description">
 							<div className="flex gap-3">
 								<FileText
-									className="mt-0.5 size-4 shrink-0 text-slate-400"
+									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
 									aria-hidden="true"
 								/>
-								<p className="text-sm leading-6 text-slate-600">
+								<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
 									{job.description}
 								</p>
 							</div>
@@ -180,7 +180,7 @@ export function JobDetailsDrawer({
 						<JobDetailsSection title="Links">
 							<div className="flex gap-3">
 								<Link2
-									className="mt-0.5 size-4 shrink-0 text-slate-400"
+									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
 									aria-hidden="true"
 								/>
 								{job.source.url ? (
@@ -193,7 +193,7 @@ export function JobDetailsDrawer({
 										Original Job Post
 									</a>
 								) : (
-									<p className="text-sm text-slate-500">
+									<p className="text-sm text-slate-500 dark:text-muted-foreground">
 										No source link available.
 									</p>
 								)}
@@ -213,8 +213,8 @@ type JobDetailsSectionProps = {
 
 function JobDetailsSection({ title, children }: JobDetailsSectionProps) {
 	return (
-		<section className="border-b border-slate-100 pb-6 last:border-b-0 last:pb-0">
-			<h3 className="mb-4 text-base font-bold text-slate-950">{title}</h3>
+		<section className="border-b border-slate-100 pb-6 last:border-b-0 last:pb-0 dark:border-border/60">
+			<h3 className="mb-4 text-base font-bold text-slate-950 dark:text-foreground">{title}</h3>
 			<div className="space-y-4">{children}</div>
 		</section>
 	);
@@ -232,9 +232,9 @@ type DetailsRowProps = {
 function DetailsRow({ icon: Icon, label, value }: DetailsRowProps) {
 	return (
 		<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
-			<Icon className="mt-0.5 size-4 text-slate-400" aria-hidden="true" />
-			<span className="text-sm font-medium text-slate-500">{label}</span>
-			<span className="text-sm font-medium text-slate-700">{value}</span>
+			<Icon className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground" aria-hidden="true" />
+			<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">{label}</span>
+			<span className="text-sm font-medium text-slate-700 dark:text-foreground/90">{value}</span>
 		</div>
 	);
 }
@@ -250,10 +250,10 @@ function ReminderRow({
 
 	return (
 		<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
-			<Bell className="mt-0.5 size-4 text-slate-400" aria-hidden="true" />
-			<span className="text-sm font-medium text-slate-500">Reminder</span>
+			<Bell className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground" aria-hidden="true" />
+			<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">Reminder</span>
 			<div className="flex items-center gap-3">
-				<span className="text-sm font-medium text-slate-700">{reminder}</span>
+				<span className="text-sm font-medium text-slate-700 dark:text-foreground/90">{reminder}</span>
 				<Button
 					type="button"
 					variant="ghost"

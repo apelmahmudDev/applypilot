@@ -73,9 +73,10 @@ type JobFormDrawerProps = {
 	onSubmit: (job: DashboardJob) => void;
 };
 
-const fieldLabelClassName = "text-sm font-semibold text-slate-700";
+const fieldLabelClassName =
+	"text-sm font-semibold text-slate-700 dark:text-foreground";
 const inputClassName =
-	"h-11! rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none";
+	"h-11! rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground";
 
 export function JobFormDrawer({
 	job,
@@ -119,17 +120,17 @@ export function JobFormDrawer({
 			<SheetContent
 				side="right"
 				showCloseButton={false}
-				overlayClassName="bg-white/6 backdrop-blur-[0.8px]"
-				className="w-full gap-0 border-l border-slate-200 bg-white p-0 sm:max-w-lg"
+				overlayClassName="bg-white/6 backdrop-blur-[0.8px] dark:bg-black/28 dark:backdrop-blur-[0.8px]"
+				className="w-full gap-0 border-l border-slate-200 bg-white p-0 dark:border-border/60 dark:bg-card sm:max-w-lg"
 			>
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-b border-slate-100 px-6 py-5">
+					<SheetHeader className="border-b border-slate-100 px-6 py-5 dark:border-border/60">
 						<div className="flex items-start justify-between gap-4">
 							<div>
 								<SheetTitle className="text-lg font-bold tracking-[-0.04em]">
 									{mode === "create" ? "Add Job" : "Edit Job"}
 								</SheetTitle>
-								<SheetDescription className="mt-1 text-sm text-slate-500 sr-only">
+								<SheetDescription className="mt-1 text-sm text-slate-500 dark:text-muted-foreground sr-only">
 									Use one focused drawer for fast updates now, with room for
 									richer job workflows later.
 								</SheetDescription>
@@ -138,7 +139,7 @@ export function JobFormDrawer({
 								type="button"
 								variant="ghost"
 								size="icon"
-								className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+								className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 								onClick={() => onOpenChange(false)}
 								aria-label="Close job form"
 							>
@@ -158,7 +159,7 @@ export function JobFormDrawer({
 							defaultValue="details"
 							className="flex min-h-0 flex-1 flex-col"
 						>
-							<div className="border-b border-slate-100 px-6 pb-0.5">
+							<div className="border-b border-slate-100 px-6 pb-0.5 dark:border-border/60">
 								<TabsList variant="line" className="h-auto gap-6 p-0">
 									<TabsTrigger
 										value="details"
@@ -431,10 +432,13 @@ export function JobFormDrawer({
 											<Button
 												type="button"
 												variant="outline"
-												className="h-11! w-full justify-start rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none"
+												className="h-11! w-full justify-start rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground"
 												onClick={() => setIsReminderOpen(true)}
 											>
-												<Bell className="size-4 text-slate-400" aria-hidden="true" />
+												<Bell
+													className="size-4 text-slate-400 dark:text-muted-foreground"
+													aria-hidden="true"
+												/>
 												{reminderValues.date
 													? `Update reminder • ${formatReminderSummary(reminderValues.date)}`
 													: "Set reminder"}
@@ -453,12 +457,12 @@ export function JobFormDrawer({
 													<FieldLabel className={fieldLabelClassName}>
 														Note (Optional)
 													</FieldLabel>
-													<div className="rounded-md border border-slate-200 bg-white px-4 py-3">
+													<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-border dark:bg-card">
 														<Textarea
 															value={field.state.value}
 															rows={4}
 															maxLength={500}
-															className="min-h-24 resize-none border-0 px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0"
+															className="min-h-24 resize-none border-0 dark:bg-card px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:text-foreground"
 															onBlur={field.handleBlur}
 															onChange={(event) =>
 																field.handleChange(event.target.value)
@@ -467,7 +471,7 @@ export function JobFormDrawer({
 														<form.Subscribe
 															selector={(state) => state.values.notes.length}
 															children={(notesLength) => (
-																<div className="mt-2 text-right text-xs font-medium text-slate-400">
+																<div className="mt-2 text-right text-xs font-medium text-slate-400 dark:text-muted-foreground/80">
 																	{notesLength} / 500
 																</div>
 															)}
@@ -482,12 +486,12 @@ export function JobFormDrawer({
 							</TabsContent>
 						</Tabs>
 
-						<div className="border-t border-slate-100 px-6 py-4">
+						<div className="border-t border-slate-100 px-6 py-4 dark:border-border/60">
 							<div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
 								<Button
 									type="button"
 									variant="outline"
-									className="h-11 rounded-md border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none"
+									className="h-11 rounded-md border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
 									onClick={() => onOpenChange(false)}
 								>
 									Cancel
@@ -554,7 +558,7 @@ function TextField({
 			<div className="relative">
 				{Icon ? (
 					<Icon
-						className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400"
+						className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground"
 						aria-hidden="true"
 					/>
 				) : null}
@@ -663,17 +667,20 @@ function DateField({
 					>
 						<span className="flex items-center gap-3">
 							<CalendarDays
-								className="size-4 text-slate-400"
+								className="size-4 text-slate-400 dark:text-muted-foreground"
 								aria-hidden="true"
 							/>
 							{value
 								? format(new Date(`${value}T12:00:00`), "MMM d, yyyy")
 								: "Select date"}
 						</span>
-						<ChevronDown className="size-4 text-slate-400" aria-hidden="true" />
+						<ChevronDown
+							className="size-4 text-slate-400 dark:text-muted-foreground"
+							aria-hidden="true"
+						/>
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2">
+				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-border dark:bg-popover">
 					<Calendar
 						mode="single"
 						selected={value ? new Date(`${value}T12:00:00`) : undefined}

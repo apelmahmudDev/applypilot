@@ -38,8 +38,9 @@ const analyticsStats = [
 		description: "vs previous 30 days",
 		trend: "16%",
 		icon: BriefcaseBusiness,
-		accentClassName: "bg-blue-50 text-blue-600",
-		trendClassName: "text-emerald-600",
+		accentClassName:
+			"bg-blue-50 text-blue-600 dark:bg-blue-500/18 dark:text-blue-200",
+		trendClassName: "text-emerald-600 dark:text-emerald-300",
 	},
 	{
 		label: "Response Rate",
@@ -47,8 +48,9 @@ const analyticsStats = [
 		description: "vs previous 30 days",
 		trend: "8.4%",
 		icon: ChartNoAxesCombined,
-		accentClassName: "bg-emerald-50 text-emerald-600",
-		trendClassName: "text-emerald-600",
+		accentClassName:
+			"bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
+		trendClassName: "text-emerald-600 dark:text-emerald-300",
 	},
 	{
 		label: "Interview Rate",
@@ -56,8 +58,9 @@ const analyticsStats = [
 		description: "vs previous 30 days",
 		trend: "5.1%",
 		icon: Users,
-		accentClassName: "bg-violet-50 text-violet-600",
-		trendClassName: "text-emerald-600",
+		accentClassName:
+			"bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
+		trendClassName: "text-emerald-600 dark:text-emerald-300",
 	},
 	{
 		label: "Offers",
@@ -65,8 +68,9 @@ const analyticsStats = [
 		description: "vs previous 30 days",
 		trend: "2",
 		icon: Trophy,
-		accentClassName: "bg-amber-50 text-amber-500",
-		trendClassName: "text-emerald-600",
+		accentClassName:
+			"bg-amber-50 text-amber-500 dark:bg-amber-500/18 dark:text-amber-200",
+		trendClassName: "text-emerald-600 dark:text-emerald-300",
 	},
 ] satisfies StatsCardItem[];
 
@@ -75,17 +79,17 @@ export function AnalyticsView() {
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 				<div className="min-w-0">
-					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 						Analytics
 					</h1>
-					<p className="mt-2 text-sm text-slate-500">
+					<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 						Track performance and insights across your job search.
 					</p>
 				</div>
 
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
 					<Select defaultValue="last-30-days">
-						<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+						<SelectTrigger className="h-11! w-full bg-white font-semibold shadow-none sm:w-40 dark:border-border dark:bg-card">
 							<div className="flex items-center gap-2">
 								<CalendarDays className="size-4" aria-hidden="true" />
 								<SelectValue />

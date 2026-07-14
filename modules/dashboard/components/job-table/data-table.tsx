@@ -10,18 +10,6 @@ import {
 } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	Table,
 	TableBody,
@@ -138,19 +126,18 @@ export function DataTable({
 				: headerSlot}
 			{statsSlot}
 
-			{/* shadow-[0_4px_16px_rgba(15,23,42,0.04)] */}
-			<div className="min-w-0 overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+			<div className="min-w-0 overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.04)] dark:border-none dark:bg-card">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow
 								key={headerGroup.id}
-								className="border-slate-200 bg-slate-50/60"
+								className="border-slate-200 bg-slate-50/60 dark:border-border/70 dark:bg-muted/25"
 							>
 								{headerGroup.headers.map((header) => (
 									<TableHead
 										key={header.id}
-										className="h-12 px-5 text-xs font-bold text-slate-500"
+										className="h-12 px-5 text-xs font-bold text-slate-500 dark:text-muted-foreground"
 									>
 										{header.isPlaceholder
 											? null
@@ -168,7 +155,7 @@ export function DataTable({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									className="h-[72px] border-slate-100 hover:bg-slate-50/80"
+									className="dark-hover-surface h-[72px] border-slate-100 hover:bg-slate-50/80 dark:border-border/60"
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="px-5 py-3">
@@ -184,7 +171,7 @@ export function DataTable({
 							<TableRow>
 								<TableCell
 									colSpan={resolvedColumns.length}
-									className="h-28 text-center text-sm font-semibold text-slate-500"
+									className="h-28 text-center text-sm font-semibold text-slate-500 dark:text-muted-foreground"
 								>
 									No jobs found.
 								</TableCell>

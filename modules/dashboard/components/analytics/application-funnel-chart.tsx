@@ -58,7 +58,7 @@ export function ApplicationFunnelChart() {
 										x={Number(x) + Number(width) + 12}
 										y={Number(y) + Number(height) / 2}
 										dominantBaseline="middle"
-										className="fill-slate-600 text-xs font-medium"
+										className="fill-slate-600 text-xs font-medium dark:fill-muted-foreground"
 									>
 										{`${value} (${percentage ?? 0}%)`}
 									</text>

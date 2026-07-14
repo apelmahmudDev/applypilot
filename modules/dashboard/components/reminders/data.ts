@@ -31,35 +31,37 @@ export const reminderStats: ReminderStat[] = [
 		value: "12",
 		description: "Across all tracked jobs",
 		icon: Bell,
-		accentClassName: "bg-blue-50 text-blue-600",
+		accentClassName: "bg-blue-50 text-blue-600 dark:bg-blue-500/18 dark:text-blue-200",
 	},
 	{
 		label: "Due Today",
 		value: "5",
 		description: "Need attention today",
 		icon: CalendarDays,
-		accentClassName: "bg-emerald-50 text-emerald-600",
+		accentClassName:
+			"bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
 	},
 	{
 		label: "Due This Week",
 		value: "4",
 		description: "Upcoming follow-ups",
 		icon: Clock3,
-		accentClassName: "bg-amber-50 text-amber-500",
+		accentClassName: "bg-amber-50 text-amber-500 dark:bg-amber-500/18 dark:text-amber-200",
 	},
 	{
 		label: "Overdue",
 		value: "3",
 		description: "Past scheduled date",
 		icon: CalendarClock,
-		accentClassName: "bg-violet-50 text-violet-600",
+		accentClassName:
+			"bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
 	},
 	{
 		label: "Completed",
 		value: "8",
 		description: "Marked done this week",
 		icon: CheckCircle2,
-		accentClassName: "bg-slate-100 text-slate-600",
+		accentClassName: "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-100",
 	},
 ];
 
@@ -93,7 +95,8 @@ export const reminderSections: ReminderSection[] = [
 				title: "Product Designer",
 				company: "Notion",
 				companyMark: "N",
-				companyMarkClassName: "bg-white text-black ring-1 ring-slate-200",
+				companyMarkClassName:
+					"bg-white text-black ring-1 ring-slate-200 dark:bg-slate-100 dark:text-black dark:ring-slate-600",
 				kind: "Interview",
 				note: "Prepare for design interview",
 				dueLabel: "Today",
@@ -135,7 +138,7 @@ export const reminderSections: ReminderSection[] = [
 				title: "Full Stack Developer",
 				company: "Linear",
 				companyMark: "L",
-				companyMarkClassName: "bg-slate-900 text-white",
+				companyMarkClassName: "bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100",
 				kind: "Follow-up",
 				note: "Send thank you email",
 				dueLabel: "May 23, 2025",

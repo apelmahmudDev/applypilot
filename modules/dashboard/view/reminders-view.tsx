@@ -24,10 +24,10 @@ export function RemindersView() {
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 				<div className="min-w-0">
-					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 						Reminders
 					</h1>
-					<p className="mt-2 text-sm text-slate-500">
+					<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 						Never miss an important follow-up.
 					</p>
 				</div>
@@ -35,12 +35,12 @@ export function RemindersView() {
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
 					<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
 						<Search
-							className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+							className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground"
 							aria-hidden="true"
 						/>
 						<Input
 							placeholder="Search jobs, companies..."
-							className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
+							className="h-11 bg-white pl-11 pr-14 text-sm shadow-none dark:border-border dark:bg-card"
 						/>
 					</div>
 
@@ -61,12 +61,12 @@ export function RemindersView() {
 						/>
 					))}
 
-					<div className="flex flex-col gap-4 text-sm font-medium text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+					<div className="flex flex-col gap-4 text-sm font-medium text-slate-500 dark:text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
 						<p>Showing 1 to 6 of 12 reminders</p>
 						<Button
 							type="button"
 							variant="outline"
-							className="h-10 rounded-md border-slate-100 bg-white px-4 font-semibold text-slate-700 shadow-none"
+							className="h-10 rounded-md border-slate-100 bg-white px-4 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
 						>
 							Load More
 						</Button>
@@ -101,7 +101,8 @@ export function RemindersView() {
 						title: job.title,
 						company: job.company,
 						companyMark: job.company.charAt(0).toUpperCase(),
-						companyMarkClassName: "bg-slate-100 text-slate-700",
+						companyMarkClassName:
+							"bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-100",
 						kind: "Follow-up",
 						note:
 							job.reminderDetails?.note ??

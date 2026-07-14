@@ -97,17 +97,17 @@
 }
 
 .dark {
-	--background: oklch(0.18 0.012 270);
+	--background: oklch(0.242 0.0093 17.81);
 	--foreground: oklch(0.96 0.006 270);
 
-	--card: oklch(0.22 0.014 270);
+	--card: oklch(0.2912 0.02 28.44);
 	--card-foreground: oklch(0.96 0.006 270);
 
-	--popover: oklch(0.22 0.014 270);
+	--popover: oklch(0.2912 0.02 28.44);
 	--popover-foreground: oklch(0.96 0.006 270);
 
 	--primary: oklch(0.72 0.14 275);
-	--primary-foreground: oklch(0.18 0.012 270);
+	--primary-foreground: oklch(0.242 0.0093 17.81);
 
 	--secondary: oklch(0.27 0.016 270);
 	--secondary-foreground: oklch(0.95 0.006 270);
@@ -131,11 +131,11 @@
 	--chart-4: oklch(0.72 0.15 310);
 	--chart-5: oklch(0.72 0.12 230);
 
-	--sidebar: oklch(0.22 0.014 270);
+	--sidebar: oklch(0.2912 0.02 28.44);
 	--sidebar-foreground: oklch(0.96 0.006 270);
 
 	--sidebar-primary: oklch(0.72 0.14 275);
-	--sidebar-primary-foreground: oklch(0.18 0.012 270);
+	--sidebar-primary-foreground: oklch(0.242 0.0093 17.81);
 
 	--sidebar-accent: oklch(0.31 0.035 275);
 	--sidebar-accent-foreground: oklch(0.84 0.08 275);
@@ -168,5 +168,11 @@
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
+	}
+}
+
+@layer utilities {
+	.dark-hover-surface {
+		@apply dark:hover:bg-[#323232];
 	}
 }

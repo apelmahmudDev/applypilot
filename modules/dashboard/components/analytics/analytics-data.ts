@@ -35,13 +35,14 @@ export const bestPerformingCompanies = [
 		company: "OpenAI",
 		applications: 2,
 		interviewRate: "100%",
-		accentClassName: "bg-slate-950 text-white",
+		accentClassName: "bg-slate-950 text-white dark:bg-slate-800 dark:text-slate-100",
 	},
 	{
 		company: "Linear",
 		applications: 2,
 		interviewRate: "50%",
-		accentClassName: "bg-slate-100 text-slate-800",
+		accentClassName:
+			"bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-100",
 	},
 	{
 		company: "Notion",
@@ -53,13 +54,14 @@ export const bestPerformingCompanies = [
 		company: "Figma",
 		applications: 3,
 		interviewRate: "33.3%",
-		accentClassName: "bg-pink-100 text-pink-700",
+		accentClassName: "bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-200",
 	},
 	{
 		company: "Stripe",
 		applications: 2,
 		interviewRate: "0%",
-		accentClassName: "bg-indigo-100 text-indigo-700",
+		accentClassName:
+			"bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200",
 	},
 ];
 

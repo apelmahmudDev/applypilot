@@ -26,7 +26,12 @@ export function StatsCardGrid({
 	showDescription = true,
 }: StatsCardGridProps) {
 	return (
-		<div className={cn("grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4", className)}>
+		<div
+			className={cn(
+				"grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4",
+				className,
+			)}
+		>
 			{stats.map((stat) => {
 				const Icon = stat.icon;
 				const isValueFirst = layout === "value-first";
@@ -34,7 +39,7 @@ export function StatsCardGrid({
 				return (
 					<article
 						key={stat.label}
-						className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4"
+						className="flex items-center gap-4 rounded-md border border-slate-100 bg-white p-4 dark:border-none dark:bg-card"
 					>
 						<div
 							className={cn(
@@ -48,31 +53,35 @@ export function StatsCardGrid({
 						<div className="min-w-0 flex-1">
 							{isValueFirst ? (
 								<>
-									<p className="text-2xl font-bold leading-tight text-slate-900">
+									<p className="text-2xl font-bold leading-tight text-slate-900 dark:text-foreground">
 										{stat.value}
 									</p>
-									<p className="mt-1 text-sm font-medium text-slate-500">
+									<p className="mt-1 text-sm font-medium text-slate-500 dark:text-muted-foreground">
 										{stat.label}
 									</p>
 								</>
 							) : (
 								<>
-									<p className="text-sm font-medium text-slate-500">{stat.label}</p>
-									<p className="text-2xl font-bold leading-tight text-slate-900">
+									<p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
+										{stat.label}
+									</p>
+									<p className="text-2xl font-bold leading-tight text-slate-900 dark:text-foreground">
 										{stat.value}
 									</p>
 								</>
 							)}
 							<div className="mt-1 flex items-center justify-between gap-2">
 								{showDescription ? (
-									<p className="text-xs text-slate-400">{stat.description}</p>
+									<p className="text-xs text-slate-400 dark:text-muted-foreground/80">
+										{stat.description}
+									</p>
 								) : (
 									<span />
 								)}
 								{stat.trend ? (
 									<span
 										className={cn(
-											"flex items-center gap-0.5 text-xs font-semibold",
+											"flex items-center gap-0.5 text-xs font-semibold dark:brightness-125",
 											stat.trendClassName,
 										)}
 									>

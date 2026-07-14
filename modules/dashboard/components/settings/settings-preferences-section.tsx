@@ -16,17 +16,17 @@ export function SettingsPreferencesSection() {
 				{settingsPreferenceItems.map((item) => (
 					<div
 						key={item.id}
-						className="flex flex-col gap-3 border-t border-slate-100 pt-6 first:border-t-0 first:pt-0 lg:flex-row lg:items-center lg:justify-between"
+						className="flex flex-col gap-3 border-t border-slate-100 pt-6 first:border-t-0 first:pt-0 dark:border-border/60 lg:flex-row lg:items-center lg:justify-between"
 					>
 						<div className="min-w-0">
-							<h3 className="text-base font-semibold text-slate-900">
+							<h3 className="text-base font-semibold text-slate-900 dark:text-foreground">
 								{item.label}
 							</h3>
-							<p className="mt-1 text-sm text-slate-500">{item.description}</p>
+							<p className="mt-1 text-sm text-slate-500 dark:text-muted-foreground">{item.description}</p>
 						</div>
 
 						<Select defaultValue={item.defaultValue}>
-							<SelectTrigger className="h-11! w-full rounded-md border-slate-200 bg-white px-4 font-semibold text-slate-700 shadow-none lg:w-50">
+							<SelectTrigger className="h-11! w-full rounded-md border-slate-200 bg-white px-4 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground lg:w-50">
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent align="end">

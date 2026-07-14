@@ -54,9 +54,10 @@ type ReminderFormDialogProps = {
 };
 
 const fieldClassName = "gap-1.5";
-const fieldLabelClassName = "text-sm font-semibold text-slate-700";
+const fieldLabelClassName =
+	"text-sm font-semibold text-slate-700 dark:text-foreground";
 const inputTriggerClassName =
-	"h-11! rounded-md border-slate-200 bg-white px-3 text-left text-sm font-medium text-slate-900 shadow-none";
+	"h-11! rounded-md border-slate-200 bg-white px-3 text-left text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground";
 
 export function ReminderFormDialog({
 	open,
@@ -83,8 +84,8 @@ export function ReminderFormDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className="max-w-[760px] border-border/80 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.14)]"
-				overlayClassName="bg-white/6 backdrop-blur-[0.8px]"
+				className="max-w-[760px] border-border/80 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.14)] dark:border-none dark:bg-card"
+				overlayClassName="bg-white/6 backdrop-blur-[0.8px] dark:bg-black/28 dark:backdrop-blur-[0.8px]"
 				showCloseButton={false}
 			>
 				<form
@@ -95,10 +96,10 @@ export function ReminderFormDialog({
 				>
 					<div className="px-6 pt-6 pb-5">
 						<DialogHeader className="gap-3 text-left">
-							<DialogTitle className="text-lg font-bold tracking-[-0.04em]">
+							<DialogTitle className="text-lg font-bold tracking-[-0.04em] dark:text-foreground">
 								{title}
 							</DialogTitle>
-							<DialogDescription className="text-sm text-slate-500 sr-only">
+							<DialogDescription className="sr-only text-sm text-slate-500 dark:text-muted-foreground">
 								{description}
 							</DialogDescription>
 						</DialogHeader>
@@ -150,18 +151,18 @@ export function ReminderFormDialog({
 														>
 															<span className="flex items-center gap-3">
 																<CalendarDays
-																	className="size-4 text-slate-500"
+																	className="size-4 text-slate-500 dark:text-muted-foreground"
 																	aria-hidden="true"
 																/>
 																{formatReminderDateField(field.state.value)}
 															</span>
 															<ChevronDown
-																className="size-4 text-slate-400"
+																className="size-4 text-slate-400 dark:text-muted-foreground"
 																aria-hidden="true"
 															/>
 														</Button>
 													</PopoverTrigger>
-													<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2">
+													<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-border dark:bg-popover">
 														<Calendar
 															mode="single"
 															selected={
@@ -214,7 +215,7 @@ export function ReminderFormDialog({
 														field.handleChange(event.target.value)
 													}
 													aria-invalid={isInvalid}
-													className="h-11 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none"
+													className="h-11 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-border dark:bg-card dark:text-foreground"
 												/>
 												{isInvalid && (
 													<FieldError errors={field.state.meta.errors} />
@@ -236,7 +237,7 @@ export function ReminderFormDialog({
 													onCheckedChange={field.handleChange}
 													aria-label="Reminder active status"
 												/>
-												<span className="text-sm font-semibold">
+												<span className="text-sm font-semibold dark:text-foreground">
 													{field.state.value ? "Active" : "Paused"}
 												</span>
 											</div>
@@ -259,7 +260,7 @@ export function ReminderFormDialog({
 											>
 												Note
 											</FieldLabel>
-											<div className="rounded-md border border-slate-200 bg-white px-4 py-3">
+											<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-border dark:bg-card">
 												<Textarea
 													id={field.name}
 													name={field.name}
@@ -271,12 +272,12 @@ export function ReminderFormDialog({
 													aria-invalid={isInvalid}
 													rows={4}
 													maxLength={500}
-													className="min-h-16 resize-none border-0 bg-transparent px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0"
+													className="min-h-16 resize-none border-0 bg-transparent dark:bg-card px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:text-foreground"
 												/>
 												<form.Subscribe
 													selector={(state) => state.values.note.length}
 													children={(noteLength) => (
-														<div className="mt-2 text-right text-xs font-medium text-slate-400">
+														<div className="mt-2 text-right text-xs font-medium text-slate-400 dark:text-muted-foreground/80">
 															{noteLength} / 500
 														</div>
 													)}
@@ -292,18 +293,18 @@ export function ReminderFormDialog({
 						</FieldGroup>
 					</div>
 
-					<DialogFooter className="border-t border-slate-100 px-6 py-4 sm:justify-end">
+					<DialogFooter className="border-t border-slate-100 px-6 py-4 dark:border-border/60 sm:justify-end">
 						<Button
 							type="button"
 							variant="outline"
-							className="h-11 rounded-xl border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none"
+							className="h-11 rounded-xl border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
 							onClick={() => onOpenChange(false)}
 						>
 							Cancel
 						</Button>
 						<Button
 							type="submit"
-							className="h-11 rounded-xl bg-slate-950 px-5 font-semibold text-white hover:bg-slate-800"
+							className="h-11 rounded-xl bg-slate-950 px-5 font-semibold text-white hover:bg-slate-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
 						>
 							{submitLabel}
 						</Button>
@@ -356,13 +357,16 @@ function SelectField({
 				>
 					<div className="flex min-w-0 w-full items-center justify-between gap-3">
 						<div className="flex min-w-0 flex-1 items-center gap-3">
-							<Icon className="size-4 shrink-0 text-slate-500" aria-hidden />
+							<Icon
+								className="size-4 shrink-0 text-slate-500 dark:text-muted-foreground"
+								aria-hidden
+							/>
 							<span className="truncate">
 								<SelectValue>{selectedLabel}</SelectValue>
 							</span>
 						</div>
 						<ChevronDown
-							className="size-4 shrink-0 text-slate-400"
+							className="size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
 							aria-hidden
 						/>
 					</div>

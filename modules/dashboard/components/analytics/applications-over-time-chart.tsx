@@ -30,7 +30,7 @@ export function ApplicationsOverTimeChart() {
 			className="lg:col-span-1 xl:col-span-7"
 			action={
 				<Select defaultValue="weekly">
-					<SelectTrigger className="h-9 w-28 bg-white text-sm font-medium shadow-none">
+					<SelectTrigger className="h-9 w-28 bg-white text-sm font-medium shadow-none dark:border-border dark:bg-card">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

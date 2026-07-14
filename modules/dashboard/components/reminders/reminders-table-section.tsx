@@ -24,9 +24,9 @@ import { cn } from "@/lib/utils";
 import type { ReminderRow, ReminderSection } from "./types";
 
 const reminderKindClasses: Record<ReminderRow["kind"], string> = {
-	"Follow-up": "bg-primary/10 text-primary",
-	Interview: "bg-violet-50 text-violet-600",
-	Task: "bg-amber-50 text-amber-600",
+	"Follow-up": "bg-primary/10 text-primary dark:bg-primary/18 dark:text-primary-foreground",
+	Interview: "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
+	Task: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
 };
 
 const reminderKindIcons: Record<ReminderRow["kind"], LucideIcon> = {
@@ -49,23 +49,23 @@ export function RemindersTableSection({
 	return (
 		<section className="space-y-3">
 			<div className="flex items-center gap-2 px-1">
-				<h2 className="text-lg font-medium tracking-[-0.03em] text-slate-950">
+				<h2 className="text-lg font-medium tracking-[-0.03em] text-slate-950 dark:text-foreground">
 					{section.title}
 				</h2>
 				{section.eyebrow ? (
-					<p className="text-sm font-medium text-slate-500">
+					<p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
 						{section.eyebrow}
 					</p>
 				) : null}
 			</div>
 
-			<div className="overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.01)]">
+			<div className="overflow-hidden rounded-md border border-slate-100 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.01)] dark:border-none dark:bg-card">
 				<Table>
 					<TableBody>
 						{section.rows.map((row) => (
 							<TableRow
 								key={row.id}
-								className="border-slate-100 hover:bg-slate-50/70"
+								className="dark-hover-surface border-slate-100 hover:bg-slate-50/70 dark:border-border/60"
 							>
 								<TableCell className="px-6 py-4">
 									<div className="flex min-w-[240px] items-center gap-4">
@@ -78,10 +78,10 @@ export function RemindersTableSection({
 											{row.companyMark}
 										</div>
 										<div className="min-w-0">
-											<p className="truncate text-sm font-bold text-slate-950">
+											<p className="truncate text-sm font-bold text-slate-950 dark:text-foreground">
 												{row.title}
 											</p>
-											<p className="mt-1 truncate text-sm font-medium text-slate-500">
+											<p className="mt-1 truncate text-sm font-medium text-slate-500 dark:text-muted-foreground">
 												{row.company}
 											</p>
 										</div>
@@ -91,7 +91,7 @@ export function RemindersTableSection({
 									{renderReminderKindBadge(row.kind)}
 								</TableCell>
 								<TableCell className="px-6 py-4">
-									<p className="min-w-[220px] text-sm font-medium text-slate-600">
+									<p className="min-w-[220px] text-sm font-medium text-slate-600 dark:text-muted-foreground">
 										{row.note}
 									</p>
 								</TableCell>
@@ -100,7 +100,7 @@ export function RemindersTableSection({
 										<p className="text-sm font-bold text-primary">
 											{row.dueLabel}
 										</p>
-										<p className="mt-1 text-sm font-semibold text-slate-500">
+										<p className="mt-1 text-sm font-semibold text-slate-500 dark:text-muted-foreground">
 											{row.timeLabel}
 										</p>
 									</div>
@@ -111,7 +111,7 @@ export function RemindersTableSection({
 											type="button"
 											variant="ghost"
 											size="icon"
-											className="size-9 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+											className="dark-hover-surface size-9 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-foreground"
 											aria-label={`Open job details for ${row.title}`}
 											onClick={() => onOpenJob?.(row)}
 										>
@@ -123,7 +123,7 @@ export function RemindersTableSection({
 													type="button"
 													variant="ghost"
 													size="icon"
-													className="size-9 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+													className="dark-hover-surface size-9 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-foreground"
 													aria-label={`More actions for ${row.title}`}
 												>
 													<MoreHorizontal

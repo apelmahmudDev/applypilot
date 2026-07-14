@@ -21,10 +21,10 @@ export function ExportInfoSection() {
 								<Icon className="size-5" aria-hidden="true" />
 							</div>
 							<div className="min-w-0">
-								<h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">
+								<h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-foreground">
 									{item.title}
 								</h3>
-								<p className="mt-2 text-base leading-6 text-slate-500">
+								<p className="mt-2 text-base leading-6 text-slate-500 dark:text-muted-foreground">
 									{item.description}
 								</p>
 							</div>

@@ -8,10 +8,10 @@ export function SettingsView() {
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 				<div className="min-w-0">
-					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 						Settings
 					</h1>
-					<p className="mt-2 text-sm text-slate-500">
+					<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 						Customize your experience. All data stays in this browser.
 					</p>
 				</div>

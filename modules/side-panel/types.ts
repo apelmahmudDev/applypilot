@@ -69,7 +69,6 @@ export type SidePanelView =
 	| "home"
 	| "applications"
 	| "reminders"
-	| "settings"
 	| "jobDetails"
 	| "reminderDetails";
 

@@ -41,7 +41,7 @@ export function SettingsStorageSection() {
 						<p className="text-sm font-semibold text-slate-700 dark:text-foreground/90">Storage Used</p>
 						<p className="text-sm font-bold text-slate-900 dark:text-foreground">~ 320 KB</p>
 					</div>
-					<Progress value={22} className="h-2.5 bg-slate-100 dark:bg-muted/60" />
+					<Progress value={22} className="h-2.5 bg-slate-100 dark:bg-[#3a3333]" />
 				</div>
 			</SettingsSectionCard>
 		</>

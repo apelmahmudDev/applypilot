@@ -102,7 +102,7 @@ export function ExportControlsSection() {
 				</div>
 
 				<div className="space-y-4">
-					<Button className="h-12 w-full rounded-2xl bg-primary text-base font-bold text-primary-foreground shadow-[0_16px_30px_color-mix(in_srgb,var(--primary)_28%,transparent)] hover:brightness-95">
+					<Button className="h-12 w-full rounded-md bg-primary text-base font-bold text-primary-foreground hover:brightness-95">
 						<Download className="size-5" aria-hidden="true" />
 						Export Data
 					</Button>

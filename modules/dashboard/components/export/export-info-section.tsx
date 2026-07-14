@@ -14,11 +14,11 @@ export function ExportInfoSection() {
 						<div key={item.id} className="flex items-start gap-4">
 							<div
 								className={cn(
-									"flex size-16 shrink-0 items-center justify-center rounded-full",
+									"flex size-14 shrink-0 items-center justify-center rounded-full",
 									item.iconClassName,
 								)}
 							>
-								<Icon className="size-7" aria-hidden="true" />
+								<Icon className="size-5" aria-hidden="true" />
 							</div>
 							<div className="min-w-0">
 								<h3 className="text-xl font-semibold tracking-[-0.03em] text-slate-950">

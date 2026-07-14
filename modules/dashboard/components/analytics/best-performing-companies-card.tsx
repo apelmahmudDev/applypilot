@@ -7,7 +7,6 @@ export function BestPerformingCompaniesCard() {
 	return (
 		<AnalyticsSectionCard
 			title="Best Performing Companies"
-			className="lg:col-span-2 xl:col-span-4"
 			contentClassName="space-y-4"
 		>
 			<div className="grid grid-cols-[minmax(0,1fr)_96px_112px] gap-3 border-b border-slate-100 pb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">

@@ -8,6 +8,7 @@ import {
 	Users,
 	type LucideIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -139,7 +140,12 @@ export function RemindersTableSection({
 													<FilePenLine className="size-4" aria-hidden="true" />
 													Edit reminder
 												</DropdownMenuItem>
-												<DropdownMenuItem className="gap-2.5">
+												<DropdownMenuItem
+													className="gap-2.5"
+													onClick={() =>
+														toast.info("Mark completed is currently unavailable.")
+													}
+												>
 													<Check className="size-4" aria-hidden="true" />
 													Mark completed
 												</DropdownMenuItem>

@@ -1,10 +1,12 @@
 import {
 	AlertCircle,
 	Brain,
+	Building2,
 	ExternalLink,
 	FilePlus2,
 	Grid2X2,
 	LoaderCircle,
+	MapPin,
 	PanelRight,
 	Radar,
 	SearchX,
@@ -79,15 +81,29 @@ export function DetectedJobView({
 				/>
 			) : hasDetectedJob ? (
 				<article className="rounded-md border border-slate-100 bg-white p-4 dark:border-none dark:bg-card">
-					<h2 className="text-base font-semibold leading-6 text-slate-950 dark:text-foreground">
+					<h2 className="line-clamp-3 text-base font-semibold leading-6 text-slate-950 dark:text-foreground">
 						{job.title || "Untitled role"}
 					</h2>
-					<p className="mt-1 text-sm font-medium text-slate-800 dark:text-foreground/85">
-						{job.company || "Unknown company"}
-					</p>
-					<p className="mt-3 text-sm font-medium text-slate-800 dark:text-muted-foreground">
-						{job.location || "Location not found"}
-					</p>
+					<div className="mt-2 space-y-1.5">
+						<p className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-foreground/85">
+							<Building2
+								className="size-3.5 shrink-0 text-slate-400 dark:text-muted-foreground"
+								aria-hidden="true"
+							/>
+							<span className="truncate">
+								{job.company || "Unknown company"}
+							</span>
+						</p>
+						<p className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-muted-foreground">
+							<MapPin
+								className="size-3.5 shrink-0 text-slate-400 dark:text-muted-foreground"
+								aria-hidden="true"
+							/>
+							<span className="truncate">
+								{job.location || "Location not found"}
+							</span>
+						</p>
+					</div>
 					{job.url && (
 						<a
 							href={job.url}

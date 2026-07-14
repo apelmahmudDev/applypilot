@@ -185,8 +185,8 @@ export function DashboardSidebar({
 													"group-data-[collapsible=icon]:px-1!",
 													collapsedMenuButtonClass,
 													isActive
-														? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
-														: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+														? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary dark:bg-[#323232] dark:text-foreground dark:hover:bg-[#323232] dark:hover:text-foreground"
+														: "dark-hover-surface text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:text-foreground",
 												)}
 												onClick={() => handleViewChange(item.value)}
 											>
@@ -218,24 +218,24 @@ export function DashboardSidebar({
 			</SidebarContent>
 
 			<SidebarFooter className="px-3 pb-4 pt-4">
-				<div className="rounded-lg bg-slate-50 px-3 py-3 group-data-[collapsible=icon]:hidden">
+				<div className="rounded-lg bg-slate-50 px-3 py-3 dark:border dark:border-border/70 dark:bg-[#2c2c2c] group-data-[collapsible=icon]:hidden">
 					<div className="flex items-start gap-2">
 						<ShieldCheck
-							className="mt-0.5 size-4 shrink-0 text-slate-500"
+							className="mt-0.5 size-4 shrink-0 text-slate-500 dark:text-muted-foreground"
 							aria-hidden="true"
 						/>
 						<div className="min-w-0">
-							<p className="text-sm font-bold text-slate-800">
+							<p className="text-sm font-bold text-slate-800 dark:text-foreground">
 								All your data is stored locally in your browser.
 							</p>
-							<p className="mt-1 text-xs leading-5 text-slate-500">
+							<p className="mt-1 text-xs leading-5 text-slate-500 dark:text-muted-foreground">
 								No account. No tracking. 100% private.
 							</p>
 						</div>
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 rounded-lg bg-slate-100 p-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2">
+				<div className="flex items-center gap-3 rounded-lg bg-slate-100 p-3 dark:border dark:border-border/70 dark:bg-[#2c2c2c] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2">
 					<div
 						className={cn(
 							"flex size-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-xs font-black text-white shadow-[0_10px_24px_color-mix(in_srgb,var(--primary)_28%,transparent)]",
@@ -245,14 +245,14 @@ export function DashboardSidebar({
 						{userProfile.avatarLabel}
 					</div>
 					<div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-						<p className="truncate text-sm font-bold text-slate-800">
+						<p className="truncate text-sm font-bold text-slate-800 dark:text-foreground">
 							{userProfile.name}
 						</p>
-						<p className="truncate text-xs font-semibold text-slate-500">
+						<p className="truncate text-xs font-semibold text-slate-500 dark:text-muted-foreground">
 							{userProfile.role}
 						</p>
 					</div>
-					<p className="shrink-0 text-xs font-semibold text-slate-400 group-data-[collapsible=icon]:hidden">
+					<p className="shrink-0 text-xs font-semibold text-slate-400 dark:text-muted-foreground/80 group-data-[collapsible=icon]:hidden">
 						{userProfile.version}
 					</p>
 				</div>

@@ -27,12 +27,12 @@ export function AnalyticsSectionCard({
 	return (
 		<Card
 			className={cn(
-				"gap-0 rounded-md border-slate-100 bg-white py-0 shadow-none",
+				"gap-0 rounded-md border-slate-100 bg-white py-0 shadow-none dark:border-none dark:bg-card",
 				className,
 			)}
 		>
 			<CardHeader className="px-5 pt-5 pb-4">
-				<CardTitle className="text-lg font-semibold text-slate-900">
+				<CardTitle className="text-lg font-semibold text-slate-900 dark:text-foreground">
 					{title}
 				</CardTitle>
 				{action ? <CardAction>{action}</CardAction> : null}

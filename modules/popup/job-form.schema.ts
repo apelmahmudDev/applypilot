@@ -1,5 +1,6 @@
 import * as z from "zod";
 
+import { reminderTypeOptions } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { jobStatuses } from "@/modules/popup/types";
 
 export const jobFormSchema = z.object({
@@ -9,8 +10,12 @@ export const jobFormSchema = z.object({
 	url: z.string().trim().url("Enter a valid job URL."),
 	platform: z.string().trim().min(1, "Platform is required."),
 	salary: z.string(),
+	currency: z.string(),
+	experienceLevel: z.string(),
 	status: z.enum(jobStatuses),
+	savedDate: z.string().trim().min(1, "Saved date is required."),
 	deadline: z.string(),
+	reminderType: z.enum(reminderTypeOptions),
 	followUpDate: z.string(),
 	followUpTime: z.string(),
 	reminderNote: z.string(),

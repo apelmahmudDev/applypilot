@@ -19,7 +19,7 @@ export function SettingsSectionCard({
 	const Icon = config.icon;
 
 	return (
-		<Card className="gap-0 rounded-md border-slate-100 bg-white py-0 shadow-none">
+		<Card className="gap-0 rounded-md border-slate-100 bg-white py-0 shadow-none dark:border-none dark:bg-card">
 			<CardContent className="px-6 py-6">
 				<div className="flex flex-col gap-6">
 					<div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -33,11 +33,11 @@ export function SettingsSectionCard({
 								>
 									<Icon className="size-5 shrink-0" aria-hidden="true" />
 								</div>
-								<h2 className="text-xl leading-tight font-bold tracking-[-0.03em] text-slate-950">
+								<h2 className="text-xl leading-tight font-bold tracking-[-0.03em] text-slate-950 dark:text-foreground">
 									{config.title}
 								</h2>
 							</div>
-							<p className="mt-2 max-w-3xl pl-13 text-sm leading-6 text-slate-500">
+							<p className="mt-2 max-w-3xl pl-13 text-sm leading-6 text-slate-500 dark:text-muted-foreground">
 								{config.description}
 							</p>
 						</div>

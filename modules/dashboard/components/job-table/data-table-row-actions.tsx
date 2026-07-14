@@ -18,17 +18,31 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { DashboardJob } from "@/modules/dashboard/types";
 
-export function DataTableRowActions() {
+type DataTableRowActionsProps = {
+	job: DashboardJob;
+	onViewDetails?: (job: DashboardJob) => void;
+	onSetReminder?: (job: DashboardJob) => void;
+	onEditJob?: (job: DashboardJob) => void;
+};
+
+export function DataTableRowActions({
+	job,
+	onViewDetails,
+	onSetReminder,
+	onEditJob,
+}: DataTableRowActionsProps) {
 	return (
 		<div className="flex min-w-[76px] items-center justify-end gap-1">
 			<Button
 				type="button"
 				variant="ghost"
 				size="icon-sm"
-				className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+				className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 				aria-label="View job details"
 				title="View details"
+				onClick={() => onViewDetails?.(job)}
 			>
 				<Eye className="size-4" aria-hidden="true" />
 			</Button>
@@ -38,7 +52,7 @@ export function DataTableRowActions() {
 						type="button"
 						variant="ghost"
 						size="icon-sm"
-						className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+						className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
 						aria-label="More job actions"
 						title="More actions"
 					>
@@ -46,7 +60,10 @@ export function DataTableRowActions() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5">
-					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+					<DropdownMenuItem
+						className="gap-2.5 rounded-lg py-2 font-medium"
+						onClick={() => onEditJob?.(job)}
+					>
 						<FilePenLine className="size-4" aria-hidden="true" />
 						Edit job
 					</DropdownMenuItem>
@@ -54,7 +71,10 @@ export function DataTableRowActions() {
 						<Link2 className="size-4" aria-hidden="true" />
 						Open original
 					</DropdownMenuItem>
-					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+					<DropdownMenuItem
+						className="gap-2.5 rounded-lg py-2 font-medium"
+						onClick={() => onSetReminder?.(job)}
+					>
 						<Bell className="size-4" aria-hidden="true" />
 						Set reminder
 					</DropdownMenuItem>

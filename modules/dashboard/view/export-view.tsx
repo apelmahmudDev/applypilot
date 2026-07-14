@@ -9,10 +9,10 @@ export function getExportDashboardHeaderContent(): DashboardHeaderContent {
 		markup: (
 			<section className="flex w-full flex-col justify-center">
 				<div className="min-w-0">
-					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 						Export
 					</h1>
-					<p className="mt-2 text-sm text-slate-500">
+					<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 						Download a backup of your data. You can import it anytime to
 						restore.
 					</p>
@@ -27,10 +27,10 @@ export function ExportView() {
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 				<div className="min-w-0">
-					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+					<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
 						Export
 					</h1>
-					<p className="mt-2 text-sm text-slate-500">
+					<p className="mt-2 text-sm text-slate-500 dark:text-muted-foreground">
 						Download a backup of your data. You can import it anytime to
 						restore.
 					</p>

@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Toaster } from "@/components/ui/sonner";
-import { useSystemTheme } from "@/hooks/use-system-theme";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 import {
 	createJobInStorage,
 	deleteJobFromStorage,
@@ -43,21 +43,24 @@ import { ReminderDetailsView } from "@/modules/side-panel/views/reminder-details
 import { SettingsView } from "@/modules/side-panel/views/settings-view";
 
 export function SidePanel() {
-	const { isDarkMode } = useSystemTheme();
+	const { isDarkMode } = useThemePreference();
 	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
 	const [panelView, setPanelView] = useState<SidePanelView>("home");
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [selectedReminderId, setSelectedReminderId] = useState<string | null>(
 		null,
 	);
-	const [detailsBackView, setDetailsBackView] = useState<DetailsBackView>("home");
+	const [detailsBackView, setDetailsBackView] =
+		useState<DetailsBackView>("home");
 	const [applicationSearch, setApplicationSearch] = useState("");
 	const [applicationFilter, setApplicationFilter] =
 		useState<ApplicationFilter>("All");
 	const [applicationSort, setApplicationSort] = useState("latest");
 	const [reminderFilter, setReminderFilter] = useState<ReminderFilter>("Today");
 	const [isSaving, setIsSaving] = useState(false);
-	const [jobPendingDelete, setJobPendingDelete] = useState<StoredJob | null>(null);
+	const [jobPendingDelete, setJobPendingDelete] = useState<StoredJob | null>(
+		null,
+	);
 	const [isDeletingJob, setIsDeletingJob] = useState(false);
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
@@ -157,7 +160,9 @@ export function SidePanel() {
 	const completedReminders = useMemo(
 		() =>
 			storedJobs
-				.filter((job) => job.reminderEnabled && job.reminderDone && job.followUpDate)
+				.filter(
+					(job) => job.reminderEnabled && job.reminderDone && job.followUpDate,
+				)
 				.map((job) => {
 					const baseReminder = mapStoredJobToReminder({
 						...job,
@@ -199,7 +204,9 @@ export function SidePanel() {
 	);
 
 	const savedCount = storedJobs.length;
-	const appliedCount = storedJobs.filter((job) => job.status === "Applied").length;
+	const appliedCount = storedJobs.filter(
+		(job) => job.status === "Applied",
+	).length;
 	const interviewCount = storedJobs.filter(
 		(job) => job.status === "Interviewing",
 	).length;
@@ -271,7 +278,9 @@ export function SidePanel() {
 			}
 
 			setStoredJobs((currentJobs) =>
-				currentJobs.filter((currentJob) => currentJob.id !== jobPendingDelete.id),
+				currentJobs.filter(
+					(currentJob) => currentJob.id !== jobPendingDelete.id,
+				),
 			);
 			setSelectedJobId(null);
 			setPanelView(detailsBackView);
@@ -358,9 +367,7 @@ export function SidePanel() {
 
 	return (
 		<>
-			<main
-				className="h-screen min-h-[640px] w-full overflow-hidden bg-background p-2 text-foreground transition-colors"
-			>
+			<main className="h-screen min-h-[640px] mx-auto max-w-3xl overflow-hidden bg-white dark:bg-background text-foreground transition-colors">
 				<ConfirmDialog
 					open={Boolean(jobPendingDelete)}
 					title="Delete job?"
@@ -383,9 +390,7 @@ export function SidePanel() {
 					}}
 					onConfirm={() => void confirmDeleteJob()}
 				/>
-				<div
-					className="flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors"
-				>
+				<div className="flex h-full flex-col overflow-hidden transition-colors">
 					{activeForm ? (
 						<JobFormPanel
 							mode={activeForm.mode}
@@ -452,7 +457,10 @@ export function SidePanel() {
 							onMarkDone={markReminderDone}
 						/>
 					) : panelView === "settings" ? (
-						<SettingsView isDarkMode={isDarkMode} onBack={() => setPanelView("home")} />
+						<SettingsView
+							isDarkMode={isDarkMode}
+							onBack={() => setPanelView("home")}
+						/>
 					) : (
 						<HomeView
 							isDarkMode={isDarkMode}
@@ -477,7 +485,9 @@ export function SidePanel() {
 							onAnalyzeDetectedJob={() => {
 								void analyzeCurrentJob()
 									.then(() => {
-										toast.success("Job details updated from the page analysis.");
+										toast.success(
+											"Job details updated from the page analysis.",
+										);
 									})
 									.catch((analysisError) => {
 										const message =

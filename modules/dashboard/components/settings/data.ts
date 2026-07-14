@@ -20,20 +20,22 @@ export const settingsSections: Record<
 	},
 	preferences: {
 		title: "Preferences",
-		description: "Adjust your default job-tracking behavior and display preferences.",
+		description:
+			"Adjust your default job-tracking behavior and display preferences.",
 		icon: SlidersHorizontal,
 		iconClassName: "text-primary",
 	},
 	appearance: {
 		title: "Appearance",
-		description: "Choose how ApplyPilot looks while keeping the interface lightweight and readable.",
+		description:
+			"Choose how Applypilot looks while keeping the interface lightweight and readable.",
 		icon: Palette,
 		iconClassName: "text-emerald-600",
 	},
 	about: {
 		title: "About",
 		description:
-			"ApplyPilot is a browser extension to help you track job applications locally. No accounts. No cloud. No tracking.",
+			"Applypilot is a browser extension to help you track job applications locally. No accounts. No cloud. No tracking.",
 		icon: CircleHelp,
 		iconClassName: "text-primary",
 	},

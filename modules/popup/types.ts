@@ -1,10 +1,11 @@
+import type { ReminderTypeOption } from "@/modules/dashboard/components/reminders/reminder-form.types";
+
 export const jobStatuses = [
-	"Interested",
+	"Saved",
 	"Applied",
 	"Interviewing",
 	"Rejected",
 	"Offer",
-	"Saved",
 ] as const;
 
 export type JobStatus = (typeof jobStatuses)[number];
@@ -16,13 +17,17 @@ export type JobForm = {
 	url: string;
 	platform: string;
 	salary: string;
+	currency: string;
 	logoUrl?: string;
 	descriptionText?: string;
 	descriptionHtml?: string;
 	employmentType?: string;
 	workplaceType?: string;
+	experienceLevel?: string;
 	status: JobStatus;
+	savedDate: string;
 	deadline: string;
+	reminderType: ReminderTypeOption;
 	followUpDate: string;
 	followUpTime: string;
 	reminderNote: string;

@@ -34,15 +34,15 @@ export function ConfirmDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className="max-w-[380px] rounded-2xl border-border/80 px-5 py-4 shadow-[0_20px_45px_rgba(15,23,42,0.14)]"
-				overlayClassName="bg-white/6 backdrop-blur-[0.8px]"
+				className="max-w-[380px] rounded-2xl border-border/80 bg-white px-5 py-4 shadow-[0_20px_45px_rgba(15,23,42,0.14)] dark:border-none dark:bg-card"
+				overlayClassName="bg-white/6 backdrop-blur-[0.8px] dark:bg-black/28 dark:backdrop-blur-[0.8px]"
 				showCloseButton={false}
 			>
 				<DialogHeader className="gap-2 text-left">
 					<DialogTitle className="text-lg font-normal tracking-tight text-foreground">
 						{title}
 					</DialogTitle>
-					<DialogDescription className="text-[15px] text-foreground">
+					<DialogDescription className="text-[15px] text-slate-600 dark:text-muted-foreground">
 						{description}
 					</DialogDescription>
 				</DialogHeader>

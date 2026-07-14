@@ -27,10 +27,9 @@ export function TopSourcesChart() {
 	return (
 		<AnalyticsSectionCard
 			title="Top Sources"
-			className="lg:col-span-1 xl:col-span-4"
 			action={
 				<Select defaultValue="applications">
-					<SelectTrigger className="h-9 w-38 bg-white text-sm font-medium shadow-none">
+					<SelectTrigger className="h-9 w-38 bg-white text-sm font-medium shadow-none dark:border-border dark:bg-card">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

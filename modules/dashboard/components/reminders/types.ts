@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+import type { ReminderFormValues } from "./reminder-form.types";
+
 export type ReminderStat = {
 	label: string;
 	value: string;
@@ -10,6 +12,7 @@ export type ReminderStat = {
 
 export type ReminderRow = {
 	id: string;
+	jobId: string;
 	title: string;
 	company: string;
 	companyMark: string;
@@ -18,6 +21,7 @@ export type ReminderRow = {
 	note: string;
 	dueLabel: string;
 	timeLabel: string;
+	reminderDetails: ReminderFormValues;
 };
 
 export type ReminderSection = {

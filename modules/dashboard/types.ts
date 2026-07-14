@@ -5,7 +5,7 @@ export type DashboardJobStatus =
 	| "Rejected"
 	| "Offer";
 
-export type DashboardJobType = "Full-time" | "Contract";
+export type DashboardJobType = "Full-time" | "Part-time" | "Contract";
 
 export type DashboardJobSourceName =
 	| "LinkedIn"
@@ -19,6 +19,14 @@ export type DashboardJobSource = {
 	faviconUrl: string | null;
 };
 
+export type DashboardReminder = {
+	type: "Follow up" | "Interview prep" | "Application update" | "Networking";
+	date: string;
+	time: string;
+	isActive: boolean;
+	note: string;
+};
+
 export type DashboardJob = {
 	id: string;
 	title: string;
@@ -28,8 +36,16 @@ export type DashboardJob = {
 	jobType: DashboardJobType;
 	source: DashboardJobSource;
 	appliedDate: string;
+	savedDate: string;
 	reminder: string;
+	reminderDetails?: DashboardReminder | null;
 	status: DashboardJobStatus;
+	salary?: string;
+	notes: string;
+	description: string;
+	experienceLevel?: string;
+	currency?: string;
+	tags?: string[];
 	brand:
 		| "figma"
 		| "vercel"

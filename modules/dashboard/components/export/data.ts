@@ -21,21 +21,22 @@ export const exportItems: ExportItem[] = [
 		title: "Jobs & Applications",
 		description: "All your job entries, status, dates, notes and details.",
 		icon: BriefcaseBusiness,
-		iconClassName: "bg-violet-50 text-violet-600",
+		iconClassName: "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
 	},
 	{
 		id: "saved",
 		title: "Saved Jobs",
 		description: "All jobs you have saved for later.",
 		icon: Bookmark,
-		iconClassName: "bg-emerald-50 text-emerald-600",
+		iconClassName:
+			"bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
 	},
 	{
 		id: "reminders",
 		title: "Reminders",
 		description: "All your reminders and scheduled notifications.",
 		icon: AlarmClock,
-		iconClassName: "bg-amber-50 text-amber-600",
+		iconClassName: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
 	},
 	// {
 	// 	id: "notes",
@@ -49,7 +50,7 @@ export const exportItems: ExportItem[] = [
 		title: "Analytics Data",
 		description: "Your statistics and performance data.",
 		icon: ChartColumnBig,
-		iconClassName: "bg-rose-50 text-rose-500",
+		iconClassName: "bg-rose-50 text-rose-500 dark:bg-rose-500/18 dark:text-rose-200",
 	},
 ];
 
@@ -83,14 +84,15 @@ export const exportInfoItems: ExportInfoItem[] = [
 		description:
 			"Your data is exported directly from your browser. No data is sent anywhere.",
 		icon: Download,
-		iconClassName: "bg-violet-50 text-violet-600",
+		iconClassName: "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
 	},
 	{
 		id: "restore",
 		title: "Easy to Restore",
 		description: "You can import this file anytime to restore your data.",
 		icon: RefreshCw,
-		iconClassName: "bg-emerald-50 text-emerald-600",
+		iconClassName:
+			"bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
 	},
 	{
 		id: "safe",
@@ -98,7 +100,7 @@ export const exportInfoItems: ExportInfoItem[] = [
 		description:
 			"Store your export file in a safe place. Losing it means losing your data.",
 		icon: TriangleAlert,
-		iconClassName: "bg-amber-50 text-amber-600",
+		iconClassName: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
 	},
 ];
 

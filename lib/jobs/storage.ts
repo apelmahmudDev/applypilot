@@ -1,3 +1,7 @@
+import {
+	reminderTypeOptions,
+	type ReminderTypeOption,
+} from "@/modules/dashboard/components/reminders/reminder-form.types";
 import type { JobForm } from "@/modules/popup/types";
 
 const JOBS_STORAGE_KEY = "applypilot.jobs";
@@ -158,13 +162,17 @@ function normalizeJob(job: JobForm): JobForm {
 		url: toText(job.url).trim(),
 		platform: toText(job.platform).trim(),
 		salary: toText(job.salary).trim(),
+		currency: toText(job.currency).trim(),
 		logoUrl: toText(job.logoUrl).trim(),
 		descriptionText: toText(job.descriptionText).trim(),
 		descriptionHtml: toText(job.descriptionHtml).trim(),
 		employmentType: toText(job.employmentType).trim(),
 		workplaceType: toText(job.workplaceType).trim(),
+		experienceLevel: toText(job.experienceLevel).trim(),
 		status: job.status,
+		savedDate: toText(job.savedDate).trim(),
 		deadline: toText(job.deadline).trim(),
+		reminderType: normalizeReminderType(job.reminderType),
 		followUpDate: toText(job.followUpDate).trim(),
 		followUpTime: toText(job.followUpTime).trim(),
 		reminderNote: toText(job.reminderNote).trim(),
@@ -234,6 +242,7 @@ function toStoredJob(value: unknown): StoredJob | null {
 		url: job.url,
 		platform: job.platform,
 		salary: typeof job.salary === "string" ? job.salary : "",
+		currency: typeof job.currency === "string" ? job.currency : "",
 		logoUrl: typeof job.logoUrl === "string" ? job.logoUrl : "",
 		descriptionText:
 			typeof job.descriptionText === "string" ? job.descriptionText : "",
@@ -243,8 +252,12 @@ function toStoredJob(value: unknown): StoredJob | null {
 			typeof job.employmentType === "string" ? job.employmentType : "",
 		workplaceType:
 			typeof job.workplaceType === "string" ? job.workplaceType : "",
+		experienceLevel:
+			typeof job.experienceLevel === "string" ? job.experienceLevel : "",
 		status: job.status as StoredJob["status"],
+		savedDate: typeof job.savedDate === "string" ? job.savedDate : "",
 		deadline: typeof job.deadline === "string" ? job.deadline : "",
+		reminderType: normalizeReminderType(job.reminderType),
 		followUpDate: typeof job.followUpDate === "string" ? job.followUpDate : "",
 		followUpTime: typeof job.followUpTime === "string" ? job.followUpTime : "",
 		reminderNote: typeof job.reminderNote === "string" ? job.reminderNote : "",
@@ -256,4 +269,11 @@ function toStoredJob(value: unknown): StoredJob | null {
 		createdAt: job.createdAt,
 		updatedAt: job.updatedAt,
 	};
+}
+
+function normalizeReminderType(value: unknown): ReminderTypeOption {
+	return typeof value === "string" &&
+		(reminderTypeOptions as readonly string[]).includes(value)
+		? (value as ReminderTypeOption)
+		: "Follow up";
 }

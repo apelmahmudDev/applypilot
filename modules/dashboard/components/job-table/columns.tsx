@@ -14,23 +14,32 @@ import type {
 	DashboardStatusFilter,
 } from "@/modules/dashboard/types";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { JobBrandMark } from "./job-brand-mark";
 
 const statusStyles: Record<DashboardJobStatus, string> = {
-	Applied: "bg-emerald-50 text-emerald-600",
-	Interview: "bg-violet-50 text-violet-600",
-	Saved: "bg-blue-50 text-blue-600",
-	Rejected: "bg-red-50 text-red-600",
-	Offer: "bg-amber-50 text-amber-600",
+	Applied:
+		"bg-emerald-100 text-emerald-700 dark:bg-emerald-500/16 dark:text-emerald-200",
+	Interview:
+		"bg-violet-100 text-violet-700 dark:bg-violet-500/16 dark:text-violet-200",
+	Saved: "bg-blue-100 text-blue-700 dark:bg-blue-500/16 dark:text-blue-200",
+	Rejected: "bg-red-100 text-red-700 dark:bg-red-500/16 dark:text-red-200",
+	Offer: "bg-amber-100 text-amber-700 dark:bg-amber-500/16 dark:text-amber-200",
 };
 
 type DashboardColumnsOptions = {
 	showStatus?: boolean;
 	statusFilter?: DashboardStatusFilter;
+	onViewDetails?: (job: DashboardJob) => void;
+	onSetReminder?: (job: DashboardJob) => void;
+	onEditJob?: (job: DashboardJob) => void;
 };
 
 export function getDashboardColumns({
 	showStatus = true,
 	statusFilter = "all",
+	onViewDetails,
+	onSetReminder,
+	onEditJob,
 }: DashboardColumnsOptions = {}): ColumnDef<DashboardJob>[] {
 	const dateColumnLabel = getDateColumnLabel(statusFilter);
 
@@ -42,10 +51,10 @@ export function getDashboardColumns({
 				const job = row.original;
 				return (
 					<div className="min-w-[220px]">
-						<p className="truncate text-sm font-bold text-slate-950">
+						<p className="truncate text-sm font-bold text-slate-950 dark:text-foreground">
 							{job.title}
 						</p>
-						<p className="mt-1 truncate text-xs font-medium text-slate-500">
+						<p className="mt-1 truncate text-xs font-medium text-slate-500 dark:text-muted-foreground">
 							{job.jobType}
 						</p>
 					</div>
@@ -59,8 +68,8 @@ export function getDashboardColumns({
 				const job = row.original;
 				return (
 					<div className="flex min-w-[150px] items-center gap-3">
-						<CompanyMark brand={job.brand} />
-						<p className="truncate text-sm font-semibold text-slate-900">
+						<JobBrandMark brand={job.brand} />
+						<p className="truncate text-sm font-semibold text-slate-900 dark:text-foreground">
 							{job.company}
 						</p>
 					</div>
@@ -74,8 +83,10 @@ export function getDashboardColumns({
 				const job = row.original;
 				return (
 					<div className="min-w-[150px]">
-						<p className="text-sm font-semibold text-slate-900">{job.location}</p>
-						<p className="mt-1 text-xs font-medium text-slate-500">
+						<p className="text-sm font-semibold text-slate-900 dark:text-foreground">
+							{job.location}
+						</p>
+						<p className="mt-1 text-xs font-medium text-slate-500 dark:text-muted-foreground">
 							{job.workMode}
 						</p>
 					</div>
@@ -118,7 +129,7 @@ export function getDashboardColumns({
 			accessorKey: "appliedDate",
 			header: dateColumnLabel,
 			cell: ({ row }) => (
-				<p className="min-w-[110px] text-sm font-medium text-slate-700">
+				<p className="min-w-[110px] text-sm font-medium text-slate-700 dark:text-foreground/85">
 					{row.original.appliedDate}
 				</p>
 			),
@@ -129,9 +140,11 @@ export function getDashboardColumns({
 			cell: ({ row }) => (
 				<div className="min-w-[90px]">
 					{row.original.reminder === "-" ? (
-						<span className="text-sm font-medium text-slate-400">-</span>
+						<span className="text-sm font-medium text-slate-400 dark:text-muted-foreground/75">
+							-
+						</span>
 					) : (
-						<span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-500">
+						<span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-amber-300">
 							<Bell className="size-3.5" />
 							{row.original.reminder}
 						</span>
@@ -144,7 +157,14 @@ export function getDashboardColumns({
 			header: () => (
 				<div className="flex min-w-[76px] justify-end text-right">Actions</div>
 			),
-			cell: () => <DataTableRowActions />,
+			cell: ({ row }) => (
+				<DataTableRowActions
+					job={row.original}
+					onViewDetails={onViewDetails}
+					onSetReminder={onSetReminder}
+					onEditJob={onEditJob}
+				/>
+			),
 		},
 	);
 
@@ -159,63 +179,6 @@ function getDateColumnLabel(statusFilter: DashboardStatusFilter) {
 	if (statusFilter === "interview") return "Interview Date";
 
 	return "Date Added";
-}
-
-function CompanyMark({ brand }: { brand: DashboardJob["brand"] }) {
-	const content = {
-		figma: {
-			label: "F",
-			className:
-				"bg-gradient-to-br from-orange-500 via-pink-500 to-blue-500 text-white",
-		},
-		vercel: {
-			label: "V",
-			className: "bg-black text-white",
-		},
-		airbnb: {
-			label: "A",
-			className: "bg-rose-500 text-white",
-		},
-		hubspot: {
-			label: "H",
-			className: "bg-orange-500 text-white",
-		},
-		notion: {
-			label: "N",
-			className: "bg-white text-black shadow-sm ring-1 ring-slate-300",
-		},
-		spotify: {
-			label: "S",
-			className: "bg-green-500 text-white",
-		},
-		linear: {
-			label: "L",
-			className: "bg-slate-950 text-white",
-		},
-		calendly: {
-			label: "C",
-			className: "bg-blue-600 text-white",
-		},
-		plaid: {
-			label: "P",
-			className: "bg-black text-white",
-		},
-		canva: {
-			label: "C",
-			className: "bg-cyan-500 text-white",
-		},
-	}[brand];
-
-	return (
-		<div
-			className={cn(
-				"flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-black",
-				content.className,
-			)}
-		>
-			{content.label}
-		</div>
-	);
 }
 
 function SourceCell({ job }: { job: DashboardJob }) {
@@ -249,8 +212,8 @@ function SourceCell({ job }: { job: DashboardJob }) {
 						className={cn(
 							"flex size-8 items-center justify-center rounded-md transition-colors",
 							isDisabled
-								? "cursor-not-allowed text-slate-400"
-								: "hover:bg-slate-100 hover:text-slate-950",
+								? "cursor-not-allowed text-slate-400 dark:text-muted-foreground/60"
+								: "hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground",
 						)}
 					>
 						{job.source.faviconUrl ? (
@@ -260,11 +223,11 @@ function SourceCell({ job }: { job: DashboardJob }) {
 								className="size-4 rounded-sm object-cover"
 							/>
 						) : job.source.name === "Manual" ? (
-							<span className="inline-flex size-4 items-center justify-center rounded-[4px] bg-slate-100 text-[10px] font-black uppercase text-slate-500">
+							<span className="inline-flex size-4 items-center justify-center rounded-[4px] bg-slate-100 text-[10px] font-black uppercase text-slate-500 dark:bg-muted dark:text-muted-foreground">
 								M
 							</span>
 						) : (
-							<Globe className="size-4 text-slate-500" />
+							<Globe className="size-4 text-slate-500 dark:text-muted-foreground" />
 						)}
 					</button>
 				</TooltipTrigger>

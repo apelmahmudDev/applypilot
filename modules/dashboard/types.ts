@@ -5,7 +5,7 @@ export type DashboardJobStatus =
 	| "Rejected"
 	| "Offer";
 
-export type DashboardJobType = "Full-time" | "Contract";
+export type DashboardJobType = "Full-time" | "Part-time" | "Contract";
 
 export type DashboardJobSourceName =
 	| "LinkedIn"
@@ -43,6 +43,9 @@ export type DashboardJob = {
 	salary?: string;
 	notes: string;
 	description: string;
+	experienceLevel?: string;
+	currency?: string;
+	tags?: string[];
 	brand:
 		| "figma"
 		| "vercel"

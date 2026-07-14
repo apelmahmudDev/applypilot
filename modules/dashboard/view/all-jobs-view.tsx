@@ -23,6 +23,7 @@ import {
 	type StatsCardItem,
 } from "@/modules/dashboard/components/stats-card-grid";
 import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
+import { JobFormDrawer } from "@/modules/dashboard/components/job-form/job-form-drawer";
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
 import {
 	formatReminderSummary,
@@ -83,12 +84,14 @@ const allJobsStats = [
 export function AllJobsView() {
 	const [jobs, setJobs] = useState(dashboardJobs);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+	const [editingJobId, setEditingJobId] = useState<string | null>(null);
+	const [isCreatingJob, setIsCreatingJob] = useState(false);
 	const [reminderDialogJobId, setReminderDialogJobId] = useState<string | null>(
 		null,
 	);
 
-	const selectedJob =
-		jobs.find((job) => job.id === selectedJobId) ?? null;
+	const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? null;
+	const editingJob = jobs.find((job) => job.id === editingJobId) ?? null;
 	const reminderDialogJob =
 		jobs.find((job) => job.id === reminderDialogJobId) ?? null;
 
@@ -101,6 +104,7 @@ export function AllJobsView() {
 						statusFilter,
 						onViewDetails: (job) => setSelectedJobId(job.id),
 						onSetReminder: (job) => setReminderDialogJobId(job.id),
+						onEditJob: (job) => setEditingJobId(job.id),
 					})
 				}
 				data={jobs}
@@ -148,9 +152,12 @@ export function AllJobsView() {
 								</SelectContent>
 							</Select>
 
-							<Button className="h-11 px-4">
+							<Button
+								className="h-11 px-4"
+								onClick={() => setIsCreatingJob(true)}
+							>
 								<Plus className="size-4" aria-hidden="true" />
-								Save New Job
+								Add Job
 							</Button>
 						</div>
 					</section>
@@ -191,6 +198,37 @@ export function AllJobsView() {
 										}
 									: job,
 							),
+						);
+					}}
+				/>
+			) : null}
+
+			{isCreatingJob ? (
+				<JobFormDrawer
+					key="create-job"
+					mode="create"
+					open={isCreatingJob}
+					onOpenChange={setIsCreatingJob}
+					onSubmit={(job) => {
+						setJobs((currentJobs) => [job, ...currentJobs]);
+					}}
+				/>
+			) : null}
+
+			{editingJob ? (
+				<JobFormDrawer
+					key={editingJob.id}
+					job={editingJob}
+					mode="edit"
+					open={editingJob !== null}
+					onOpenChange={(open) => {
+						if (!open) {
+							setEditingJobId(null);
+						}
+					}}
+					onSubmit={(nextJob) => {
+						setJobs((currentJobs) =>
+							currentJobs.map((job) => (job.id === nextJob.id ? nextJob : job)),
 						);
 					}}
 				/>

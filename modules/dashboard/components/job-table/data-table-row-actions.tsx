@@ -24,12 +24,14 @@ type DataTableRowActionsProps = {
 	job: DashboardJob;
 	onViewDetails?: (job: DashboardJob) => void;
 	onSetReminder?: (job: DashboardJob) => void;
+	onEditJob?: (job: DashboardJob) => void;
 };
 
 export function DataTableRowActions({
 	job,
 	onViewDetails,
 	onSetReminder,
+	onEditJob,
 }: DataTableRowActionsProps) {
 	return (
 		<div className="flex min-w-[76px] items-center justify-end gap-1">
@@ -58,7 +60,10 @@ export function DataTableRowActions({
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5">
-					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+					<DropdownMenuItem
+						className="gap-2.5 rounded-lg py-2 font-medium"
+						onClick={() => onEditJob?.(job)}
+					>
 						<FilePenLine className="size-4" aria-hidden="true" />
 						Edit job
 					</DropdownMenuItem>

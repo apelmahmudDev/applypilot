@@ -29,6 +29,7 @@ type DashboardColumnsOptions = {
 	statusFilter?: DashboardStatusFilter;
 	onViewDetails?: (job: DashboardJob) => void;
 	onSetReminder?: (job: DashboardJob) => void;
+	onEditJob?: (job: DashboardJob) => void;
 };
 
 export function getDashboardColumns({
@@ -36,6 +37,7 @@ export function getDashboardColumns({
 	statusFilter = "all",
 	onViewDetails,
 	onSetReminder,
+	onEditJob,
 }: DashboardColumnsOptions = {}): ColumnDef<DashboardJob>[] {
 	const dateColumnLabel = getDateColumnLabel(statusFilter);
 
@@ -154,6 +156,7 @@ export function getDashboardColumns({
 					job={row.original}
 					onViewDetails={onViewDetails}
 					onSetReminder={onSetReminder}
+					onEditJob={onEditJob}
 				/>
 			),
 		},

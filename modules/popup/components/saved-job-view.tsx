@@ -30,23 +30,23 @@ export function SavedJobView({ job, saveAction = "created" }: SavedJobViewProps)
 						type="button"
 						variant="outline"
 						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:shadow-none dark:hover:bg-[#323232]"
-						onClick={openSidePanel}
-					>
-						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-[#262222] dark:text-slate-100">
-							<PanelRight className="size-5" aria-hidden="true" />
-						</span>
-						Open Side Panel
-					</Button>
-					<Button
-						type="button"
-						variant="outline"
-						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:shadow-none dark:hover:bg-[#323232]"
 						onClick={openDashboard}
 					>
 						<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600 dark:bg-blue-500/16 dark:text-blue-200">
 							<Grid2X2 className="size-5" aria-hidden="true" />
 						</span>
 						Open Dashboard
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:shadow-none dark:hover:bg-[#323232]"
+						onClick={openSidePanel}
+					>
+						<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-[#262222] dark:text-slate-100">
+							<PanelRight className="size-5" aria-hidden="true" />
+						</span>
+						Open Side Panel
 					</Button>
 				</div>
 			</div>

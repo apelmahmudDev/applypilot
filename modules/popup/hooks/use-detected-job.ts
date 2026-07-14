@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 import { analyzeJobUrl, isJobAnalysisAvailable } from "@/lib/job-analysis/service";
 import { useJobDetector } from "@/lib/job-detection/use-job-detector";
@@ -11,8 +12,12 @@ const emptyJob: JobForm = {
 	url: "",
 	platform: "Other",
 	salary: "",
-	status: "Interested",
+	currency: "",
+	experienceLevel: "Mid-level",
+	status: "Saved",
+	savedDate: format(new Date(), "yyyy-MM-dd"),
 	deadline: "",
+	reminderType: "Follow up",
 	followUpDate: "",
 	followUpTime: "",
 	reminderNote: "",
@@ -44,8 +49,11 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 			descriptionHtml: detector.job.descriptionHtml ?? "",
 			employmentType: detector.job.employmentType ?? "",
 			workplaceType: detector.job.workplaceType ?? "",
+			experienceLevel: fallbackJob.experienceLevel,
 			status: fallbackJob.status,
+			savedDate: fallbackJob.savedDate,
 			deadline: fallbackJob.deadline,
+			reminderType: fallbackJob.reminderType,
 			followUpDate: fallbackJob.followUpDate,
 			followUpTime: fallbackJob.followUpTime,
 			reminderNote: fallbackJob.reminderNote,
@@ -81,6 +89,9 @@ export function useDetectedJob(fallbackJob: JobForm = emptyJob) {
 					descriptionText: analyzedJob.descriptionText || job.descriptionText,
 					employmentType: analyzedJob.employmentType || job.employmentType,
 					workplaceType: analyzedJob.workplaceType || job.workplaceType,
+					experienceLevel: job.experienceLevel,
+					savedDate: job.savedDate,
+					reminderType: job.reminderType,
 					notes: analyzedJob.descriptionText || job.notes,
 				};
 				setJob(nextJob);

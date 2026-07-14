@@ -1,8 +1,16 @@
+import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { ArrowLeft } from "lucide-react";
+import { format } from "date-fns";
+import {
+	ArrowLeft,
+	Bell,
+	CalendarDays,
+	ChevronDown,
+	type LucideIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -11,11 +19,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroupTextarea,
-} from "@/components/ui/input-group";
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -23,8 +30,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	currencyOptions,
+	experienceLevelOptions,
+	workTypeOptions,
+} from "@/modules/dashboard/components/job-form/job-form.utils";
+import { reminderTypeOptions } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { jobFormSchema } from "@/modules/popup/job-form.schema";
 import { jobStatuses, type JobForm } from "@/modules/popup/types";
+import { cn } from "@/lib/utils";
 
 type EditJobViewProps = {
 	job: JobForm;
@@ -33,13 +49,48 @@ type EditJobViewProps = {
 };
 
 const fieldClassName = "gap-1.5";
-const fieldLabelClassName = "text-xs font-bold text-slate-700 dark:text-muted-foreground";
+const fieldLabelClassName =
+	"text-xs font-bold text-slate-700 dark:text-muted-foreground";
 const inputClassName =
-	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground";
+	"h-9 rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground";
+const sourceOptions = [
+	"LinkedIn",
+	"Company Site",
+	"Manual",
+	"Indeed",
+	"Other",
+] as const;
+const jobTypeOptions = [
+	"Full-time",
+	"Part-time",
+	"Contract",
+	"Internship",
+] as const;
+const timeOptions = Array.from({ length: 48 }, (_, index) => {
+	const hours = Math.floor(index / 2)
+		.toString()
+		.padStart(2, "0");
+	const minutes = index % 2 === 0 ? "00" : "30";
+
+	return `${hours}:${minutes}`;
+});
 
 export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
+	const [savedDateOpen, setSavedDateOpen] = useState(false);
+	const [deadlineOpen, setDeadlineOpen] = useState(false);
+	const [followUpDateOpen, setFollowUpDateOpen] = useState(false);
+
 	const form = useForm({
-		defaultValues: job,
+		defaultValues: {
+			...job,
+			platform: job.platform || "LinkedIn",
+			workplaceType: job.workplaceType || "Remote",
+			employmentType: job.employmentType || "Full-time",
+			experienceLevel: job.experienceLevel || "Mid-level",
+			currency: job.currency || "",
+			savedDate: job.savedDate || format(new Date(), "yyyy-MM-dd"),
+			reminderType: job.reminderType || "Follow up",
+		},
 		validators: {
 			onSubmit: jobFormSchema,
 		},
@@ -49,24 +100,7 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 	});
 
 	return (
-		<section className="flex min-h-0 flex-1 flex-col px-5 py-4">
-			<div className="mb-3 flex items-center gap-2">
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-muted-foreground dark:hover:bg-[#323232]"
-					aria-label="Back to detected job"
-					title="Back"
-					onClick={onCancel}
-				>
-					<ArrowLeft className="size-4" aria-hidden="true" />
-				</Button>
-				<h2 className="text-base font-bold text-slate-950 dark:text-foreground">
-					Edit Before Saving
-				</h2>
-			</div>
-
+		<section className="flex min-h-0 flex-1 flex-col px-5 py-4 pt-0">
 			<form
 				className="flex min-h-0 flex-1 flex-col"
 				onSubmit={(event) => {
@@ -75,7 +109,8 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 				}}
 			>
 				<div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-					<FieldGroup className="gap-3">
+					<FieldGroup className="gap-4">
+						<div />
 						<form.Field
 							name="title"
 							children={(field) => (
@@ -92,62 +127,12 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 								/>
 							)}
 						/>
-						<form.Field
-							name="company"
-							children={(field) => (
-								<TextField
-									label="Company"
-									name={field.name}
-									value={field.state.value}
-									errors={field.state.meta.errors}
-									isInvalid={
-										field.state.meta.isTouched && !field.state.meta.isValid
-									}
-									onBlur={field.handleBlur}
-									onChange={field.handleChange}
-								/>
-							)}
-						/>
-						<form.Field
-							name="location"
-							children={(field) => (
-								<TextField
-									label="Location"
-									name={field.name}
-									value={field.state.value}
-									errors={field.state.meta.errors}
-									isInvalid={
-										field.state.meta.isTouched && !field.state.meta.isValid
-									}
-									onBlur={field.handleBlur}
-									onChange={field.handleChange}
-								/>
-							)}
-						/>
-						<form.Field
-							name="url"
-							children={(field) => (
-								<TextField
-									label="Job URL"
-									name={field.name}
-									type="url"
-									autoComplete="url"
-									value={field.state.value}
-									errors={field.state.meta.errors}
-									isInvalid={
-										field.state.meta.isTouched && !field.state.meta.isValid
-									}
-									onBlur={field.handleBlur}
-									onChange={field.handleChange}
-								/>
-							)}
-						/>
 						<div className="grid grid-cols-2 gap-3">
 							<form.Field
-								name="platform"
+								name="company"
 								children={(field) => (
 									<TextField
-										label="Platform"
+										label="Company"
 										name={field.name}
 										value={field.state.value}
 										errors={field.state.meta.errors}
@@ -201,103 +186,295 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 								}}
 							/>
 						</div>
-						<section className="rounded-lg border border-slate-200 bg-slate-50/70 p-3 dark:border-[#454040] dark:bg-[#221f1f]">
-							<div className="mb-3 flex items-start justify-between gap-3">
-								<div>
-									<h3 className="text-sm font-bold text-slate-950 dark:text-foreground">
-										Reminder
-									</h3>
-									<p className="mt-1 text-xs font-medium leading-5 text-slate-700 dark:text-muted-foreground">
-										Set a follow-up reminder while saving this job.
-									</p>
-								</div>
-								<form.Field
-									name="reminderEnabled"
-									children={(field) => (
-										<label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-muted-foreground">
-											<Checkbox
-												checked={field.state.value}
-												onCheckedChange={(checked) =>
-													field.handleChange(Boolean(checked))
-												}
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="platform"
+								children={(field) => (
+									<SelectField
+										label="Source"
+										value={field.state.value}
+										options={sourceOptions}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onValueChange={field.handleChange}
+									/>
+								)}
+							/>
+							<form.Field
+								name="location"
+								children={(field) => (
+									<TextField
+										label="Location"
+										name={field.name}
+										value={field.state.value}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onBlur={field.handleBlur}
+										onChange={field.handleChange}
+									/>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="workplaceType"
+								children={(field) => (
+									<SelectField
+										label="Work Type"
+										value={field.state.value}
+										options={workTypeOptions}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onValueChange={field.handleChange}
+									/>
+								)}
+							/>
+							<form.Field
+								name="employmentType"
+								children={(field) => (
+									<SelectField
+										label="Job Type"
+										value={field.state.value}
+										options={jobTypeOptions}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onValueChange={field.handleChange}
+									/>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="experienceLevel"
+								children={(field) => (
+									<SelectField
+										label="Experience Level"
+										value={field.state.value ?? ""}
+										options={experienceLevelOptions}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onValueChange={field.handleChange}
+									/>
+								)}
+							/>
+							<div />
+						</div>
+						<form.Field
+							name="url"
+							children={(field) => (
+								<TextField
+									label="Job URL"
+									name={field.name}
+									type="url"
+									autoComplete="url"
+									value={field.state.value}
+									errors={field.state.meta.errors}
+									isInvalid={
+										field.state.meta.isTouched && !field.state.meta.isValid
+									}
+									onBlur={field.handleBlur}
+									onChange={field.handleChange}
+								/>
+							)}
+						/>
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="savedDate"
+								children={(field) => (
+									<DateField
+										label="Saved Date"
+										value={field.state.value}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										open={savedDateOpen}
+										onOpenChange={setSavedDateOpen}
+										onChange={field.handleChange}
+									/>
+								)}
+							/>
+							<form.Field
+								name="deadline"
+								children={(field) => (
+									<DateField
+										label="Deadline"
+										value={field.state.value}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										open={deadlineOpen}
+										onOpenChange={setDeadlineOpen}
+										onChange={field.handleChange}
+									/>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-3">
+							<form.Field
+								name="salary"
+								children={(field) => (
+									<TextField
+										label="Salary"
+										name={field.name}
+										value={field.state.value}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										onBlur={field.handleBlur}
+										onChange={field.handleChange}
+									/>
+								)}
+							/>
+							<form.Field
+								name="currency"
+								children={(field) => (
+									<SelectField
+										label="Currency"
+										value={field.state.value ?? ""}
+										options={currencyOptions}
+										errors={field.state.meta.errors}
+										isInvalid={
+											field.state.meta.isTouched && !field.state.meta.isValid
+										}
+										placeholder="Select currency"
+										onValueChange={field.handleChange}
+									/>
+								)}
+							/>
+						</div>
+						<form.Field
+							name="reminderEnabled"
+							children={(reminderEnabledField) => (
+								<section className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 dark:border-[#454040] dark:bg-[#221f1f]">
+									<div className="flex items-center justify-between gap-3">
+										<h3 className="text-sm font-bold text-slate-950 dark:text-foreground">
+											Reminder
+										</h3>
+										<Switch
+											checked={reminderEnabledField.state.value}
+											onCheckedChange={reminderEnabledField.handleChange}
+											aria-label="Reminder active status"
+										/>
+									</div>
+									{reminderEnabledField.state.value ? (
+										<div className="mt-4 space-y-3">
+											<div>
+												<form.Field
+													name="reminderType"
+													children={(field) => (
+														<SelectField
+															label="Type"
+															value={field.state.value}
+															options={reminderTypeOptions}
+															errors={field.state.meta.errors}
+															isInvalid={
+																field.state.meta.isTouched &&
+																!field.state.meta.isValid
+															}
+															icon={Bell}
+															onValueChange={field.handleChange}
+														/>
+													)}
+												/>
+											</div>
+											<div className="grid grid-cols-2 gap-3">
+												<form.Field
+													name="followUpDate"
+													children={(field) => (
+														<DateField
+															label="Date"
+															value={field.state.value}
+															errors={field.state.meta.errors}
+															isInvalid={
+																field.state.meta.isTouched &&
+																!field.state.meta.isValid
+															}
+															open={followUpDateOpen}
+															onOpenChange={setFollowUpDateOpen}
+															onChange={field.handleChange}
+														/>
+													)}
+												/>
+												<form.Field
+													name="followUpTime"
+													children={(field) => (
+														<TextField
+															label="Time"
+															name={field.name}
+															type="time"
+															value={field.state.value}
+															errors={field.state.meta.errors}
+															isInvalid={
+																field.state.meta.isTouched &&
+																!field.state.meta.isValid
+															}
+															onBlur={field.handleBlur}
+															onChange={field.handleChange}
+														/>
+													)}
+												/>
+											</div>
+											<form.Field
+												name="reminderNote"
+												children={(field) => {
+													const isInvalid =
+														field.state.meta.isTouched &&
+														!field.state.meta.isValid;
+													return (
+														<Field
+															className={fieldClassName}
+															data-invalid={isInvalid}
+														>
+															<FieldLabel
+																className={fieldLabelClassName}
+																htmlFor={field.name}
+															>
+																Note
+															</FieldLabel>
+															<div className="relative">
+																<Textarea
+																	id={field.name}
+																	name={field.name}
+																	value={field.state.value}
+																	onBlur={field.handleBlur}
+																	onChange={(event) =>
+																		field.handleChange(event.target.value)
+																	}
+																	aria-invalid={isInvalid}
+																	rows={3}
+																	maxLength={500}
+																	placeholder="Follow up with hiring manager"
+																	className="min-h-20 resize-none border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-950 shadow-none focus-visible:ring-0 dark:border-[#454040] dark:bg-card dark:text-slate-100"
+																/>
+																<div className="pointer-events-none absolute right-3 bottom-3 text-xs font-medium tabular-nums text-slate-400 dark:text-muted-foreground">
+																	{field.state.value.length} / 500
+																</div>
+															</div>
+															{isInvalid && (
+																<FieldError errors={field.state.meta.errors} />
+															)}
+														</Field>
+													);
+												}}
 											/>
-											Set follow-up reminder
-										</label>
-									)}
-								/>
-							</div>
-							<div className="space-y-3">
-								<form.Field
-									name="followUpDate"
-									children={(field) => (
-										<TextField
-											label="Follow-up Date"
-											name={field.name}
-											type="date"
-											value={field.state.value}
-											errors={field.state.meta.errors}
-											isInvalid={
-												field.state.meta.isTouched && !field.state.meta.isValid
-											}
-											onBlur={field.handleBlur}
-											onChange={field.handleChange}
-										/>
-									)}
-								/>
-								<form.Field
-									name="followUpTime"
-									children={(field) => (
-										<TextField
-											label="Follow-up Time"
-											name={field.name}
-											type="time"
-											value={field.state.value}
-											errors={field.state.meta.errors}
-											isInvalid={
-												field.state.meta.isTouched && !field.state.meta.isValid
-											}
-											onBlur={field.handleBlur}
-											onChange={field.handleChange}
-										/>
-									)}
-								/>
-								<form.Field
-									name="reminderNote"
-									children={(field) => {
-										const isInvalid =
-											field.state.meta.isTouched && !field.state.meta.isValid;
-										return (
-											<Field className={fieldClassName} data-invalid={isInvalid}>
-												<FieldLabel
-													className={fieldLabelClassName}
-													htmlFor={field.name}
-												>
-													Reminder Note
-												</FieldLabel>
-												<InputGroup>
-													<InputGroupTextarea
-														id={field.name}
-														name={field.name}
-														value={field.state.value}
-														onBlur={field.handleBlur}
-														onChange={(event) =>
-															field.handleChange(event.target.value)
-														}
-														aria-invalid={isInvalid}
-														rows={3}
-														placeholder="Follow up with hiring manager"
-														className="min-h-16 resize-none text-sm font-medium text-slate-950 dark:text-slate-100"
-													/>
-												</InputGroup>
-												{isInvalid && (
-													<FieldError errors={field.state.meta.errors} />
-												)}
-											</Field>
-										);
-									}}
-								/>
-							</div>
-						</section>
+										</div>
+									) : null}
+								</section>
+							)}
+						/>
 						<form.Field
 							name="notes"
 							children={(field) => {
@@ -311,8 +488,8 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 										>
 											Notes
 										</FieldLabel>
-										<InputGroup>
-											<InputGroupTextarea
+										<div className="relative">
+											<Textarea
 												id={field.name}
 												name={field.name}
 												value={field.state.value}
@@ -321,15 +498,14 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 													field.handleChange(event.target.value)
 												}
 												aria-invalid={isInvalid}
-												rows={3}
-												className="min-h-16 resize-none text-sm font-medium text-slate-950 dark:text-slate-100"
+												rows={4}
+												maxLength={500}
+												className="min-h-24 resize-none border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-950 shadow-none focus-visible:ring-0 dark:border-[#454040] dark:bg-card dark:text-slate-100"
 											/>
-											<InputGroupAddon align="block-end">
-												<InputGroupText className="text-xs tabular-nums">
-													{field.state.value.length} characters
-												</InputGroupText>
-											</InputGroupAddon>
-										</InputGroup>
+											<div className="pointer-events-none absolute right-3 bottom-3 text-xs font-medium tabular-nums text-slate-400 dark:text-muted-foreground">
+												{field.state.value.length} characters
+											</div>
+										</div>
 										{isInvalid && (
 											<FieldError errors={field.state.meta.errors} />
 										)}
@@ -344,20 +520,86 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-slate-200 bg-white text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:hover:bg-[#323232]"
+						className="h-10 rounded-md border-slate-200 bg-white text-slate-900 hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:hover:bg-[#323232]"
 						onClick={onCancel}
 					>
 						Cancel
 					</Button>
-					<Button
-						type="submit"
-						className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-primary/90"
-					>
+					<Button type="submit" className="h-10 rounded-md">
 						Save Job
 					</Button>
 				</div>
 			</form>
 		</section>
+	);
+}
+
+type DateFieldProps = {
+	label: string;
+	value: string;
+	errors: Array<{ message?: string } | undefined>;
+	isInvalid: boolean;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	onChange: (value: string) => void;
+};
+
+function DateField({
+	label,
+	value,
+	errors,
+	isInvalid,
+	open,
+	onOpenChange,
+	onChange,
+}: DateFieldProps) {
+	return (
+		<Field className={fieldClassName} data-invalid={isInvalid}>
+			<FieldLabel className={fieldLabelClassName}>{label}</FieldLabel>
+			<Popover open={open} onOpenChange={onOpenChange}>
+				<PopoverTrigger asChild>
+					<Button
+						type="button"
+						variant="outline"
+						aria-invalid={isInvalid}
+						className={cn(
+							`h-10 w-full justify-between ${inputClassName}`,
+							isInvalid && "border-destructive",
+						)}
+					>
+						<span className="flex items-center gap-2.5">
+							<CalendarDays
+								className="size-4 text-slate-400 dark:text-muted-foreground"
+								aria-hidden="true"
+							/>
+							{value
+								? format(new Date(`${value}T12:00:00`), "MMM d, yyyy")
+								: "Select date"}
+						</span>
+						<ChevronDown
+							className="size-4 text-slate-400 dark:text-muted-foreground"
+							aria-hidden="true"
+						/>
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-[#454040] dark:bg-popover">
+					<Calendar
+						mode="single"
+						selected={value ? new Date(`${value}T12:00:00`) : undefined}
+						onSelect={(date) => {
+							if (!date) {
+								onChange("");
+								return;
+							}
+
+							onChange(format(date, "yyyy-MM-dd"));
+							onOpenChange(false);
+						}}
+					/>
+				</PopoverContent>
+			</Popover>
+			{isInvalid && <FieldError errors={errors} />}
+		</Field>
 	);
 }
 
@@ -400,6 +642,60 @@ function TextField({
 				autoComplete={autoComplete}
 				className={inputClassName}
 			/>
+			{isInvalid && <FieldError errors={errors} />}
+		</Field>
+	);
+}
+
+type SelectFieldProps = {
+	label: string;
+	value: string;
+	options: readonly string[];
+	errors: Array<{ message?: string } | undefined>;
+	isInvalid: boolean;
+	icon?: LucideIcon;
+	placeholder?: string;
+	onValueChange: (value: string) => void;
+};
+
+function SelectField({
+	label,
+	value,
+	options,
+	errors,
+	isInvalid,
+	icon: Icon,
+	placeholder,
+	onValueChange,
+}: SelectFieldProps) {
+	return (
+		<Field className={fieldClassName} data-invalid={isInvalid}>
+			<FieldLabel className={fieldLabelClassName}>{label}</FieldLabel>
+			<Select value={value} onValueChange={onValueChange}>
+				<SelectTrigger
+					aria-invalid={isInvalid}
+					className={cn(
+						"relative w-full",
+						inputClassName,
+						Icon ? "pl-9" : undefined,
+					)}
+				>
+					{Icon ? (
+						<Icon
+							className="pointer-events-none absolute left-3 size-4 text-slate-400 dark:text-muted-foreground"
+							aria-hidden="true"
+						/>
+					) : null}
+					<SelectValue placeholder={placeholder} />
+				</SelectTrigger>
+				<SelectContent>
+					{options.map((option) => (
+						<SelectItem key={option} value={option}>
+							{option}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 			{isInvalid && <FieldError errors={errors} />}
 		</Field>
 	);

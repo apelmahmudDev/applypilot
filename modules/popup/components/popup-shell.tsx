@@ -14,7 +14,7 @@ export function PopupShell({ children }: PopupShellProps) {
 	const logoSrc = browser.runtime.getURL("/logo.png");
 
 	return (
-		<main className="flex h-[600px] w-[380px] flex-col overflow-hidden border border-slate-200 bg-slate-50 text-slate-950 dark:border-[#262222] dark:bg-background dark:text-slate-50">
+		<main className="flex h-[600px] w-[380px] flex-col overflow-hidden border border-slate-200 bg-white text-slate-950 dark:border-[#262222] dark:bg-background dark:text-slate-50">
 			<header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-5 dark:border-[#3a3333] dark:bg-[#221f1f]">
 				<div className="flex items-center gap-3">
 					<img

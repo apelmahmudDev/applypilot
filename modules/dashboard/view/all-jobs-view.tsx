@@ -23,6 +23,11 @@ import {
 	type StatsCardItem,
 } from "@/modules/dashboard/components/stats-card-grid";
 import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
+import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
+import {
+	formatReminderSummary,
+	getReminderFormValues,
+} from "@/modules/dashboard/components/reminders/reminder-form.utils";
 import type { DashboardStatusFilter } from "@/modules/dashboard/types";
 import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
@@ -76,7 +81,16 @@ const allJobsStats = [
 ] satisfies StatsCardItem[];
 
 export function AllJobsView() {
-	const [selectedJob, setSelectedJob] = useState<DashboardJob | null>(null);
+	const [jobs, setJobs] = useState(dashboardJobs);
+	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+	const [reminderDialogJobId, setReminderDialogJobId] = useState<string | null>(
+		null,
+	);
+
+	const selectedJob =
+		jobs.find((job) => job.id === selectedJobId) ?? null;
+	const reminderDialogJob =
+		jobs.find((job) => job.id === reminderDialogJobId) ?? null;
 
 	return (
 		<>
@@ -85,10 +99,11 @@ export function AllJobsView() {
 					getDashboardColumns({
 						showStatus: false,
 						statusFilter,
-						onViewDetails: setSelectedJob,
+						onViewDetails: (job) => setSelectedJobId(job.id),
+						onSetReminder: (job) => setReminderDialogJobId(job.id),
 					})
 				}
-				data={dashboardJobs}
+				data={jobs}
 				toolbarMode="tabs-only"
 				showStatusTabs={false}
 				initialStatusFilter="saved"
@@ -146,12 +161,40 @@ export function AllJobsView() {
 			<JobDetailsDrawer
 				job={selectedJob}
 				open={selectedJob !== null}
+				onAddReminder={(job) => setReminderDialogJobId(job.id)}
 				onOpenChange={(open) => {
 					if (!open) {
-						setSelectedJob(null);
+						setSelectedJobId(null);
 					}
 				}}
 			/>
+
+			{reminderDialogJob ? (
+				<ReminderFormDialog
+					open={reminderDialogJob !== null}
+					initialValues={getReminderFormValues(
+						reminderDialogJob.reminderDetails ?? null,
+					)}
+					onOpenChange={(open) => {
+						if (!open) {
+							setReminderDialogJobId(null);
+						}
+					}}
+					onSubmit={(values) => {
+						setJobs((currentJobs) =>
+							currentJobs.map((job) =>
+								job.id === reminderDialogJob.id
+									? {
+											...job,
+											reminder: formatReminderSummary(values.date),
+											reminderDetails: values,
+										}
+									: job,
+							),
+						);
+					}}
+				/>
+			) : null}
 		</>
 	);
 }

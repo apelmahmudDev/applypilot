@@ -4,10 +4,8 @@ import {
 	BriefcaseBusiness,
 	ExternalLink,
 	FileText,
-	FilePenLine,
 	Link2,
 	MapPin,
-	NotebookPen,
 	Tag,
 	X,
 } from "lucide-react";
@@ -37,12 +35,14 @@ type JobDetailsDrawerProps = {
 	job: DashboardJob | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	onAddReminder: (job: DashboardJob) => void;
 };
 
 export function JobDetailsDrawer({
 	job,
 	open,
 	onOpenChange,
+	onAddReminder,
 }: JobDetailsDrawerProps) {
 	if (!job) {
 		return null;
@@ -151,7 +151,10 @@ export function JobDetailsDrawer({
 								label="Application Date"
 								value={applicationDate}
 							/>
-							<ReminderRow reminder={job.reminder} />
+							<ReminderRow
+								reminder={job.reminder}
+								onAddReminder={() => onAddReminder(job)}
+							/>
 						</JobDetailsSection>
 
 						<JobDetailsSection title="Compensation">
@@ -236,7 +239,13 @@ function DetailsRow({ icon: Icon, label, value }: DetailsRowProps) {
 	);
 }
 
-function ReminderRow({ reminder }: { reminder: string }) {
+function ReminderRow({
+	reminder,
+	onAddReminder,
+}: {
+	reminder: string;
+	onAddReminder: () => void;
+}) {
 	const hasReminder = reminder !== "-";
 
 	return (
@@ -245,15 +254,14 @@ function ReminderRow({ reminder }: { reminder: string }) {
 			<span className="text-sm font-medium text-slate-500">Reminder</span>
 			<div className="flex items-center gap-3">
 				<span className="text-sm font-medium text-slate-700">{reminder}</span>
-				{hasReminder ? null : (
-					<Button
-						type="button"
-						variant="ghost"
-						className="h-auto px-0 py-0 text-sm font-semibold text-primary hover:bg-transparent hover:text-primary/80"
-					>
-						Add reminder
-					</Button>
-				)}
+				<Button
+					type="button"
+					variant="ghost"
+					className="h-auto px-0 py-0 text-sm font-semibold text-primary hover:bg-transparent hover:text-primary/80"
+					onClick={onAddReminder}
+				>
+					{hasReminder ? "Update" : "Add reminder"}
+				</Button>
 			</div>
 		</div>
 	);

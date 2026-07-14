@@ -28,12 +28,14 @@ type DashboardColumnsOptions = {
 	showStatus?: boolean;
 	statusFilter?: DashboardStatusFilter;
 	onViewDetails?: (job: DashboardJob) => void;
+	onSetReminder?: (job: DashboardJob) => void;
 };
 
 export function getDashboardColumns({
 	showStatus = true,
 	statusFilter = "all",
 	onViewDetails,
+	onSetReminder,
 }: DashboardColumnsOptions = {}): ColumnDef<DashboardJob>[] {
 	const dateColumnLabel = getDateColumnLabel(statusFilter);
 
@@ -151,6 +153,7 @@ export function getDashboardColumns({
 				<DataTableRowActions
 					job={row.original}
 					onViewDetails={onViewDetails}
+					onSetReminder={onSetReminder}
 				/>
 			),
 		},

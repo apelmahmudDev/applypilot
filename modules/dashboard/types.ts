@@ -19,6 +19,14 @@ export type DashboardJobSource = {
 	faviconUrl: string | null;
 };
 
+export type DashboardReminder = {
+	type: "Follow up" | "Interview prep" | "Application update" | "Networking";
+	date: string;
+	time: string;
+	isActive: boolean;
+	note: string;
+};
+
 export type DashboardJob = {
 	id: string;
 	title: string;
@@ -30,6 +38,7 @@ export type DashboardJob = {
 	appliedDate: string;
 	savedDate: string;
 	reminder: string;
+	reminderDetails?: DashboardReminder | null;
 	status: DashboardJobStatus;
 	salary?: string;
 	notes: string;

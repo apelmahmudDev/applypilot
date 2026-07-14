@@ -2,12 +2,10 @@ import {
 	BriefcaseBusiness,
 	CalendarDays,
 	ChartNoAxesCombined,
-	Download,
 	Trophy,
 	Users,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
 	Select,
 	SelectContent,
@@ -101,11 +99,6 @@ export function AnalyticsView() {
 							))}
 						</SelectContent>
 					</Select>
-
-					<Button variant="outline" className="h-11 px-4 bg-white">
-						<Download className="size-4" aria-hidden="true" />
-						Export
-					</Button>
 				</div>
 			</section>
 

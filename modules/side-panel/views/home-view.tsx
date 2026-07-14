@@ -7,6 +7,7 @@ import {
 	ExternalLink,
 	Grid2X2,
 	Brain,
+	LayoutDashboard,
 	Link,
 	LoaderCircle,
 	MapPin,
@@ -21,6 +22,12 @@ import {
 	useUserIdentity,
 } from "@/components/user-identity-badge";
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { openDashboard } from "@/lib/open-dashboard";
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
@@ -100,39 +107,69 @@ export function HomeView({
 		<>
 			<div className="relative flex min-h-0 flex-1 flex-col">
 				<div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 pb-10 pt-0 sm:px-4">
-					<div
-						className={cn(
-							"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3 backdrop-blur sm:-mx-4 sm:px-4",
-							"bg-white dark:bg-background",
-						)}
-					>
-						<div className="flex min-w-0 items-center gap-3">
-							<UserIdentityBadge
-								identity={userIdentity}
-								className="size-9 text-[11px]"
-							/>
-							<div className="min-w-0">
-								<p className="truncate text-sm font-semibold text-foreground">
-									{userIdentity.name}
-								</p>
-								<p className="truncate text-xs text-muted-foreground">
-									{userIdentity.role}
-								</p>
+					<TooltipProvider delayDuration={120}>
+						<div
+							className={cn(
+								"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3 backdrop-blur-xl sm:-mx-4 sm:px-4",
+								"bg-white dark:bg-background",
+							)}
+						>
+							<div className="flex min-w-0 items-center gap-3">
+								<UserIdentityBadge
+									identity={userIdentity}
+									className="size-8 text-[11px]"
+								/>
+								<div className="min-w-0">
+									<p className="truncate text-sm font-semibold text-foreground">
+										{userIdentity.name}
+									</p>
+									<p className="truncate text-xs text-muted-foreground sr-only">
+										{userIdentity.role}
+									</p>
+								</div>
+							</div>
+
+							<div className="flex shrink-0 items-center gap-2">
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											type="button"
+											variant="outline"
+											size="icon-sm"
+											className="rounded-full border-border/70 bg-background text-muted-foreground shadow-none hover:bg-background hover:text-foreground"
+											aria-label="Open dashboard"
+											onClick={() => void openDashboard()}
+										>
+											<LayoutDashboard
+												className="size-3.5"
+												aria-hidden="true"
+											/>
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side="bottom" sideOffset={8}>
+										Open dashboard
+									</TooltipContent>
+								</Tooltip>
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											type="button"
+											size="icon-sm"
+											className="rounded-full shadow-none"
+											aria-label="Add job"
+											onClick={onAddJob}
+										>
+											<PlusCircle className="size-4" aria-hidden="true" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side="bottom" sideOffset={8}>
+										Add job
+									</TooltipContent>
+								</Tooltip>
 							</div>
 						</div>
-						<Button
-							type="button"
-							className={cn(
-								"flex h-10 shrink-0 items-center gap-1.5 rounded-md px-4 text-xs font-semibold",
-							)}
-							aria-label="Add job"
-							title="Add job"
-							onClick={onAddJob}
-						>
-							<PlusCircle className="size-4" aria-hidden="true" />
-							<span className="hidden min-[340px]:inline">Add Job</span>
-						</Button>
-					</div>
+					</TooltipProvider>
 
 					<section className="space-y-2.5">
 						<div className="flex items-center gap-3 px-1">

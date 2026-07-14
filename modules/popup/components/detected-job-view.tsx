@@ -15,6 +15,7 @@ import type { DetectionConfidence } from "@/lib/job-detection/types";
 import { openDashboard } from "@/lib/open-dashboard";
 import { openSidePanel } from "@/lib/open-side-panel";
 import type { JobForm } from "@/modules/popup/types";
+import { cn } from "@/lib/utils";
 
 type DetectedJobViewProps = {
 	job: JobForm;
@@ -41,12 +42,14 @@ export function DetectedJobView({
 	onEdit,
 	onSave,
 }: DetectedJobViewProps) {
-	const hasDetectedJob = Boolean(job.title || job.company || job.location || job.url);
+	const hasDetectedJob = Boolean(
+		job.title || job.company || job.location || job.url,
+	);
 
 	return (
 		<section className="flex flex-1 flex-col px-5 py-5">
 			<div className="mb-4 flex items-center justify-between">
-				<p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+				<p className="text-sm font-semibold text-slate-900 dark:text-foreground">
 					{isDetecting
 						? "Detecting job details..."
 						: hasDetectedJob
@@ -54,14 +57,14 @@ export function DetectedJobView({
 							: "No job detected"}
 				</p>
 				{hasDetectedJob && (
-					<span className="rounded-md bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
+					<span className="rounded-md bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600 dark:bg-emerald-500/16 dark:text-emerald-300">
 						{job.platform || "Other"}
 					</span>
 				)}
 			</div>
 
 			{hasDetectedJob && confidence === "low" && (
-				<div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
+				<div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-200">
 					We detected some information, but please review before saving.
 				</div>
 			)}
@@ -75,14 +78,14 @@ export function DetectedJobView({
 					isLoading
 				/>
 			) : hasDetectedJob ? (
-				<article className="rounded-lg border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-[#262628] dark:shadow-none">
-					<h2 className="text-base font-bold leading-6 text-slate-950 dark:text-white">
+				<article className="rounded-md border border-slate-100 bg-white p-4 dark:border-none dark:bg-card">
+					<h2 className="text-base font-semibold leading-6 text-slate-950 dark:text-foreground">
 						{job.title || "Untitled role"}
 					</h2>
-					<p className="mt-1 text-sm font-medium text-slate-800 dark:text-slate-300">
+					<p className="mt-1 text-sm font-medium text-slate-800 dark:text-foreground/85">
 						{job.company || "Unknown company"}
 					</p>
-					<p className="mt-3 text-sm font-medium text-slate-800 dark:text-slate-300">
+					<p className="mt-3 text-sm font-medium text-slate-800 dark:text-muted-foreground">
 						{job.location || "Location not found"}
 					</p>
 					{job.url && (
@@ -118,12 +121,15 @@ export function DetectedJobView({
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-blue-200 bg-blue-50 text-sm font-bold text-blue-700 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200 dark:hover:bg-blue-500/15"
+						className="h-10 rounded-md border-blue-200 bg-blue-50 text-sm font-bold text-blue-700 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/12 dark:text-blue-200 dark:hover:bg-blue-500/18"
 						disabled={isDetecting || isAnalyzing}
 						onClick={onAnalyze}
 					>
 						{isAnalyzing ? (
-							<LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+							<LoaderCircle
+								className="size-4 animate-spin"
+								aria-hidden="true"
+							/>
 						) : (
 							<Brain className="size-4" aria-hidden="true" />
 						)}
@@ -138,7 +144,7 @@ export function DetectedJobView({
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 shadow-[0_2px_5px_rgba(15,23,42,0.04)] hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
+						className="h-10 rounded-md border-slate-200 bg-white text-sm px-4 font-semibold text-slate-900 hover:bg-slate-50 dark:border-none dark:bg-[#2c2c2c] dark:text-foreground dark:hover:bg-[#323232]"
 						onClick={onEdit}
 					>
 						<FilePlus2 className="size-4" aria-hidden="true" />
@@ -146,7 +152,7 @@ export function DetectedJobView({
 					</Button>
 					<Button
 						type="button"
-						className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
+						className="h-10 rounded-md bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90"
 						disabled={isSaving || isDetecting || !hasDetectedJob}
 						onClick={() => onSave()}
 					>
@@ -159,10 +165,10 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					variant="outline"
-					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
+					className="h-[94px] flex-col gap-3 rounded-md border-slate-200 bg-white text-sm font-semibold text-slate-950 hover:bg-slate-50 dark:border-none dark:bg-card dark:text-foreground dark-hover-surface"
 					onClick={openDashboard}
 				>
-					<span className="flex size-8 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+					<span className="flex size-8 items-center justify-center rounded-sm bg-blue-50 text-blue-600 dark:bg-blue-500/16 dark:text-blue-200">
 						<Grid2X2 className="size-5" aria-hidden="true" />
 					</span>
 					Open Dashboard
@@ -170,17 +176,17 @@ export function DetectedJobView({
 				<Button
 					type="button"
 					variant="outline"
-					className="h-[94px] flex-col gap-3 rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-950 shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:bg-slate-50 dark:border-slate-800 dark:bg-[#262628] dark:text-slate-100 dark:shadow-none dark:hover:bg-[#303032]"
+					className="h-[94px] flex-col gap-3 rounded-md border-slate-200 bg-white text-sm font-semibold text-slate-950 hover:bg-slate-50 dark:border-none dark:bg-card dark:text-foreground dark-hover-surface"
 					onClick={openSidePanel}
 				>
-					<span className="flex size-8 items-center justify-center rounded-md bg-slate-50 text-slate-700 dark:bg-[#202020] dark:text-slate-200">
+					<span className="flex size-8 items-center justify-center rounded-sm bg-slate-50 text-slate-700 dark:bg-[#262222] dark:text-slate-100">
 						<PanelRight className="size-5" aria-hidden="true" />
 					</span>
 					Open Side Panel
 				</Button>
 			</div>
 
-			<p className="mt-auto pt-7 text-center text-xs font-medium text-slate-700 dark:text-slate-400">
+			<p className="mt-auto pt-7 text-center text-xs font-medium text-slate-700 dark:text-muted-foreground">
 				All data is stored locally in your browser.
 			</p>
 		</section>
@@ -204,19 +210,19 @@ function DetectionStateCard({
 }: DetectionStateCardProps) {
 	const toneStyles = {
 		neutral:
-			"border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200",
+			"border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/12 dark:text-blue-200",
 		empty:
-			"border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-200",
+			"border-slate-200 bg-slate-50 text-slate-700 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-slate-200",
 		error:
-			"border-red-100 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200",
+			"border-red-100 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/12 dark:text-red-200",
 	};
 
 	return (
 		<div
-			className={`rounded-lg border p-4 shadow-[0_8px_22px_rgba(15,23,42,0.06)] dark:shadow-none ${toneStyles[tone]}`}
+			className={cn("rounded-lg border p-4 dark:border-none", toneStyles[tone])}
 		>
 			<div className="flex items-start gap-3">
-				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-white text-blue-600 shadow-sm dark:bg-[#202020] dark:text-blue-300">
+				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-white text-blue-600 shadow-sm dark:bg-[#221f1f] dark:text-blue-300">
 					<Icon
 						className={`size-5 ${isLoading ? "animate-spin" : ""}`}
 						aria-hidden="true"

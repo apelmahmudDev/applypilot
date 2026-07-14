@@ -33,9 +33,9 @@ type EditJobViewProps = {
 };
 
 const fieldClassName = "gap-1.5";
-const fieldLabelClassName = "text-xs font-bold text-slate-700 dark:text-slate-300";
+const fieldLabelClassName = "text-xs font-bold text-slate-700 dark:text-muted-foreground";
 const inputClassName =
-	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100";
+	"border-slate-200 bg-white text-sm font-medium text-slate-950 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground";
 
 export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 	const form = useForm({
@@ -55,14 +55,14 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					type="button"
 					variant="ghost"
 					size="icon-sm"
-					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#262628]"
+					className="-ml-1 text-slate-700 hover:bg-slate-100 dark:text-muted-foreground dark:hover:bg-[#323232]"
 					aria-label="Back to detected job"
 					title="Back"
 					onClick={onCancel}
 				>
 					<ArrowLeft className="size-4" aria-hidden="true" />
 				</Button>
-				<h2 className="text-base font-bold text-slate-950 dark:text-white">
+				<h2 className="text-base font-bold text-slate-950 dark:text-foreground">
 					Edit Before Saving
 				</h2>
 			</div>
@@ -201,20 +201,20 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 								}}
 							/>
 						</div>
-						<section className="rounded-lg border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-[#202020]">
+						<section className="rounded-lg border border-slate-200 bg-slate-50/70 p-3 dark:border-[#454040] dark:bg-[#221f1f]">
 							<div className="mb-3 flex items-start justify-between gap-3">
 								<div>
-									<h3 className="text-sm font-bold text-slate-950 dark:text-slate-100">
+									<h3 className="text-sm font-bold text-slate-950 dark:text-foreground">
 										Reminder
 									</h3>
-									<p className="mt-1 text-xs font-medium leading-5 text-slate-700 dark:text-slate-400">
+									<p className="mt-1 text-xs font-medium leading-5 text-slate-700 dark:text-muted-foreground">
 										Set a follow-up reminder while saving this job.
 									</p>
 								</div>
 								<form.Field
 									name="reminderEnabled"
 									children={(field) => (
-										<label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+										<label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-muted-foreground">
 											<Checkbox
 												checked={field.state.value}
 												onCheckedChange={(checked) =>
@@ -340,18 +340,18 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 					</FieldGroup>
 				</div>
 
-				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4 dark:border-slate-800 dark:bg-[#202020]">
+				<div className="grid shrink-0 grid-cols-2 gap-3 border-t border-slate-100 bg-white pt-4 dark:border-[#3a3333] dark:bg-[#221f1f]">
 					<Button
 						type="button"
 						variant="outline"
-						className="h-10 rounded-md border-slate-200 text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#262628] dark:text-slate-100 dark:hover:bg-[#303032]"
+						className="h-10 rounded-md border-slate-200 bg-white text-sm font-bold text-slate-900 hover:bg-slate-50 dark:border-[#454040] dark:bg-[#2c2c2c] dark:text-foreground dark:hover:bg-[#323232]"
 						onClick={onCancel}
 					>
 						Cancel
 					</Button>
 					<Button
 						type="submit"
-						className="h-10 rounded-md bg-blue-600 text-sm font-bold text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-blue-700"
+						className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:bg-primary/90"
 					>
 						Save Job
 					</Button>

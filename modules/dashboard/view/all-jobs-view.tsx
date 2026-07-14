@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
 	BriefcaseBusiness,
 	CircleCheckBig,
@@ -21,9 +22,11 @@ import {
 	StatsCardGrid,
 	type StatsCardItem,
 } from "@/modules/dashboard/components/stats-card-grid";
+import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
 import type { DashboardStatusFilter } from "@/modules/dashboard/types";
 import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
+import type { DashboardJob } from "../types";
 
 const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 	{ value: "saved", label: "Saved" },
@@ -73,67 +76,82 @@ const allJobsStats = [
 ] satisfies StatsCardItem[];
 
 export function AllJobsView() {
-	return (
-		<DataTable
-			columns={({ statusFilter }) =>
-				getDashboardColumns({
-					showStatus: false,
-					statusFilter,
-				})
-			}
-			data={dashboardJobs}
-			toolbarMode="tabs-only"
-			showStatusTabs={false}
-			initialStatusFilter="saved"
-			headerSlot={({ statusFilter, setStatusFilter }) => (
-				<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
-					<div className="min-w-0">
-						<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
-							All Jobs
-						</h1>
-						<p className="mt-2 text-sm text-slate-500">
-							Track and manage all your job applications in one place.
-						</p>
-					</div>
+	const [selectedJob, setSelectedJob] = useState<DashboardJob | null>(null);
 
-					<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
-						<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
-							<Search
-								className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
-								aria-hidden="true"
-							/>
-							<Input
-								placeholder="Search jobs, companies, roles..."
-								className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
-							/>
+	return (
+		<>
+			<DataTable
+				columns={({ statusFilter }) =>
+					getDashboardColumns({
+						showStatus: false,
+						statusFilter,
+						onViewDetails: setSelectedJob,
+					})
+				}
+				data={dashboardJobs}
+				toolbarMode="tabs-only"
+				showStatusTabs={false}
+				initialStatusFilter="saved"
+				headerSlot={({ statusFilter, setStatusFilter }) => (
+					<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
+						<div className="min-w-0">
+							<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950">
+								All Jobs
+							</h1>
+							<p className="mt-2 text-sm text-slate-500">
+								Track and manage all your job applications in one place.
+							</p>
 						</div>
 
-						<Select
-							value={statusFilter}
-							onValueChange={(value) =>
-								setStatusFilter(value as DashboardStatusFilter)
-							}
-						>
-							<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{statusFilters.map((filter) => (
-									<SelectItem key={filter.value} value={filter.value}>
-										{filter.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
+							<div className="relative w-full sm:w-[20rem] xl:w-[22rem]">
+								<Search
+									className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+									aria-hidden="true"
+								/>
+								<Input
+									placeholder="Search jobs, companies, roles..."
+									className="h-11 bg-white pl-11 pr-14 text-sm shadow-none"
+								/>
+							</div>
 
-						<Button className="h-11 px-4">
-							<Plus className="size-4" aria-hidden="true" />
-							Save New Job
-						</Button>
-					</div>
-				</section>
-			)}
-			statsSlot={<StatsCardGrid stats={allJobsStats} />}
-		/>
+							<Select
+								value={statusFilter}
+								onValueChange={(value) =>
+									setStatusFilter(value as DashboardStatusFilter)
+								}
+							>
+								<SelectTrigger className="h-11! w-full bg-white font-semibold sm:w-40 shadow-none">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{statusFilters.map((filter) => (
+										<SelectItem key={filter.value} value={filter.value}>
+											{filter.label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+
+							<Button className="h-11 px-4">
+								<Plus className="size-4" aria-hidden="true" />
+								Save New Job
+							</Button>
+						</div>
+					</section>
+				)}
+				statsSlot={<StatsCardGrid stats={allJobsStats} />}
+			/>
+
+			<JobDetailsDrawer
+				job={selectedJob}
+				open={selectedJob !== null}
+				onOpenChange={(open) => {
+					if (!open) {
+						setSelectedJob(null);
+					}
+				}}
+			/>
+		</>
 	);
 }

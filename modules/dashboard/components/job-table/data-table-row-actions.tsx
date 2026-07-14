@@ -18,8 +18,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { DashboardJob } from "@/modules/dashboard/types";
 
-export function DataTableRowActions() {
+type DataTableRowActionsProps = {
+	job: DashboardJob;
+	onViewDetails?: (job: DashboardJob) => void;
+};
+
+export function DataTableRowActions({
+	job,
+	onViewDetails,
+}: DataTableRowActionsProps) {
 	return (
 		<div className="flex min-w-[76px] items-center justify-end gap-1">
 			<Button
@@ -29,6 +38,7 @@ export function DataTableRowActions() {
 				className="text-slate-500 hover:bg-slate-100 hover:text-slate-950"
 				aria-label="View job details"
 				title="View details"
+				onClick={() => onViewDetails?.(job)}
 			>
 				<Eye className="size-4" aria-hidden="true" />
 			</Button>

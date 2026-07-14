@@ -28,8 +28,12 @@ export type DashboardJob = {
 	jobType: DashboardJobType;
 	source: DashboardJobSource;
 	appliedDate: string;
+	savedDate: string;
 	reminder: string;
 	status: DashboardJobStatus;
+	salary?: string;
+	notes: string;
+	description: string;
 	brand:
 		| "figma"
 		| "vercel"

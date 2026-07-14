@@ -14,6 +14,7 @@ import type {
 	DashboardStatusFilter,
 } from "@/modules/dashboard/types";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { JobBrandMark } from "./job-brand-mark";
 
 const statusStyles: Record<DashboardJobStatus, string> = {
 	Applied: "bg-emerald-50 text-emerald-600",
@@ -26,11 +27,13 @@ const statusStyles: Record<DashboardJobStatus, string> = {
 type DashboardColumnsOptions = {
 	showStatus?: boolean;
 	statusFilter?: DashboardStatusFilter;
+	onViewDetails?: (job: DashboardJob) => void;
 };
 
 export function getDashboardColumns({
 	showStatus = true,
 	statusFilter = "all",
+	onViewDetails,
 }: DashboardColumnsOptions = {}): ColumnDef<DashboardJob>[] {
 	const dateColumnLabel = getDateColumnLabel(statusFilter);
 
@@ -59,7 +62,7 @@ export function getDashboardColumns({
 				const job = row.original;
 				return (
 					<div className="flex min-w-[150px] items-center gap-3">
-						<CompanyMark brand={job.brand} />
+						<JobBrandMark brand={job.brand} />
 						<p className="truncate text-sm font-semibold text-slate-900">
 							{job.company}
 						</p>
@@ -144,7 +147,12 @@ export function getDashboardColumns({
 			header: () => (
 				<div className="flex min-w-[76px] justify-end text-right">Actions</div>
 			),
-			cell: () => <DataTableRowActions />,
+			cell: ({ row }) => (
+				<DataTableRowActions
+					job={row.original}
+					onViewDetails={onViewDetails}
+				/>
+			),
 		},
 	);
 
@@ -159,63 +167,6 @@ function getDateColumnLabel(statusFilter: DashboardStatusFilter) {
 	if (statusFilter === "interview") return "Interview Date";
 
 	return "Date Added";
-}
-
-function CompanyMark({ brand }: { brand: DashboardJob["brand"] }) {
-	const content = {
-		figma: {
-			label: "F",
-			className:
-				"bg-gradient-to-br from-orange-500 via-pink-500 to-blue-500 text-white",
-		},
-		vercel: {
-			label: "V",
-			className: "bg-black text-white",
-		},
-		airbnb: {
-			label: "A",
-			className: "bg-rose-500 text-white",
-		},
-		hubspot: {
-			label: "H",
-			className: "bg-orange-500 text-white",
-		},
-		notion: {
-			label: "N",
-			className: "bg-white text-black shadow-sm ring-1 ring-slate-300",
-		},
-		spotify: {
-			label: "S",
-			className: "bg-green-500 text-white",
-		},
-		linear: {
-			label: "L",
-			className: "bg-slate-950 text-white",
-		},
-		calendly: {
-			label: "C",
-			className: "bg-blue-600 text-white",
-		},
-		plaid: {
-			label: "P",
-			className: "bg-black text-white",
-		},
-		canva: {
-			label: "C",
-			className: "bg-cyan-500 text-white",
-		},
-	}[brand];
-
-	return (
-		<div
-			className={cn(
-				"flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-black",
-				content.className,
-			)}
-		>
-			{content.label}
-		</div>
-	);
 }
 
 function SourceCell({ job }: { job: DashboardJob }) {

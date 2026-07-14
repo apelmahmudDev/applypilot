@@ -102,8 +102,8 @@ export function HomeView({
 				<div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 pb-10 pt-0 sm:px-4">
 					<div
 						className={cn(
-							"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b px-3 py-3 backdrop-blur sm:-mx-4 sm:px-4",
-							"border-border bg-background/95",
+							"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3 backdrop-blur sm:-mx-4 sm:px-4",
+							"bg-white dark:bg-background",
 						)}
 					>
 						<div className="flex min-w-0 items-center gap-3">
@@ -120,11 +120,10 @@ export function HomeView({
 								</p>
 							</div>
 						</div>
-						<button
+						<Button
 							type="button"
 							className={cn(
-								"flex h-10 shrink-0 items-center gap-1.5 rounded-[14px] px-4 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[#4F46E5]/25 active:translate-y-px",
-								"bg-primary text-primary-foreground hover:brightness-95",
+								"flex h-10 shrink-0 items-center gap-1.5 rounded-md px-4 text-xs font-semibold",
 							)}
 							aria-label="Add job"
 							title="Add job"
@@ -132,7 +131,7 @@ export function HomeView({
 						>
 							<PlusCircle className="size-4" aria-hidden="true" />
 							<span className="hidden min-[340px]:inline">Add Job</span>
-						</button>
+						</Button>
 					</div>
 
 					<section className="space-y-2.5">
@@ -458,10 +457,11 @@ export function HomeView({
 
 				<footer
 					className={cn(
-						"pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center bg-gradient-to-t from-background via-background/92 to-background/0 px-4 pb-1 pt-6",
+						"shrink-0 bg-white dark:bg-background px-4 py-1 text-center backdrop-blur",
+						"border-border",
 					)}
 				>
-					<p className="text-[10px] text-muted-foreground/70">
+					<p className="text-[10px] text-muted-foreground/80">
 						All your job data is stored locally in your browser.
 					</p>
 				</footer>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,11 +45,6 @@ export function RemindersView() {
 					</div>
 
 					<RemindersDatePicker />
-
-					<Button className="h-11 px-4">
-						<Plus className="size-4" aria-hidden="true" />
-						Add Reminder
-					</Button>
 				</div>
 			</section>
 

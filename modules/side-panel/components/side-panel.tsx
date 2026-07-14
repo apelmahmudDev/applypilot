@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Toaster } from "@/components/ui/sonner";
-import { useSystemTheme } from "@/hooks/use-system-theme";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 import {
 	createJobInStorage,
 	deleteJobFromStorage,
@@ -43,7 +43,7 @@ import { ReminderDetailsView } from "@/modules/side-panel/views/reminder-details
 import { SettingsView } from "@/modules/side-panel/views/settings-view";
 
 export function SidePanel() {
-	const { isDarkMode } = useSystemTheme();
+	const { isDarkMode } = useThemePreference();
 	const [storedJobs, setStoredJobs] = useState<StoredJob[]>([]);
 	const [panelView, setPanelView] = useState<SidePanelView>("home");
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);

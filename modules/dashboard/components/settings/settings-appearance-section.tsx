@@ -1,11 +1,15 @@
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 
 import { settingsSections } from "./data";
 import { SettingsSectionCard } from "./settings-section-card";
 
 export function SettingsAppearanceSection() {
+	const { theme, setTheme } = useThemePreference();
+
 	return (
 		<SettingsSectionCard config={settingsSections.appearance}>
 			<div className="flex flex-col gap-3 border-t border-slate-100 pt-6 lg:flex-row lg:items-center lg:justify-between">
@@ -20,7 +24,14 @@ export function SettingsAppearanceSection() {
 					<Button
 						type="button"
 						variant="ghost"
-						className="h-9 flex-1 rounded-xl bg-white px-4 font-semibold text-primary shadow-sm hover:bg-white hover:text-primary lg:flex-none"
+						aria-pressed={theme === "light"}
+						className={cn(
+							"h-9 flex-1 rounded-xl px-4 font-semibold lg:flex-none",
+							theme === "light"
+								? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary"
+								: "text-slate-600 hover:bg-white hover:text-slate-900",
+						)}
+						onClick={() => void setTheme("light")}
 					>
 						<Sun className="size-4" aria-hidden="true" />
 						Light
@@ -28,7 +39,14 @@ export function SettingsAppearanceSection() {
 					<Button
 						type="button"
 						variant="ghost"
-						className="h-9 flex-1 rounded-xl px-4 font-semibold text-slate-600 hover:bg-white hover:text-slate-900 lg:flex-none"
+						aria-pressed={theme === "dark"}
+						className={cn(
+							"h-9 flex-1 rounded-xl px-4 font-semibold lg:flex-none",
+							theme === "dark"
+								? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary"
+								: "text-slate-600 hover:bg-white hover:text-slate-900",
+						)}
+						onClick={() => void setTheme("dark")}
 					>
 						<Moon className="size-4" aria-hidden="true" />
 						Dark

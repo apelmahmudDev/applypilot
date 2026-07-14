@@ -2,14 +2,14 @@ import { Settings } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useSystemTheme } from "@/hooks/use-system-theme";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 
 type PopupShellProps = {
 	children: ReactNode;
 };
 
 export function PopupShell({ children }: PopupShellProps) {
-	useSystemTheme();
+	useThemePreference();
 	const logoSrc = browser.runtime.getURL("/logo.png");
 
 	return (

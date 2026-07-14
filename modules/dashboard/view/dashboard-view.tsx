@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useSystemTheme } from "@/hooks/use-system-theme";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 import { DashboardContent } from "@/modules/dashboard/components/dashboard-content";
 import { DashboardHeader } from "@/modules/dashboard/components/dashboard-header";
 import { DashboardSidebar } from "@/modules/dashboard/components/dashboard-sidebar";
@@ -26,7 +26,7 @@ function usesCustomHeader(view: DashboardView) {
 }
 
 export function DashboardView() {
-	useSystemTheme();
+	useThemePreference();
 	const [activeView, setActiveView] = useState<DashboardView>(getViewFromHash);
 
 	useEffect(() => {

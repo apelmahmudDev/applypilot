@@ -40,7 +40,6 @@ import { AllRemindersView } from "@/modules/side-panel/views/all-reminders-view"
 import { HomeView } from "@/modules/side-panel/views/home-view";
 import { JobDetailsView } from "@/modules/side-panel/views/job-details-view";
 import { ReminderDetailsView } from "@/modules/side-panel/views/reminder-details-view";
-import { SettingsView } from "@/modules/side-panel/views/settings-view";
 
 export function SidePanel() {
 	const { isDarkMode } = useThemePreference();
@@ -326,6 +325,7 @@ export function SidePanel() {
 					currentJob.id === result.job.id ? result.job : currentJob,
 				),
 			);
+			toast.success("Marked this reminder as done.");
 		} catch {
 			toast.error("Could not mark this reminder as done. Please try again.");
 		}
@@ -456,11 +456,6 @@ export function SidePanel() {
 							}
 							onMarkDone={markReminderDone}
 						/>
-					) : panelView === "settings" ? (
-						<SettingsView
-							isDarkMode={isDarkMode}
-							onBack={() => setPanelView("home")}
-						/>
 					) : (
 						<HomeView
 							isDarkMode={isDarkMode}
@@ -509,13 +504,12 @@ export function SidePanel() {
 							}
 							onOpenApplications={() => setPanelView("applications")}
 							onOpenReminders={() => setPanelView("reminders")}
-							onOpenSettings={() => setPanelView("settings")}
 							onMarkReminderDone={markReminderDone}
 						/>
 					)}
 				</div>
 			</main>
-			<Toaster position="top-center" richColors />
+			<Toaster position="bottom-center" richColors />
 		</>
 	);
 }

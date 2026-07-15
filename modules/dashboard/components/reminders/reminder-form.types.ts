@@ -1,8 +1,7 @@
 export const reminderTypeOptions = [
 	"Follow up",
-	"Interview prep",
-	"Application update",
-	"Networking",
+	"Interview",
+	"Task",
 ] as const;
 
 export type ReminderTypeOption = (typeof reminderTypeOptions)[number];

@@ -80,7 +80,7 @@ export function DetectedJobView({
 					isLoading
 				/>
 			) : hasDetectedJob ? (
-				<article className="rounded-md border border-slate-100 bg-white p-4 dark:border-none dark:bg-card">
+				<article className="rounded-md border border-slate-200 bg-white p-4 dark:border-none dark:bg-card">
 					<h2 className="line-clamp-3 text-base font-semibold leading-6 text-slate-950 dark:text-foreground">
 						{job.title || "Untitled role"}
 					</h2>

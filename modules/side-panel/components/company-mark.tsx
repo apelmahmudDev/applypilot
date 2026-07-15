@@ -19,7 +19,10 @@ export function CompanyMark({
 	size = "sm",
 	appearance = "default",
 }: CompanyMarkProps) {
-	const sizeClass = size === "lg" ? "size-[72px] rounded-lg text-4xl" : "size-9 rounded-md text-xl";
+	const sizeClass =
+		size === "lg"
+			? "size-[62px] rounded-lg text-4xl"
+			: "size-9 rounded-md text-xl";
 	const iconClass = size === "lg" ? "size-8" : "size-5";
 	const isSoftDefault = appearance === "soft" && brand === "default";
 
@@ -27,7 +30,7 @@ export function CompanyMark({
 		return (
 			<div
 				className={cn(
-					"flex shrink-0 items-center justify-center overflow-hidden border border-border bg-white",
+					"flex shrink-0 items-center justify-center overflow-hidden bg-white",
 					sizeClass,
 				)}
 			>
@@ -76,7 +79,11 @@ export function CompanyMark({
 					"after:absolute after:bottom-1 after:h-0.5 after:w-5 after:rounded-full after:bg-orange-400",
 			)}
 		>
-			{label ? <span>{label}</span> : <BriefcaseBusiness className={iconClass} aria-hidden="true" />}
+			{label ? (
+				<span>{label}</span>
+			) : (
+				<BriefcaseBusiness className={iconClass} aria-hidden="true" />
+			)}
 		</div>
 	);
 }

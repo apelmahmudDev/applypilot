@@ -20,7 +20,7 @@ export type DashboardJobSource = {
 };
 
 export type DashboardReminder = {
-	type: "Follow up" | "Interview prep" | "Application update" | "Networking";
+	type: "Follow up" | "Interview" | "Task";
 	date: string;
 	time: string;
 	isActive: boolean;

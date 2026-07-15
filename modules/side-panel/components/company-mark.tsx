@@ -30,7 +30,7 @@ export function CompanyMark({
 		return (
 			<div
 				className={cn(
-					"flex shrink-0 items-center justify-center overflow-hidden border border-border bg-white",
+					"flex shrink-0 items-center justify-center overflow-hidden bg-white",
 					sizeClass,
 				)}
 			>

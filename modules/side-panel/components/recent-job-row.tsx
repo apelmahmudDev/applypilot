@@ -20,7 +20,7 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b border-border px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
+				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b border-dashed border-slate-200 px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {

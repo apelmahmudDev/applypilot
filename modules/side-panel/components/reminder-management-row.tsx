@@ -36,7 +36,7 @@ export function ReminderManagementRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"flex cursor-pointer items-start gap-3 border-b border-border px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20",
+				"flex cursor-pointer items-start gap-3 border-b border-dashed border-slate-200 px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {

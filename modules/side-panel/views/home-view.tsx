@@ -13,8 +13,8 @@ import {
 	MapPin,
 	PencilLine,
 	PlusCircle,
-	RefreshCw,
 	Sparkles,
+	Loader,
 } from "lucide-react";
 
 import {
@@ -178,10 +178,10 @@ export function HomeView({
 								Detected on this page
 							</h2>
 						</div>
-						<div className="rounded-[14px] border border-border bg-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors">
+						<div className="rounded-md border border-slate-200 dark:border-none bg-card p-4 transition-colors">
 							{isDetecting ? (
 								<DetectionMessage
-									icon={RefreshCw}
+									icon={Loader}
 									title="Detecting job details"
 									description="Reading visible job information from the active tab."
 									isDarkMode={isDarkMode}
@@ -211,7 +211,7 @@ export function HomeView({
 											appearance="soft"
 										/>
 										<div className="min-w-0 flex-1">
-											<h3 className="truncate text-[15px] font-bold leading-5 text-foreground">
+											<h3 className="truncate text-[15px] font-semibold leading-5 text-foreground">
 												{detectedJob.title || "Untitled role"}
 											</h3>
 											<p className="mt-1 truncate text-sm font-medium text-muted-foreground">
@@ -358,7 +358,7 @@ export function HomeView({
 												)}
 												onClick={onRetryDetection}
 											>
-												<RefreshCw className="size-4" aria-hidden="true" />
+												<Loader className="size-4" aria-hidden="true" />
 												Retry
 											</Button>
 											<Button

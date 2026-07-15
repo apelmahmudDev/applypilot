@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { LucideProps } from "lucide-react";
+import type { ReminderTypeOption } from "@/modules/dashboard/components/reminders/reminder-form.types";
 
 export type JobStatus =
 	| "Applied"
@@ -24,8 +25,10 @@ export type Reminder = {
 	id: string;
 	jobId: string;
 	company: string;
+	logoUrl?: string;
 	title: string;
 	description: string;
+	reminderType: ReminderTypeOption;
 	timeLabel: string;
 	statusLabel: string;
 	statusTone: "overdue" | "today" | "tomorrow" | "upcoming" | "completed";

@@ -325,6 +325,7 @@ export function SidePanel() {
 					currentJob.id === result.job.id ? result.job : currentJob,
 				),
 			);
+			toast.success("Marked this reminder as done.");
 		} catch {
 			toast.error("Could not mark this reminder as done. Please try again.");
 		}
@@ -508,7 +509,7 @@ export function SidePanel() {
 					)}
 				</div>
 			</main>
-			<Toaster position="top-center" richColors />
+			<Toaster position="bottom-center" richColors />
 		</>
 	);
 }

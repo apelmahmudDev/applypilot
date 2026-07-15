@@ -402,7 +402,7 @@ export function HomeView({
 												type="button"
 												variant="outline"
 												className={cn(
-													"h-10 w-full rounded-[14px] text-sm font-semibold",
+													"h-10 w-full rounded-md text-sm font-semibold",
 													"border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200 dark:hover:bg-blue-500/15",
 												)}
 												disabled={isAnalyzing}
@@ -426,7 +426,7 @@ export function HomeView({
 												type="button"
 												variant="outline"
 												className={cn(
-													"h-10 rounded-[14px] text-sm font-semibold",
+													"h-10 rounded-md text-sm font-semibold",
 													"border-input bg-card text-foreground hover:bg-muted/60",
 												)}
 												onClick={onRetryDetection}
@@ -436,7 +436,7 @@ export function HomeView({
 											</Button>
 											<Button
 												type="button"
-												className="h-10 rounded-[14px] bg-primary text-sm font-semibold text-primary-foreground hover:brightness-95"
+												className="h-10 rounded-md bg-primary text-sm font-semibold text-primary-foreground hover:brightness-95"
 												onClick={onAddJob}
 											>
 												<PlusCircle className="size-4" aria-hidden="true" />
@@ -532,7 +532,6 @@ export function HomeView({
 									key={reminder.id}
 									reminder={reminder}
 									isDarkMode={isDarkMode}
-									showActions
 									onOpen={() => onOpenReminder(reminder.id)}
 									onMarkDone={() => onMarkReminderDone(reminder.id)}
 								/>

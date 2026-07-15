@@ -37,13 +37,16 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 				appearance="soft"
 			/>
 			<div className="min-w-0">
-				<h3 className="truncate text-[13px] font-bold leading-5 text-foreground">{job.title}</h3>
+				<h3 className="truncate text-[13px] font-semibold leading-5 text-foreground">{job.title}</h3>
 				<p className="truncate text-xs font-medium text-muted-foreground">
-					{job.company}
-					<span className="px-1.5 text-muted-foreground/80" aria-hidden="true">
-						&middot;
+					<span>{job.company}</span>
+					<span
+						className="inline-block px-1.5 align-middle text-[11px] font-semibold text-slate-400 dark:text-muted-foreground"
+						aria-hidden="true"
+					>
+						•
 					</span>
-					{job.location}
+					<span>{job.location}</span>
 				</p>
 			</div>
 			<div className="flex min-w-0 flex-col items-end gap-1.5 max-[390px]:hidden">

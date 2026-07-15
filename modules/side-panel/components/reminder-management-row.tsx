@@ -1,13 +1,14 @@
-import { MoreVertical } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CompanyMark } from "@/modules/side-panel/components/company-mark";
 import type { Reminder } from "@/modules/side-panel/types";
+import { getBrand } from "@/modules/side-panel/utils/job-mappers";
 
 type ReminderManagementRowProps = {
 	reminder: Reminder;
 	isDarkMode: boolean;
-	showActions?: boolean;
 	onOpen: () => void;
 	onMarkDone: () => void;
 };
@@ -15,11 +16,15 @@ type ReminderManagementRowProps = {
 export function ReminderManagementRow({
 	reminder,
 	isDarkMode,
-	showActions = false,
 	onOpen,
 	onMarkDone,
 }: ReminderManagementRowProps) {
-	const Icon = reminder.icon;
+	const reminderTypeBadgeClassName =
+		reminder.reminderType === "Follow up"
+			? "bg-primary/10 text-primary dark:bg-primary/18 dark:text-primary-foreground"
+			: reminder.reminderType === "Interview"
+				? "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200"
+				: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200";
 	const badgeClassName =
 		reminder.statusTone === "overdue"
 			? "bg-red-50 text-red-700"
@@ -30,6 +35,9 @@ export function ReminderManagementRow({
 					: reminder.statusTone === "completed"
 						? "bg-emerald-50 text-emerald-700"
 						: "bg-accent text-accent-foreground";
+	const shouldShowStatusBadge =
+		reminder.statusLabel !== reminder.timeLabel &&
+		!reminder.timeLabel.startsWith(`${reminder.statusLabel},`);
 
 	return (
 		<div
@@ -46,77 +54,84 @@ export function ReminderManagementRow({
 				}
 			}}
 		>
-			<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-				<Icon className="size-5" aria-hidden="true" />
-			</div>
+			<CompanyMark
+				brand={getBrand(reminder.company, "")}
+				logoUrl={reminder.logoUrl}
+				companyName={reminder.company}
+				appearance="soft"
+			/>
 			<div className="min-w-0 flex-1">
 				<h3
 					className={cn(
-						"truncate text-sm font-semibold",
+						"truncate text-[13px] font-semibold leading-5",
 						"text-foreground",
 					)}
 				>
-					{reminder.company} - {reminder.title}
+					{reminder.title}
 				</h3>
 				<p
 					className={cn(
-						"truncate text-xs",
+						"truncate text-xs font-medium",
 						"text-muted-foreground",
 					)}
 				>
-					{reminder.description}
+					<span>{reminder.company}</span>
+					<span
+						className="inline-block px-1.5 align-middle text-[11px] font-semibold text-slate-400 dark:text-muted-foreground"
+						aria-hidden="true"
+					>
+						•
+					</span>
+					<span>{reminder.description}</span>
 				</p>
 				<div className="mt-2 flex flex-wrap items-center gap-2">
 					<p
 						className={cn(
-							"rounded-full px-2.5 py-1 text-[11px] font-bold",
-							badgeClassName,
+							"rounded-sm px-2 py-1 text-[11px] font-medium",
+							reminderTypeBadgeClassName,
 						)}
 					>
-						{reminder.statusLabel}
+						{reminder.reminderType}
 					</p>
+					{shouldShowStatusBadge && (
+						<p
+							className={cn(
+								"rounded-sm px-2 py-1 text-[11px] font-medium",
+								badgeClassName,
+							)}
+						>
+							{reminder.statusLabel}
+						</p>
+					)}
 					<p
 						className={cn(
-							"rounded-full px-2.5 py-1 text-[11px] font-bold",
-							"bg-accent text-accent-foreground",
+							"rounded-sm px-2 py-1 text-[11px] font-medium",
+							shouldShowStatusBadge
+								? "bg-accent text-accent-foreground"
+								: badgeClassName,
 						)}
 					>
 						{reminder.timeLabel}
 					</p>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						className={cn(
-							"h-7 rounded-full px-3 text-[11px] font-bold",
-							"border-input bg-card text-foreground hover:bg-muted/60",
-						)}
-						disabled={reminder.isCompleted}
-						onClick={(event) => {
-							event.stopPropagation();
-							onMarkDone();
-						}}
-					>
-						{reminder.isCompleted ? "Done" : "Mark Done"}
-					</Button>
 				</div>
 			</div>
-			{showActions && (
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					className={cn(
-						"mt-1 shrink-0",
-						"text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-					)}
-					aria-label="Reminder actions"
-					title="Actions"
-					onClick={(event) => event.stopPropagation()}
-				>
-					<MoreVertical className="size-4" aria-hidden="true" />
-				</Button>
-			)}
+			<Button
+				type="button"
+				variant="outline"
+				size="sm"
+				className={cn(
+					"mt-1.5 shrink-0 h-6 rounded-full px-2.5 text-[11px] font-medium",
+					"border-slate-100 bg-card text-foreground hover:bg-muted/60",
+				)}
+				disabled={reminder.isCompleted}
+				onClick={(event) => {
+					event.stopPropagation();
+					onMarkDone();
+				}}
+			>
+				<Check className="size-3.5" aria-hidden="true" />
+				{reminder.isCompleted ? "Done" : "Mark"}
+			</Button>
 		</div>
 	);
 }

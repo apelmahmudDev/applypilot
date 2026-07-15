@@ -102,7 +102,7 @@ export const reminderSections: ReminderSection[] = [
 				dueLabel: "Today",
 				timeLabel: "02:00 PM",
 				reminderDetails: createReminderDetails({
-					type: "Interview prep",
+					type: "Interview",
 					date: "2026-07-14",
 					time: "14:00",
 					note: "Prepare for design interview",
@@ -126,7 +126,7 @@ export const reminderSections: ReminderSection[] = [
 				dueLabel: "May 22, 2025",
 				timeLabel: "11:00 AM",
 				reminderDetails: createReminderDetails({
-					type: "Application update",
+					type: "Task",
 					date: "2026-07-22",
 					time: "11:00",
 					note: "Complete coding assignment",
@@ -168,7 +168,7 @@ export const reminderSections: ReminderSection[] = [
 				dueLabel: "May 28, 2025",
 				timeLabel: "01:00 PM",
 				reminderDetails: createReminderDetails({
-					type: "Interview prep",
+					type: "Interview",
 					date: "2026-07-28",
 					time: "13:00",
 					note: "Technical interview round",

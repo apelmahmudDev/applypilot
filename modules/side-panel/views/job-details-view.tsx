@@ -217,6 +217,7 @@ export function JobDetailsView({
 								<FormattedJobDescription
 									descriptionHtml={job.descriptionHtml}
 									descriptionText={job.descriptionText || job.notes}
+									collapsible
 								/>
 							</div>
 						</JobDetailsSection>

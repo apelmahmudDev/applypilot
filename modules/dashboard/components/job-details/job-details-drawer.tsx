@@ -8,6 +8,7 @@ import {
 	X,
 } from "lucide-react";
 
+import { FormattedJobDescription } from "@/components/formatted-job-description";
 import { Button } from "@/components/ui/button";
 import {
 	Sheet,
@@ -155,9 +156,10 @@ export function JobDetailsDrawer({
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Job Description">
-								<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
-									{job.description}
-								</p>
+								<FormattedJobDescription
+									descriptionText={job.description}
+									collapsible
+								/>
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Links">

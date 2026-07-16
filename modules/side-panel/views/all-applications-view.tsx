@@ -55,7 +55,7 @@ export function AllApplicationsView({
 			<div className="space-y-3">
 				<div
 					className={cn(
-						"flex h-10 items-center gap-2 rounded-[14px] border px-3",
+						"flex h-10 items-center gap-2 rounded-md border px-3",
 						"border-input bg-card text-muted-foreground",
 					)}
 				>
@@ -65,7 +65,7 @@ export function AllApplicationsView({
 						placeholder="Search jobs..."
 						className={cn(
 							"min-w-0 flex-1 bg-transparent text-sm font-medium outline-none",
-							"text-[#111827] placeholder:text-[#94A3B8]",
+							"text-foreground placeholder:text-muted-foreground",
 						)}
 						onChange={(event) => onSearchChange(event.target.value)}
 					/>

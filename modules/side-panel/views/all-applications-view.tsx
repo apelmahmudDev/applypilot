@@ -17,13 +17,11 @@ type AllApplicationsViewProps = {
 	jobs: StoredJob[];
 	search: string;
 	filter: ApplicationFilter;
-	sort: string;
 	isDarkMode: boolean;
 	onBack: () => void;
 	onAddJob: () => void;
 	onSearchChange: (value: string) => void;
 	onFilterChange: (value: ApplicationFilter) => void;
-	onSortChange: (value: string) => void;
 	onStatusChange: (job: StoredJob) => void;
 	onOpenJob: (job: StoredJob) => void;
 };
@@ -32,13 +30,11 @@ export function AllApplicationsView({
 	jobs,
 	search,
 	filter,
-	sort,
 	isDarkMode,
 	onBack,
 	onAddJob,
 	onSearchChange,
 	onFilterChange,
-	onSortChange,
 	onStatusChange: _onStatusChange,
 	onOpenJob,
 }: AllApplicationsViewProps) {
@@ -92,24 +88,6 @@ export function AllApplicationsView({
 						</button>
 					))}
 				</div>
-
-				<label
-					className={cn(
-						"flex items-center justify-between rounded-[14px] border px-3 py-2 text-xs font-semibold",
-						"border-input bg-card text-muted-foreground",
-					)}
-				>
-					<span>Sort</span>
-					<select
-						value={sort}
-						className="bg-transparent text-sm font-semibold outline-none"
-						onChange={(event) => onSortChange(event.target.value)}
-					>
-						<option value="latest">Latest</option>
-						<option value="company">Company</option>
-						<option value="status">Status</option>
-					</select>
-				</label>
 
 				<section
 					className={cn(

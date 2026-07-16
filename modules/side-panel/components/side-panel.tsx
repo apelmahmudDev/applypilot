@@ -498,13 +498,11 @@ export function SidePanel() {
 							jobs={allApplicationJobs}
 							search={applicationSearch}
 							filter={applicationFilter}
-							sort={applicationSort}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView("home")}
 							onAddJob={openAddJobForm}
 							onSearchChange={setApplicationSearch}
 							onFilterChange={setApplicationFilter}
-							onSortChange={setApplicationSort}
 							onStatusChange={handleCycleJobStatus}
 							onOpenJob={(job) => openJobDetails(job.id, "applications")}
 						/>

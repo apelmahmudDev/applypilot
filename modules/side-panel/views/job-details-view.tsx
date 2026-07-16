@@ -10,6 +10,12 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { StoredJob } from "@/lib/jobs/storage";
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
@@ -118,47 +124,67 @@ export function JobDetailsView({
 				title={job.title || "Untitled role"}
 				company={job.company || "Unknown company"}
 				status={status}
-				headerMeta={
-					<p className="mt-2 flex items-center gap-1.5 text-sm text-slate-500 dark:text-muted-foreground">
-						<MapPin className="size-4 shrink-0" aria-hidden="true" />
-						<span>{job.location || "Location not found"}</span>
-					</p>
-				}
+				hideHeaderStatus
 				summaryActions={
-					<div className="grid grid-cols-3 gap-2">
-						<Button
-							type="button"
-							variant="outline"
-							className={cn(
-								"h-9 rounded-md text-xs font-semibold",
-								"border-input bg-card text-foreground hover:bg-muted/60",
-							)}
-							onClick={() => onEdit(job)}
-						>
-							<PencilLine className="size-4" aria-hidden="true" />
-							Edit
-						</Button>
-						<Button
-							type="button"
-							className="h-9 rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
-							onClick={() => onStatusChange(job)}
-						>
-							Status: {status}
-						</Button>
-						<Button
-							type="button"
-							variant="outline"
-							className={cn(
-								"h-9 rounded-md text-xs font-semibold",
-								"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
-							)}
-							aria-label="Delete job"
-							title="Delete job"
-							onClick={() => onDelete(job)}
-						>
-							<Trash2 className="size-4" aria-hidden="true" />
-						</Button>
-					</div>
+					<TooltipProvider delayDuration={120}>
+						<div className="grid grid-cols-3 gap-2">
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										type="button"
+										variant="outline"
+										className={cn(
+											"h-9 rounded-md text-xs font-semibold",
+											"border-input bg-card text-foreground hover:bg-muted/60",
+										)}
+										onClick={() => onEdit(job)}
+									>
+										<PencilLine className="size-4" aria-hidden="true" />
+										Edit
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top" sideOffset={8}>
+									Click to edit
+								</TooltipContent>
+							</Tooltip>
+						<TooltipProvider delayDuration={120}>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										type="button"
+										className="h-9 rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
+										onClick={() => onStatusChange(job)}
+									>
+										{status}
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top" sideOffset={8}>
+									Click to change
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										type="button"
+										variant="outline"
+										className={cn(
+											"h-9 rounded-md text-xs font-semibold",
+											"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
+										)}
+										aria-label="Delete job"
+										title="Delete job"
+										onClick={() => onDelete(job)}
+									>
+										<Trash2 className="size-4" aria-hidden="true" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top" sideOffset={8}>
+									Click to delete
+								</TooltipContent>
+							</Tooltip>
+						</div>
+					</TooltipProvider>
 				}
 				sections={
 					<>

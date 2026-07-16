@@ -410,17 +410,18 @@ export function SidePanel() {
 			<main className="h-screen min-h-[640px] mx-auto max-w-3xl overflow-hidden bg-white dark:bg-background text-foreground transition-colors">
 				<ConfirmDialog
 					open={Boolean(jobPendingDelete)}
-					title="Delete job?"
+					title="Delete this job?"
 					description={
 						<>
-							This will delete{" "}
+							You're about to permanently delete{" "}
 							<span className="font-semibold text-foreground">
 								{jobPendingDelete?.title || "this job"}
 							</span>
-							.
+							. This action can't be undone.
 						</>
 					}
 					confirmLabel="Delete"
+					cancelLabel="Keep job"
 					confirmingLabel="Deleting..."
 					isConfirming={isDeletingJob}
 					onOpenChange={(open) => {

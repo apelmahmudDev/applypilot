@@ -25,6 +25,7 @@ type JobDetailsContentProps = {
 	headerMeta?: ReactNode;
 	summaryActions?: ReactNode;
 	className?: string;
+	hideHeaderStatus?: boolean;
 };
 
 export function JobDetailsContent({
@@ -36,6 +37,7 @@ export function JobDetailsContent({
 	headerMeta,
 	summaryActions,
 	className,
+	hideHeaderStatus = false,
 }: JobDetailsContentProps) {
 	return (
 		<div
@@ -54,11 +56,13 @@ export function JobDetailsContent({
 							</p>
 							{headerMeta}
 						</div>
-						<span
-							className={`inline-flex shrink-0 rounded-sm px-2 py-0.5 text-xs font-bold ${statusStyles[status]}`}
-						>
-							{status}
-						</span>
+						{hideHeaderStatus ? null : (
+							<span
+								className={`inline-flex shrink-0 rounded-sm px-2 py-0.5 text-xs font-bold ${statusStyles[status]}`}
+							>
+								{status}
+							</span>
+						)}
 					</div>
 				</div>
 			</div>

@@ -41,6 +41,7 @@ import { DetectionMessage } from "@/modules/side-panel/components/detection-mess
 import { ListHeader } from "@/modules/side-panel/components/list-header";
 import { RecentJobRow } from "@/modules/side-panel/components/recent-job-row";
 import { ReminderManagementRow } from "@/modules/side-panel/components/reminder-management-row";
+import { SectionEmptyState } from "@/modules/side-panel/components/section-empty-state";
 import { StatItem } from "@/modules/side-panel/components/stat-item";
 import type {
 	RecentJob,
@@ -269,7 +270,8 @@ export function HomeView({
 								/>
 							) : detectedJob ? (
 								<>
-									<div className="rounded-md border border-border/70 bg-white p-3.5 dark:bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+									{/* shadow-[0_4px_16px_rgba(15,23,42,0.04)] */}
+									<div className="rounded-md border border-border/70 bg-white p-3.5 dark:bg-card">
 										<div className="flex gap-4">
 											<CompanyMark
 												brand={getBrand(
@@ -449,7 +451,7 @@ export function HomeView({
 						</div>
 					</section>
 
-					<section className="grid grid-cols-3 rounded-md border border-border/70 bg-card py-2.5 transition-colors shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+					<section className="grid grid-cols-3 rounded-md border border-border/70 bg-card py-2.5 transition-colors ">
 						<StatItem
 							icon={Bookmark}
 							value={String(savedCount)}
@@ -478,7 +480,7 @@ export function HomeView({
 							isDarkMode={isDarkMode}
 							onViewAll={onOpenApplications}
 						/>
-						<section className="overflow-hidden rounded-md border border-border/70 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
+						<section className="overflow-hidden rounded-md border border-border/70 bg-card  transition-colors">
 							{displayedJobs.map((job) => (
 								<RecentJobRow
 									key={job.id}
@@ -488,34 +490,11 @@ export function HomeView({
 								/>
 							))}
 							{!displayedJobs.length && (
-								<div className="px-4 py-5">
-									<div
-										className={cn(
-											"mx-auto flex max-w-[280px] flex-col items-center text-center",
-											"text-muted-foreground",
-										)}
-									>
-										<div
-											className={cn(
-												"mb-3 flex size-11 items-center justify-center rounded-lg",
-												"bg-accent text-accent-foreground",
-											)}
-										>
-											<Bookmark className="size-5" aria-hidden="true" />
-										</div>
-										<h3 className={cn("text-sm font-bold", "text-foreground")}>
-											No recent jobs yet
-										</h3>
-										<p
-											className={cn(
-												"mt-1 text-xs leading-5",
-												"text-muted-foreground",
-											)}
-										>
-											Jobs you save will apppear here for quick access
-										</p>
-									</div>
-								</div>
+								<SectionEmptyState
+									icon={Bookmark}
+									title="No recent jobs yet"
+									description="Jobs you save will apppear here for quick access"
+								/>
 							)}
 						</section>
 					</div>
@@ -526,7 +505,7 @@ export function HomeView({
 							isDarkMode={isDarkMode}
 							onViewAll={onOpenReminders}
 						/>
-						<section className="overflow-hidden rounded-md border border-border/70 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
+						<section className="overflow-hidden rounded-md border border-border/70 bg-card  transition-colors">
 							{reminders.map((reminder) => (
 								<ReminderManagementRow
 									key={reminder.id}
@@ -537,10 +516,11 @@ export function HomeView({
 								/>
 							))}
 							{!reminders.length && (
-								<p className="px-4 py-5 text-sm text-muted-foreground">
-									No upcoming reminders yet. Add one from a job form or edit
-									screen.
-								</p>
+								<SectionEmptyState
+									icon={CalendarDays}
+									title="No upcoming reminders yet"
+									description="Add one from a job form or edit screen to stay on top of follow-ups."
+								/>
 							)}
 						</section>
 					</div>

@@ -1,4 +1,4 @@
-import { Bookmark } from "lucide-react";
+import { AlarmClock, Bookmark } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
@@ -40,7 +40,7 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 				<h3 className="truncate text-[13px] font-semibold leading-5 text-foreground transition-colors group-hover:text-primary">
 					{job.title}
 				</h3>
-				<p className="truncate text-xs font-medium text-muted-foreground">
+				<div className="flex items-center gap-1.5 truncate text-xs font-medium text-muted-foreground">
 					<span>{job.company}</span>
 					<span
 						className="inline-block px-1.5 align-middle text-[11px] font-semibold text-slate-400 dark:text-muted-foreground"
@@ -49,10 +49,29 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 						•
 					</span>
 					<span>{job.location}</span>
-				</p>
+					{job.hasReminder ? (
+						<>
+							<span
+								className="inline-block align-middle text-[11px] font-semibold text-slate-400 dark:text-muted-foreground"
+								aria-hidden="true"
+							>
+								•
+							</span>
+							<span
+								className="inline-flex items-center text-muted-foreground"
+								title="Reminder set"
+								aria-label="Reminder set"
+							>
+								<AlarmClock className="size-3.5" aria-hidden="true" />
+							</span>
+						</>
+					) : null}
+				</div>
 			</div>
 			<div className="flex min-w-0 flex-col items-end gap-1.5 max-[390px]:hidden">
-				<p className="w-full truncate text-right text-[11px] font-medium leading-4 text-muted-foreground">{job.date}</p>
+				<p className="w-full truncate text-right text-[11px] font-medium leading-4 text-muted-foreground">
+					{job.date}
+				</p>
 				<span
 					className={cn(
 						"inline-flex h-6 min-w-[54px] items-center justify-center gap-1 rounded-md border px-2 text-[10px] font-semibold",

@@ -16,6 +16,7 @@ export function mapStoredJobToRecentJob(job: StoredJob): RecentJob {
 		location: job.location || "Unknown location",
 		date: formatDate(job.updatedAt),
 		followUp: job.followUpDate ? formatDate(job.followUpDate) : "No reminder",
+		hasReminder: job.reminderEnabled && Boolean(job.followUpDate),
 		status: mapJobStatus(job.status),
 		brand: getBrand(job.company, job.platform),
 		logoUrl: job.logoUrl,

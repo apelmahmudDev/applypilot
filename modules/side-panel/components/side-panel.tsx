@@ -403,6 +403,7 @@ export function SidePanel() {
 						<JobDetailsView
 							job={selectedJob}
 							isDarkMode={isDarkMode}
+							onAddJob={openAddJobForm}
 							onBack={() => setPanelView(detailsBackView)}
 							onEdit={(job) =>
 								setActiveForm({

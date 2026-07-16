@@ -1,6 +1,5 @@
 import {
 	BadgeDollarSign,
-	Bell,
 	BriefcaseBusiness,
 	ExternalLink,
 	FileText,
@@ -9,7 +8,6 @@ import {
 	Tag,
 	X,
 } from "lucide-react";
-import type { AriaAttributes, ComponentType, ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,17 +17,14 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import {
+	JobDetailsContent,
+	JobDetailsReminderRow,
+	JobDetailsRow,
+	JobDetailsSection,
+} from "@/modules/job-details/components/job-details-content";
 import { JobBrandMark } from "@/modules/dashboard/components/job-table/job-brand-mark";
 import type { DashboardJob } from "@/modules/dashboard/types";
-
-const statusStyles: Record<DashboardJob["status"], string> = {
-	Applied: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/18 dark:text-emerald-200",
-	Interview: "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
-	Saved: "bg-blue-50 text-blue-600 dark:bg-blue-500/18 dark:text-blue-200",
-	Rejected: "bg-red-50 text-red-600 dark:bg-red-500/18 dark:text-red-200",
-	Offer: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
-};
 
 type JobDetailsDrawerProps = {
 	job: DashboardJob | null;
@@ -107,162 +102,97 @@ export function JobDetailsDrawer({
 					</div>
 				</SheetHeader>
 
-				<div className="flex-1 overflow-y-auto px-6 py-6">
-					<div className="flex items-start gap-4 border-b border-slate-100 pb-6 dark:border-border/60">
+				<JobDetailsContent
+					brandMark={
 						<JobBrandMark
 							brand={job.brand}
 							className="size-14 rounded-md text-2xl"
 						/>
-						<div className="min-w-0 flex-1">
-							<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-								<div className="min-w-0">
-									<h2 className="truncate text-lg font-semibold tracking-[-0.03em] text-slate-950 dark:text-foreground">
-										{job.title}
-									</h2>
-									<p className="mt-1 text-base font-medium text-slate-500 dark:text-muted-foreground">
-										{job.company}
+					}
+					title={job.title}
+					company={job.company}
+					status={job.status}
+					sections={
+						<>
+							<JobDetailsSection title="Basic Info">
+								<JobDetailsRow
+									icon={BriefcaseBusiness}
+									label="Job Type"
+									value={job.jobType}
+								/>
+								<JobDetailsRow
+									icon={Tag}
+									label="Work Mode"
+									value={job.workMode}
+								/>
+								<JobDetailsRow
+									icon={MapPin}
+									label="Location"
+									value={job.location}
+								/>
+								<JobDetailsRow
+									icon={Link2}
+									label="Source"
+									value={job.source.name}
+								/>
+								<JobDetailsRow icon={Tag} label="Saved Date" value={savedDate} />
+								<JobDetailsRow
+									icon={Tag}
+									label="Application Date"
+									value={applicationDate}
+								/>
+								<JobDetailsReminderRow
+									reminder={job.reminder}
+									onAddReminder={() => onAddReminder(job)}
+								/>
+							</JobDetailsSection>
+
+							<JobDetailsSection title="Compensation">
+								<JobDetailsRow
+									icon={BadgeDollarSign}
+									label="Salary"
+									value={job.salary ?? "Not specified"}
+								/>
+							</JobDetailsSection>
+
+							<JobDetailsSection title="Job Description">
+								<div className="flex gap-3">
+									<FileText
+										className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
+										aria-hidden="true"
+									/>
+									<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
+										{job.description}
 									</p>
 								</div>
-								<span
-									className={cn(
-										"inline-flex shrink-0 rounded-sm px-2 py-0.5 text-xs font-bold",
-										statusStyles[job.status],
+							</JobDetailsSection>
+
+							<JobDetailsSection title="Links">
+								<div className="flex gap-3">
+									<Link2
+										className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
+										aria-hidden="true"
+									/>
+									{job.source.url ? (
+										<a
+											href={job.source.url}
+											target="_blank"
+											rel="noreferrer"
+											className="text-sm font-semibold text-primary hover:underline"
+										>
+											Original Job Post
+										</a>
+									) : (
+										<p className="text-sm text-slate-500 dark:text-muted-foreground">
+											No source link available.
+										</p>
 									)}
-								>
-									{job.status}
-								</span>
-							</div>
-						</div>
-					</div>
-
-					<div className="space-y-8 py-6">
-						<JobDetailsSection title="Basic Info">
-							<DetailsRow
-								icon={BriefcaseBusiness}
-								label="Job Type"
-								value={job.jobType}
-							/>
-							<DetailsRow icon={Tag} label="Work Mode" value={job.workMode} />
-							<DetailsRow icon={MapPin} label="Location" value={job.location} />
-							<DetailsRow icon={Link2} label="Source" value={job.source.name} />
-							<DetailsRow icon={Tag} label="Saved Date" value={savedDate} />
-							<DetailsRow
-								icon={Tag}
-								label="Application Date"
-								value={applicationDate}
-							/>
-							<ReminderRow
-								reminder={job.reminder}
-								onAddReminder={() => onAddReminder(job)}
-							/>
-						</JobDetailsSection>
-
-						<JobDetailsSection title="Compensation">
-							<DetailsRow
-								icon={BadgeDollarSign}
-								label="Salary"
-								value={job.salary ?? "Not specified"}
-							/>
-						</JobDetailsSection>
-
-						<JobDetailsSection title="Job Description">
-							<div className="flex gap-3">
-								<FileText
-									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
-									aria-hidden="true"
-								/>
-								<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
-									{job.description}
-								</p>
-							</div>
-						</JobDetailsSection>
-
-						<JobDetailsSection title="Links">
-							<div className="flex gap-3">
-								<Link2
-									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
-									aria-hidden="true"
-								/>
-								{job.source.url ? (
-									<a
-										href={job.source.url}
-										target="_blank"
-										rel="noreferrer"
-										className="text-sm font-semibold text-primary hover:underline"
-									>
-										Original Job Post
-									</a>
-								) : (
-									<p className="text-sm text-slate-500 dark:text-muted-foreground">
-										No source link available.
-									</p>
-								)}
-							</div>
-						</JobDetailsSection>
-					</div>
-				</div>
+								</div>
+							</JobDetailsSection>
+						</>
+					}
+				/>
 			</SheetContent>
 		</Sheet>
-	);
-}
-
-type JobDetailsSectionProps = {
-	title: string;
-	children: ReactNode;
-};
-
-function JobDetailsSection({ title, children }: JobDetailsSectionProps) {
-	return (
-		<section className="border-b border-slate-100 pb-6 last:border-b-0 last:pb-0 dark:border-border/60">
-			<h3 className="mb-4 text-base font-bold text-slate-950 dark:text-foreground">{title}</h3>
-			<div className="space-y-4">{children}</div>
-		</section>
-	);
-}
-
-type DetailsRowProps = {
-	icon: ComponentType<{
-		className?: string;
-		"aria-hidden"?: AriaAttributes["aria-hidden"];
-	}>;
-	label: string;
-	value: string;
-};
-
-function DetailsRow({ icon: Icon, label, value }: DetailsRowProps) {
-	return (
-		<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
-			<Icon className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground" aria-hidden="true" />
-			<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">{label}</span>
-			<span className="text-sm font-medium text-slate-700 dark:text-foreground/90">{value}</span>
-		</div>
-	);
-}
-
-function ReminderRow({
-	reminder,
-	onAddReminder,
-}: {
-	reminder: string;
-	onAddReminder: () => void;
-}) {
-	const hasReminder = reminder !== "-";
-
-	return (
-		<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
-			<Bell className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground" aria-hidden="true" />
-			<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">Reminder</span>
-			<div className="flex items-center gap-3">
-				<span className="text-sm font-medium text-slate-700 dark:text-foreground/90">{reminder}</span>
-				<Button
-					type="button"
-					variant="ghost"
-					className="h-auto px-0 py-0 text-sm font-semibold text-primary hover:bg-transparent hover:text-primary/80"
-					onClick={onAddReminder}
-				>
-					{hasReminder ? "Update" : "Add reminder"}
-				</Button>
-			</div>
-		</div>
 	);
 }

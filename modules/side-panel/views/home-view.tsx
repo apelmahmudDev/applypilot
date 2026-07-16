@@ -230,20 +230,41 @@ export function HomeView({
 							</h2>
 						</div>
 						{!isDetecting && detectedJob && !isDetectionBannerDismissed && (
-							<div className="rounded-md bg-[linear-gradient(135deg,#F4F3FF_0%,#F8F7FF_100%)] px-2.5 py-2 text-primary dark:bg-primary/10 dark:text-primary-foreground">
+							<div
+								className={cn(
+									"rounded-md px-2.5 py-2",
+									isDarkMode
+										? "border border-white/8 bg-[#3A3047] text-slate-100"
+										: "border border-primary/10 bg-[linear-gradient(135deg,#F4F3FF_0%,#F8F7FF_100%)] text-primary",
+								)}
+							>
 								<div className="flex items-center justify-between gap-3">
 									<div className="flex min-w-0 items-center gap-2.5">
-										<span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white/80 text-primary shadow-sm dark:bg-background/70">
+										<span
+											className={cn(
+												"flex size-5 shrink-0 items-center justify-center rounded-full shadow-sm",
+												isDarkMode
+													? "bg-white/10 text-slate-100"
+													: "bg-white/80 text-primary",
+											)}
+										>
 											<Info className="size-3.5" aria-hidden="true" />
 										</span>
-										<p className="truncate text-xs font-medium">
-											We detected some information, but please review before
-											saving.
+										<p
+											className={cn(
+												"truncate text-xs font-medium",
+												isDarkMode ? "text-slate-100" : "text-primary",
+											)}
+										>
+											We detected some information, please review before saving.
 										</p>
 									</div>
 									<button
 										type="button"
-										className="flex size-5 shrink-0 items-center justify-center text-primary/80 transition-opacity hover:opacity-70 dark:text-muted-foreground"
+										className={cn(
+											"flex size-5 shrink-0 items-center justify-center transition-opacity hover:opacity-70",
+											isDarkMode ? "text-slate-300" : "text-primary/80",
+										)}
 										aria-label="Dismiss review message"
 										onClick={() => setIsDetectionBannerDismissed(true)}
 									>

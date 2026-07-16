@@ -501,6 +501,7 @@ export function SidePanel() {
 							sort={applicationSort}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView("home")}
+							onAddJob={openAddJobForm}
 							onSearchChange={setApplicationSearch}
 							onFilterChange={setApplicationFilter}
 							onSortChange={setApplicationSort}

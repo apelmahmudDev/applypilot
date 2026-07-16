@@ -1,12 +1,17 @@
-import { Search } from "lucide-react";
+import { Bookmark, Search } from "lucide-react";
 
 import type { StoredJob } from "@/lib/jobs/storage";
 import { cn } from "@/lib/utils";
-import { ApplicationJobRow } from "@/modules/side-panel/components/application-job-row";
-import { FullDashboardButton } from "@/modules/side-panel/components/full-dashboard-button";
-import { ViewHeader } from "@/modules/side-panel/components/view-header";
+import { RecentJobRow } from "@/modules/side-panel/components/recent-job-row";
+import { SectionEmptyState } from "@/modules/side-panel/components/section-empty-state";
+import {
+	SidePanelBackHeader,
+	SidePanelLayout,
+	SidePanelTopBar,
+} from "@/modules/side-panel/components/side-panel-layout";
 import type { ApplicationFilter } from "@/modules/side-panel/types";
 import { applicationFilters } from "@/modules/side-panel/utils/constants";
+import { mapStoredJobToRecentJob } from "@/modules/side-panel/utils/job-mappers";
 
 type AllApplicationsViewProps = {
 	jobs: StoredJob[];
@@ -15,6 +20,7 @@ type AllApplicationsViewProps = {
 	sort: string;
 	isDarkMode: boolean;
 	onBack: () => void;
+	onAddJob: () => void;
 	onSearchChange: (value: string) => void;
 	onFilterChange: (value: ApplicationFilter) => void;
 	onSortChange: (value: string) => void;
@@ -29,16 +35,28 @@ export function AllApplicationsView({
 	sort,
 	isDarkMode,
 	onBack,
+	onAddJob,
 	onSearchChange,
 	onFilterChange,
 	onSortChange,
-	onStatusChange,
+	onStatusChange: _onStatusChange,
 	onOpenJob,
 }: AllApplicationsViewProps) {
 	return (
-		<div className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-4">
-			<ViewHeader title="All Applications" isDarkMode={isDarkMode} onBack={onBack} />
-			<div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
+		<SidePanelLayout
+			header={
+				<SidePanelTopBar
+					leftSlot={
+						<SidePanelBackHeader
+							title="All Applications"
+							onBack={onBack}
+						/>
+					}
+					onAddJob={onAddJob}
+				/>
+			}
+		>
+			<div className="space-y-3">
 				<div
 					className={cn(
 						"flex h-10 items-center gap-2 rounded-[14px] border px-3",
@@ -51,8 +69,8 @@ export function AllApplicationsView({
 						placeholder="Search jobs..."
 						className={cn(
 							"min-w-0 flex-1 bg-transparent text-sm font-medium outline-none",
-								"text-[#111827] placeholder:text-[#94A3B8]",
-							)}
+							"text-[#111827] placeholder:text-[#94A3B8]",
+						)}
 						onChange={(event) => onSearchChange(event.target.value)}
 					/>
 				</div>
@@ -95,26 +113,26 @@ export function AllApplicationsView({
 
 				<section
 					className={cn(
-						"overflow-hidden rounded-[14px] border border-border bg-card",
+						"overflow-hidden rounded-md border border-border/70 bg-card transition-colors",
 					)}
 				>
 					{jobs.map((job) => (
-						<ApplicationJobRow
+						<RecentJobRow
 							key={job.id}
-							job={job}
+							job={mapStoredJobToRecentJob(job)}
 							isDarkMode={isDarkMode}
-							onStatusChange={() => onStatusChange(job)}
 							onOpen={() => onOpenJob(job)}
 						/>
 					))}
 					{!jobs.length && (
-						<p className="px-3 py-4 text-sm text-muted-foreground">
-							No applications found.
-						</p>
+						<SectionEmptyState
+							icon={Bookmark}
+							title="No applications found"
+							description="Saved jobs will appear here for quick review and navigation."
+						/>
 					)}
 				</section>
 			</div>
-			<FullDashboardButton isDarkMode={isDarkMode} />
-		</div>
+		</SidePanelLayout>
 	);
 }

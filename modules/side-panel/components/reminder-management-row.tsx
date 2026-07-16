@@ -1,6 +1,12 @@
 import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
 import type { Reminder } from "@/modules/side-panel/types";
@@ -115,23 +121,32 @@ export function ReminderManagementRow({
 					</p>
 				</div>
 			</div>
-			<Button
-				type="button"
-				variant="outline"
-				size="sm"
-				className={cn(
-					"mt-1.5 shrink-0 h-6 rounded-full px-2.5 text-[11px] font-medium",
-					"border-border/70 bg-card text-foreground hover:bg-muted/60",
-				)}
-				disabled={reminder.isCompleted}
-				onClick={(event) => {
-					event.stopPropagation();
-					onMarkDone();
-				}}
-			>
-				<Check className="size-3.5" aria-hidden="true" />
-				{reminder.isCompleted ? "Done" : "Mark"}
-			</Button>
+			<TooltipProvider delayDuration={120}>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							className={cn(
+								"mt-1.5 shrink-0 h-6 rounded-full px-2.5 text-[11px] font-medium",
+								"border-border/70 bg-card text-foreground hover:bg-muted/60",
+							)}
+							disabled={reminder.isCompleted}
+							onClick={(event) => {
+								event.stopPropagation();
+								onMarkDone();
+							}}
+						>
+							<Check className="size-3.5" aria-hidden="true" />
+							{reminder.isCompleted ? "Done" : "Mark"}
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="top" sideOffset={8}>
+						{reminder.isCompleted ? "Already completed" : "Mark as done"}
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
 		</div>
 	);
 }

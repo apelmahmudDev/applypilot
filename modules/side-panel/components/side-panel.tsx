@@ -60,7 +60,7 @@ export function SidePanel() {
 	const [applicationSearch, setApplicationSearch] = useState("");
 	const [applicationFilter, setApplicationFilter] =
 		useState<ApplicationFilter>("All");
-	const [applicationSort, setApplicationSort] = useState("latest");
+	const [reminderSearch, setReminderSearch] = useState("");
 	const [reminderFilter, setReminderFilter] = useState<ReminderFilter>("Today");
 	const [isSaving, setIsSaving] = useState(false);
 	const [jobPendingDelete, setJobPendingDelete] = useState<StoredJob | null>(
@@ -140,23 +140,12 @@ export function SidePanel() {
 
 				return matchesFilter && matchesSearch;
 			})
-			.sort((firstJob, secondJob) => {
-				if (applicationSort === "company") {
-					return firstJob.company.localeCompare(secondJob.company);
-				}
-
-				if (applicationSort === "status") {
-					return mapJobStatus(firstJob.status).localeCompare(
-						mapJobStatus(secondJob.status),
-					);
-				}
-
-				return (
+			.sort(
+				(firstJob, secondJob) =>
 					new Date(secondJob.updatedAt).getTime() -
-					new Date(firstJob.updatedAt).getTime()
-				);
-			});
-	}, [applicationFilter, applicationSearch, applicationSort, storedJobs]);
+					new Date(firstJob.updatedAt).getTime(),
+			);
+	}, [applicationFilter, applicationSearch, storedJobs]);
 	const reminders = useMemo(
 		() =>
 			storedJobs
@@ -193,22 +182,46 @@ export function SidePanel() {
 		[storedJobs],
 	);
 	const visibleReminders = useMemo(() => {
-		if (reminderFilter === "Completed") {
-			return completedReminders;
-		}
+		const search = reminderSearch.trim().toLowerCase();
 
-		if (reminderFilter === "Upcoming") {
-			return reminders.filter(isReminderUpcoming);
-		}
+		const sourceReminders =
+			reminderFilter === "Completed"
+				? completedReminders
+				: reminderFilter === "Upcoming"
+					? reminders.filter(isReminderUpcoming)
+					: reminders.filter((reminder) => !isReminderUpcoming(reminder));
 
-		return reminders.filter((reminder) => !isReminderUpcoming(reminder));
-	}, [completedReminders, reminderFilter, reminders]);
+		return sourceReminders.filter((reminder) => {
+			if (!search) {
+				return true;
+			}
+
+			return [
+				reminder.title,
+				reminder.company,
+				reminder.description,
+				reminder.reminderType,
+				reminder.statusLabel,
+				reminder.timeLabel,
+			]
+				.join(" ")
+				.toLowerCase()
+				.includes(search);
+		});
+	}, [completedReminders, reminderFilter, reminderSearch, reminders]);
 	const selectedReminder = useMemo(
 		() =>
 			[...reminders, ...completedReminders].find(
 				(reminder) => reminder.id === selectedReminderId,
 			) ?? null,
 		[completedReminders, reminders, selectedReminderId],
+	);
+	const selectedReminderJob = useMemo(
+		() =>
+			selectedReminder
+				? storedJobs.find((job) => job.id === selectedReminder.jobId) ?? null
+				: null,
+		[selectedReminder, storedJobs],
 	);
 	const reminderDialogJob = useMemo(
 		() => storedJobs.find((job) => job.id === reminderDialogJobId) ?? null,
@@ -488,8 +501,10 @@ export function SidePanel() {
 					) : panelView === "reminderDetails" ? (
 						<ReminderDetailsView
 							reminder={selectedReminder}
+							job={selectedReminderJob}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView(detailsBackView)}
+							onUpdateReminder={(job) => setReminderDialogJobId(job.id)}
 							onMarkDone={markReminderDone}
 							onRemoveReminder={removeReminder}
 						/>
@@ -498,21 +513,23 @@ export function SidePanel() {
 							jobs={allApplicationJobs}
 							search={applicationSearch}
 							filter={applicationFilter}
-							sort={applicationSort}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView("home")}
+							onAddJob={openAddJobForm}
 							onSearchChange={setApplicationSearch}
 							onFilterChange={setApplicationFilter}
-							onSortChange={setApplicationSort}
 							onStatusChange={handleCycleJobStatus}
 							onOpenJob={(job) => openJobDetails(job.id, "applications")}
 						/>
 					) : panelView === "reminders" ? (
 						<AllRemindersView
 							reminders={visibleReminders}
+							search={reminderSearch}
 							filter={reminderFilter}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView("home")}
+							onAddJob={openAddJobForm}
+							onSearchChange={setReminderSearch}
 							onFilterChange={setReminderFilter}
 							onOpenReminder={(reminder) =>
 								openReminderDetails(reminder.id, "reminders")

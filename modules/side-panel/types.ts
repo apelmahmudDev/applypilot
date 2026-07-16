@@ -16,6 +16,7 @@ export type RecentJob = {
 	location: string;
 	date: string;
 	followUp: string;
+	hasReminder: boolean;
 	status: JobStatus;
 	brand: "amazon" | "microsoft" | "swiggy" | "google" | "default";
 	logoUrl?: string;

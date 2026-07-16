@@ -1,7 +1,9 @@
 import {
+	AlarmClock,
 	BadgeDollarSign,
 	BriefcaseBusiness,
 	ExternalLink,
+	FileText,
 	Link2,
 	MapPin,
 	Tag,
@@ -25,12 +27,14 @@ import {
 } from "@/components/ui/sheet";
 import { JobBrandMark } from "@/modules/dashboard/components/job-table/job-brand-mark";
 import type { DashboardJob } from "@/modules/dashboard/types";
+import type { ReminderRow } from "@/modules/dashboard/components/reminders/types";
 
 type JobDetailsDrawerProps = {
 	job: DashboardJob | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	onAddReminder: (job: DashboardJob) => void;
+	reminderInfo?: ReminderRow | null;
 };
 
 export function JobDetailsDrawer({
@@ -38,6 +42,7 @@ export function JobDetailsDrawer({
 	open,
 	onOpenChange,
 	onAddReminder,
+	reminderInfo = null,
 }: JobDetailsDrawerProps) {
 	if (!job) {
 		return null;
@@ -114,6 +119,32 @@ export function JobDetailsDrawer({
 					status={job.status}
 					sections={
 						<>
+							{reminderInfo ? (
+								<JobDetailsSection title="Reminder Info">
+									<JobDetailsRow
+										icon={AlarmClock}
+										label="Reminder Type"
+										value={reminderInfo.kind}
+									/>
+									<JobDetailsReminderRow
+										reminder={reminderInfo.dueLabel}
+										onAddReminder={() => onAddReminder(job)}
+									/>
+									<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
+										<FileText
+											className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground"
+											aria-hidden="true"
+										/>
+										<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
+											Note
+										</span>
+										<p className="whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-foreground/90">
+											{reminderInfo.note}
+										</p>
+									</div>
+								</JobDetailsSection>
+							) : null}
+
 							<JobDetailsSection title="Basic Info">
 								<JobDetailsRow
 									icon={BriefcaseBusiness}
@@ -141,10 +172,12 @@ export function JobDetailsDrawer({
 									label="Application Date"
 									value={applicationDate}
 								/>
-								<JobDetailsReminderRow
-									reminder={job.reminder}
-									onAddReminder={() => onAddReminder(job)}
-								/>
+								{reminderInfo ? null : (
+									<JobDetailsReminderRow
+										reminder={job.reminder}
+										onAddReminder={() => onAddReminder(job)}
+									/>
+								)}
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Compensation">

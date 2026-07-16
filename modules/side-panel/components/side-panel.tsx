@@ -13,6 +13,8 @@ import {
 	type StoredJob,
 } from "@/lib/jobs/storage";
 import { cn } from "@/lib/utils";
+import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
+import type { ReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { JobFormPanel } from "@/modules/side-panel/components/job-form-panel";
 import { useSidePanelDetection } from "@/modules/side-panel/hooks/use-side-panel-detection";
 import { emptyJobForm } from "@/modules/side-panel/mock-data";
@@ -35,6 +37,10 @@ import {
 	isReminderUpcoming,
 	mapStoredJobToReminder,
 } from "@/modules/side-panel/utils/reminders";
+import {
+	applyReminderFormValuesToStoredJob,
+	getStoredJobReminderFormValues,
+} from "@/modules/side-panel/utils/reminder-form";
 import { AllApplicationsView } from "@/modules/side-panel/views/all-applications-view";
 import { AllRemindersView } from "@/modules/side-panel/views/all-reminders-view";
 import { HomeView } from "@/modules/side-panel/views/home-view";
@@ -61,6 +67,9 @@ export function SidePanel() {
 		null,
 	);
 	const [isDeletingJob, setIsDeletingJob] = useState(false);
+	const [reminderDialogJobId, setReminderDialogJobId] = useState<string | null>(
+		null,
+	);
 	const [activeForm, setActiveForm] = useState<{
 		mode: "add" | "edit";
 		jobId?: string;
@@ -200,6 +209,10 @@ export function SidePanel() {
 				(reminder) => reminder.id === selectedReminderId,
 			) ?? null,
 		[completedReminders, reminders, selectedReminderId],
+	);
+	const reminderDialogJob = useMemo(
+		() => storedJobs.find((job) => job.id === reminderDialogJobId) ?? null,
+		[reminderDialogJobId, storedJobs],
 	);
 
 	const savedCount = storedJobs.length;
@@ -361,6 +374,33 @@ export function SidePanel() {
 		}
 	};
 
+	const saveReminder = async (values: ReminderFormValues) => {
+		if (!reminderDialogJob) {
+			return;
+		}
+
+		try {
+			const result = await updateJobInStorage(
+				reminderDialogJob.id,
+				applyReminderFormValuesToStoredJob(reminderDialogJob, values),
+			);
+
+			setStoredJobs((currentJobs) =>
+				currentJobs.map((currentJob) =>
+					currentJob.id === result.job.id ? result.job : currentJob,
+				),
+			);
+			setReminderDialogJobId(null);
+			toast.success(
+				reminderDialogJob.followUpDate
+					? "Updated this reminder."
+					: "Created this reminder.",
+			);
+		} catch {
+			toast.error("Could not save this reminder. Please try again.");
+		}
+	};
+
 	const openAddJobForm = () => {
 		setActiveForm({ mode: "add", job: emptyJobForm });
 	};
@@ -391,6 +431,33 @@ export function SidePanel() {
 					onConfirm={() => void confirmDeleteJob()}
 				/>
 				<div className="flex h-full flex-col overflow-hidden transition-colors">
+					{reminderDialogJob ? (
+						<ReminderFormDialog
+							open={reminderDialogJob !== null}
+							title={
+								reminderDialogJob.followUpDate
+									? "Update Reminder"
+									: "Create Reminder"
+							}
+							submitLabel={
+								reminderDialogJob.followUpDate
+									? "Update Reminder"
+									: "Save Reminder"
+							}
+							contentClassName="w-[calc(100%-1.5rem)] max-w-none rounded-xl"
+							fieldGridClassName="grid-cols-2 md:grid-cols-2"
+							footerClassName="grid grid-cols-2 gap-3 sm:grid-cols-2"
+							initialValues={getStoredJobReminderFormValues(reminderDialogJob)}
+							onOpenChange={(open) => {
+								if (!open) {
+									setReminderDialogJobId(null);
+								}
+							}}
+							onSubmit={(values) => {
+								void saveReminder(values);
+							}}
+						/>
+					) : null}
 					{activeForm ? (
 						<JobFormPanel
 							mode={activeForm.mode}
@@ -414,13 +481,7 @@ export function SidePanel() {
 							}
 							onStatusChange={handleCycleJobStatus}
 							onDelete={handleDeleteJob}
-							onUpdateReminder={(job) =>
-								setActiveForm({
-									mode: "edit",
-									jobId: job.id,
-									job: toSidePanelJobForm(job),
-								})
-							}
+							onUpdateReminder={(job) => setReminderDialogJobId(job.id)}
 							onRemoveReminder={removeReminder}
 						/>
 					) : panelView === "reminderDetails" ? (

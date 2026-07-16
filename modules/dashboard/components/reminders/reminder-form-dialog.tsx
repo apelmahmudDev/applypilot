@@ -49,6 +49,9 @@ type ReminderFormDialogProps = {
 	description?: string;
 	submitLabel?: string;
 	initialValues: ReminderFormValues;
+	contentClassName?: string;
+	fieldGridClassName?: string;
+	footerClassName?: string;
 	onOpenChange: (open: boolean) => void;
 	onSubmit: (values: ReminderFormValues) => void;
 };
@@ -65,6 +68,9 @@ export function ReminderFormDialog({
 	description = "Schedule a follow-up and keep the reminder details in one place.",
 	submitLabel = "Save Reminder",
 	initialValues,
+	contentClassName,
+	fieldGridClassName,
+	footerClassName,
 	onOpenChange,
 	onSubmit,
 }: ReminderFormDialogProps) {
@@ -84,7 +90,10 @@ export function ReminderFormDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className="max-w-[760px] border-border/80 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.14)] dark:border-none dark:bg-card"
+				className={cn(
+					"max-w-[760px] border-border/80 bg-white p-0 shadow-[0_24px_60px_rgba(15,23,42,0.14)] dark:border-none dark:bg-card",
+					contentClassName,
+				)}
 				overlayClassName="bg-white/6 backdrop-blur-[0.8px] dark:bg-black/28 dark:backdrop-blur-[0.8px]"
 				showCloseButton={false}
 			>
@@ -105,7 +114,12 @@ export function ReminderFormDialog({
 						</DialogHeader>
 
 						<FieldGroup className="mt-6 gap-5">
-							<div className="grid gap-5 md:grid-cols-2">
+							<div
+								className={cn(
+									"grid gap-5 md:grid-cols-2",
+									fieldGridClassName,
+								)}
+							>
 								<form.Field
 									name="type"
 									children={(field) => (
@@ -293,7 +307,12 @@ export function ReminderFormDialog({
 						</FieldGroup>
 					</div>
 
-					<DialogFooter className="border-t border-slate-100 px-6 py-4 dark:border-border/60 sm:justify-end">
+					<DialogFooter
+						className={cn(
+							"border-t border-slate-100 px-6 py-4 dark:border-border/60 sm:justify-end",
+							footerClassName,
+						)}
+					>
 						<Button
 							type="button"
 							variant="outline"

@@ -2,10 +2,14 @@
   <img src="./public/logo.png" alt="ApplyPilot logo" width="92" />
 </p>
 
-<h1 align="center">Applypilot</h1>
+<h1 align="center">ApplyPilot</h1>
 
 <p align="center">
   A privacy-first browser extension for tracking job applications while you browse job boards.
+</p>
+
+<p align="center">
+  <img src="./public/featured-image.png" alt="ApplyPilot featured preview" width="100%" />
 </p>
 
 <hr />
@@ -166,38 +170,6 @@ pnpm zip:firefox
 3. Choose `This Firefox`.
 4. Click `Load Temporary Add-on`.
 5. Select the generated manifest from the build output.
-
-## Development Notes
-
-- Use `pnpm` because the repo is locked with `pnpm-lock.yaml`.
-- Keep `entrypoints/` thin and move feature logic into `modules/`.
-- Prefer existing shared UI components from `components/ui`.
-- Keep the popup lightweight and focused on quick save flows.
-- Keep larger management flows in the side panel and dashboard.
-- Preserve local-first behavior unless a feature explicitly needs something else.
-- Avoid broad permissions, remote services, analytics, and telemetry unless intentionally added.
-
-## Data Model Notes
-
-Saved jobs support fields such as:
-
-- title
-- company
-- location
-- url
-- platform
-- salary
-- notes
-- status
-- reminder fields
-- timestamps
-
-Storage behavior includes:
-
-- normalization before save
-- backward-safe stored record parsing
-- duplicate detection
-- create, update, delete, and list operations
 
 ## Status
 

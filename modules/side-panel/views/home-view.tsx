@@ -160,7 +160,7 @@ export function HomeView({
 					<TooltipProvider delayDuration={120}>
 						<div
 							className={cn(
-								"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3 backdrop-blur-xl sm:-mx-4 sm:px-4",
+								"sticky top-0 z-10 -mx-3 flex items-center justify-between gap-3 border-b border-border/70 px-3 py-3 backdrop-blur-xl sm:-mx-4 sm:px-4",
 								"bg-white dark:bg-background",
 							)}
 						>
@@ -256,7 +256,7 @@ export function HomeView({
 								"transition-colors",
 								detectedJob && !isDetecting
 									? "p-0"
-									: "rounded-md border border-slate-200 bg-white p-3 dark:border-none dark:bg-card",
+									: "rounded-md border border-border/70 bg-white p-3 dark:bg-card",
 							)}
 						>
 							{isDetecting ? (
@@ -269,7 +269,7 @@ export function HomeView({
 								/>
 							) : detectedJob ? (
 								<>
-									<div className="rounded-md border border-slate-200 bg-white p-3.5 dark:border-none dark:bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+									<div className="rounded-md border border-border/70 bg-white p-3.5 dark:bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
 										<div className="flex gap-4">
 											<CompanyMark
 												brand={getBrand(
@@ -449,7 +449,7 @@ export function HomeView({
 						</div>
 					</section>
 
-					<section className="grid grid-cols-3 rounded-md border border-slate-200 bg-card py-2.5 transition-colors dark:border-none shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+					<section className="grid grid-cols-3 rounded-md border border-border/70 bg-card py-2.5 transition-colors shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
 						<StatItem
 							icon={Bookmark}
 							value={String(savedCount)}
@@ -478,7 +478,7 @@ export function HomeView({
 							isDarkMode={isDarkMode}
 							onViewAll={onOpenApplications}
 						/>
-						<section className="overflow-hidden rounded-md border border-slate-200 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
+						<section className="overflow-hidden rounded-md border border-border/70 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
 							{displayedJobs.map((job) => (
 								<RecentJobRow
 									key={job.id}
@@ -526,7 +526,7 @@ export function HomeView({
 							isDarkMode={isDarkMode}
 							onViewAll={onOpenReminders}
 						/>
-						<section className="overflow-hidden rounded-md border border-slate-200 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
+						<section className="overflow-hidden rounded-md border border-border/70 bg-card shadow-[0_4px_16px_rgba(15,23,42,0.04)] transition-colors">
 							{reminders.map((reminder) => (
 								<ReminderManagementRow
 									key={reminder.id}
@@ -548,8 +548,7 @@ export function HomeView({
 
 				<footer
 					className={cn(
-						"shrink-0 bg-white dark:bg-background px-4 py-1 text-center backdrop-blur",
-						"border-border",
+						"shrink-0 border-t border-border/70 bg-white px-4 py-1 text-center backdrop-blur dark:bg-background",
 					)}
 				>
 					<p className="text-[10px] text-muted-foreground/80">

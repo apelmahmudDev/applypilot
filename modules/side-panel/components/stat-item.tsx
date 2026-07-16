@@ -22,7 +22,7 @@ export function StatItem({
 		<div
 			className={cn(
 				"flex min-w-0 items-center justify-center gap-3 px-2.5 py-1.5 text-left",
-				bordered && "border-l border-slate-100 dark:border-white/10",
+				bordered && "border-l border-border/60",
 			)}
 		>
 			<div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#F5F3FF] text-[#5B55D6] dark:bg-primary/15 dark:text-primary">

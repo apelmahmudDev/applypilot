@@ -62,7 +62,7 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 								title="Reminder set"
 								aria-label="Reminder set"
 							>
-								<AlarmClock className="size-3.5" aria-hidden="true" />
+								<AlarmClock className="size-3" aria-hidden="true" />
 							</span>
 						</>
 					) : null}

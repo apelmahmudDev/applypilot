@@ -105,6 +105,7 @@ export function JobDetailsView({
 			contentClassName="px-0 pb-0 pt-0"
 		>
 			<JobDetailsContent
+				className="px-3 py-4 sm:px-4"
 				brandMark={
 					<CompanyMark
 						brand={getBrand(job.company, job.platform)}

@@ -1,14 +1,19 @@
 import {
 	AlarmClock,
-	Building2,
+	BadgeDollarSign,
 	CalendarDays,
 	Check,
 	FileText,
+	Link2,
+	MapPin,
+	Tag,
 	Trash2,
 } from "lucide-react";
 
+import { FormattedJobDescription } from "@/components/formatted-job-description";
 import {
 	JobDetailsContent,
+	JobDetailsReminderRow,
 	JobDetailsRow,
 	JobDetailsSection,
 } from "@/components/job-details-content";
@@ -19,6 +24,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { StoredJob } from "@/lib/jobs/storage";
 import { cn } from "@/lib/utils";
 import { CompanyMark } from "@/modules/side-panel/components/company-mark";
 import {
@@ -27,24 +33,33 @@ import {
 	SidePanelTopBar,
 } from "@/modules/side-panel/components/side-panel-layout";
 import type { Reminder } from "@/modules/side-panel/types";
+import {
+	formatDate,
+	formatDateSlash,
+	formatTime,
+} from "@/modules/side-panel/utils/format";
 import { getBrand } from "@/modules/side-panel/utils/job-mappers";
 
 type ReminderDetailsViewProps = {
 	reminder: Reminder | null;
+	job: StoredJob | null;
 	isDarkMode: boolean;
 	onBack: () => void;
+	onUpdateReminder: (job: StoredJob) => void;
 	onMarkDone: (reminderId: string) => void;
 	onRemoveReminder: (reminderId: string) => void;
 };
 
 export function ReminderDetailsView({
 	reminder,
+	job,
 	isDarkMode: _isDarkMode,
 	onBack,
+	onUpdateReminder,
 	onMarkDone,
 	onRemoveReminder,
 }: ReminderDetailsViewProps) {
-	if (!reminder) {
+	if (!reminder || !job) {
 		return (
 			<SidePanelLayout
 				header={
@@ -66,6 +81,20 @@ export function ReminderDetailsView({
 		);
 	}
 
+	const savedDate = formatDate(job.createdAt) || "Unknown";
+	const applicationDate =
+		job.status === "Saved"
+			? "-"
+			: job.savedDate
+				? formatDate(job.savedDate)
+				: "-";
+	const reminderValue = [
+		formatDateSlash(reminder.followUpDate),
+		reminder.followUpTime ? formatTime(reminder.followUpTime) : null,
+	]
+		.filter(Boolean)
+		.join(", ");
+
 	return (
 		<SidePanelLayout
 			header={
@@ -81,20 +110,39 @@ export function ReminderDetailsView({
 				className="px-3 py-4 sm:px-4"
 				brandMark={
 					<CompanyMark
-						brand={getBrand(reminder.company, "")}
-						logoUrl={reminder.logoUrl}
-						companyName={reminder.company}
+						brand={getBrand(job.company, job.platform)}
+						logoUrl={job.logoUrl}
+						companyName={job.company}
 						size="lg"
 						appearance="soft"
 					/>
 				}
-				title={reminder.title}
-				company={reminder.company}
+				title={job.title || reminder.title}
+				company={job.company || reminder.company}
 				status={reminder.isCompleted ? "Offer" : "Saved"}
 				hideHeaderStatus
 				summaryActions={
 					<TooltipProvider delayDuration={120}>
-						<div className="grid grid-cols-2 gap-2">
+						<div className="grid grid-cols-3 gap-2">
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										type="button"
+										variant="outline"
+										className={cn(
+											"h-9 rounded-md text-xs font-semibold",
+											"border-input bg-card text-foreground hover:bg-muted/60",
+										)}
+										onClick={() => onUpdateReminder(job)}
+									>
+										<AlarmClock className="size-4" aria-hidden="true" />
+										Update
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top" sideOffset={8}>
+									Update reminder
+								</TooltipContent>
+							</Tooltip>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button
@@ -138,12 +186,7 @@ export function ReminderDetailsView({
 				}
 				sections={
 					<>
-						<JobDetailsSection title="Basic Info">
-							<JobDetailsRow
-								icon={Building2}
-								label="Company"
-								value={reminder.company}
-							/>
+						<JobDetailsSection title="Reminder Info">
 							<JobDetailsRow
 								icon={AlarmClock}
 								label="Reminder Type"
@@ -151,25 +194,99 @@ export function ReminderDetailsView({
 							/>
 							<JobDetailsRow
 								icon={CalendarDays}
-								label="When"
-								value={reminder.timeLabel}
+								label="Reminder"
+								value={reminderValue}
 							/>
 							<JobDetailsRow
 								icon={Check}
 								label="Status"
 								value={reminder.isCompleted ? "Completed" : "Open"}
 							/>
-						</JobDetailsSection>
-
-						<JobDetailsSection title="Reminder Note">
-							<div className="flex gap-3">
+							<div className="grid grid-cols-[24px_minmax(120px,160px)_minmax(0,1fr)] items-start gap-3">
 								<FileText
-									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
+									className="mt-0.5 size-4 text-slate-400 dark:text-muted-foreground"
 									aria-hidden="true"
 								/>
+								<span className="text-sm font-medium text-slate-500 dark:text-muted-foreground">
+									Note
+								</span>
 								<p className="whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-muted-foreground">
 									{reminder.description}
 								</p>
+							</div>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Basic Info">
+							<JobDetailsRow
+								icon={Tag}
+								label="Job Type"
+								value={job.employmentType || "Not specified"}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Work Mode"
+								value={job.workplaceType || "Not specified"}
+							/>
+							<JobDetailsRow
+								icon={MapPin}
+								label="Location"
+								value={job.location || "Location not found"}
+							/>
+							<JobDetailsRow
+								icon={Link2}
+								label="Source"
+								value={job.platform || "Other"}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Saved Date"
+								value={savedDate}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Application Date"
+								value={applicationDate}
+							/>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Compensation">
+							<JobDetailsRow
+								icon={BadgeDollarSign}
+								label="Salary"
+								value={job.salary || "Not specified"}
+							/>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Job Description">
+							<div className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
+								<FormattedJobDescription
+									descriptionHtml={job.descriptionHtml}
+									descriptionText={job.descriptionText || job.notes}
+									collapsible
+								/>
+							</div>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Links">
+							<div className="flex gap-3">
+								<Link2
+									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
+									aria-hidden="true"
+								/>
+								{job.url ? (
+									<a
+										href={job.url}
+										target="_blank"
+										rel="noreferrer"
+										className="text-sm font-semibold text-primary hover:underline"
+									>
+										Original Job Post
+									</a>
+								) : (
+									<p className="text-sm text-slate-500 dark:text-muted-foreground">
+										No source link available.
+									</p>
+								)}
 							</div>
 						</JobDetailsSection>
 					</>

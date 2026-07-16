@@ -216,6 +216,13 @@ export function SidePanel() {
 			) ?? null,
 		[completedReminders, reminders, selectedReminderId],
 	);
+	const selectedReminderJob = useMemo(
+		() =>
+			selectedReminder
+				? storedJobs.find((job) => job.id === selectedReminder.jobId) ?? null
+				: null,
+		[selectedReminder, storedJobs],
+	);
 	const reminderDialogJob = useMemo(
 		() => storedJobs.find((job) => job.id === reminderDialogJobId) ?? null,
 		[reminderDialogJobId, storedJobs],
@@ -494,8 +501,10 @@ export function SidePanel() {
 					) : panelView === "reminderDetails" ? (
 						<ReminderDetailsView
 							reminder={selectedReminder}
+							job={selectedReminderJob}
 							isDarkMode={isDarkMode}
 							onBack={() => setPanelView(detailsBackView)}
+							onUpdateReminder={(job) => setReminderDialogJobId(job.id)}
 							onMarkDone={markReminderDone}
 							onRemoveReminder={removeReminder}
 						/>

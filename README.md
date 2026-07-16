@@ -1,6 +1,6 @@
-<p align="center">
+<!-- <p align="center">
   <img src="./public/logo.png" alt="ApplyPilot logo" width="92" />
-</p>
+</p> -->
 
 <h1 align="center">ApplyPilot</h1>
 

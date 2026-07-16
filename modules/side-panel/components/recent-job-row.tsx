@@ -20,7 +20,7 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b border-dashed border-slate-200 px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
+				"group grid cursor-pointer grid-cols-[40px_minmax(0,1fr)_78px] items-center gap-3 border-b border-dashed border-border/60 px-3 py-3 transition last:border-b-0 hover:bg-primary/6 active:bg-primary/8 dark:hover:bg-primary/10 dark:active:bg-primary/14 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20 max-[390px]:grid-cols-[40px_minmax(0,1fr)]",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {
@@ -37,7 +37,9 @@ export function RecentJobRow({ job, isDarkMode, onOpen }: RecentJobRowProps) {
 				appearance="soft"
 			/>
 			<div className="min-w-0">
-				<h3 className="truncate text-[13px] font-semibold leading-5 text-foreground">{job.title}</h3>
+				<h3 className="truncate text-[13px] font-semibold leading-5 text-foreground transition-colors group-hover:text-primary">
+					{job.title}
+				</h3>
 				<p className="truncate text-xs font-medium text-muted-foreground">
 					<span>{job.company}</span>
 					<span

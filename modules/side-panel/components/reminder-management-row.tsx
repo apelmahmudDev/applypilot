@@ -21,7 +21,7 @@ export function ReminderManagementRow({
 }: ReminderManagementRowProps) {
 	const reminderTypeBadgeClassName =
 		reminder.reminderType === "Follow up"
-			? "bg-primary/10 text-primary dark:bg-primary/18 dark:text-primary-foreground"
+			? "bg-primary/10 text-primary dark:bg-primary/18 dark:text-slate-100"
 			: reminder.reminderType === "Interview"
 				? "bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200"
 				: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200";
@@ -44,7 +44,7 @@ export function ReminderManagementRow({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"flex cursor-pointer items-start gap-3 border-b border-dashed border-slate-200 px-3 py-3 transition last:border-b-0 hover:bg-muted/60 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20",
+				"group flex cursor-pointer items-start gap-3 border-b border-dashed border-border/60 px-3 py-3 transition last:border-b-0 hover:bg-primary/6 active:bg-primary/8 dark:hover:bg-primary/10 dark:active:bg-primary/14 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/20",
 			)}
 			onClick={onOpen}
 			onKeyDown={(event) => {
@@ -63,7 +63,7 @@ export function ReminderManagementRow({
 			<div className="min-w-0 flex-1">
 				<h3
 					className={cn(
-						"truncate text-[13px] font-semibold leading-5",
+						"truncate text-[13px] font-semibold leading-5 transition-colors group-hover:text-primary",
 						"text-foreground",
 					)}
 				>
@@ -121,7 +121,7 @@ export function ReminderManagementRow({
 				size="sm"
 				className={cn(
 					"mt-1.5 shrink-0 h-6 rounded-full px-2.5 text-[11px] font-medium",
-					"border-slate-100 bg-card text-foreground hover:bg-muted/60",
+					"border-border/70 bg-card text-foreground hover:bg-muted/60",
 				)}
 				disabled={reminder.isCompleted}
 				onClick={(event) => {

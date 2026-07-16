@@ -1,27 +1,28 @@
-import { CalendarDays, Save, X } from "lucide-react";
-import { useState } from "react";
-import type { ReactNode } from "react";
+import { Bell, BriefcaseBusiness, Link2, MapPin, Tag, X } from "lucide-react";
+import { useMemo, useState } from "react";
 
+import {
+	fieldLabelClassName,
+	JobFormDateField,
+	JobFormSelectField,
+	JobFormTextField,
+} from "@/components/job-form-fields";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { experienceLevelOptions } from "@/modules/dashboard/components/job-form/job-form.utils";
+import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
+import {
+	defaultReminderFormValues,
+	formatReminderSummary,
+} from "@/modules/dashboard/components/reminders/reminder-form.utils";
+import type { ReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.types";
+import {
+	SidePanelBackHeader,
+	SidePanelLayout,
+	SidePanelTopBar,
+} from "@/modules/side-panel/components/side-panel-layout";
 import type {
 	SidePanelJobForm,
 	SidePanelJobStatus,
@@ -37,416 +38,282 @@ type JobFormPanelProps = {
 	onSave: (job: SidePanelJobForm) => void;
 };
 
-const platforms = ["LinkedIn", "Google Careers", "Indeed", "Naukri", "Other"];
-const statuses: SidePanelJobStatus[] = [
-	"Saved",
-	"Applied",
-	"Interview",
-	"Interested",
-	"Rejected",
-	"Offer",
-];
-
-const inputBase =
-	"h-9 rounded-md text-sm font-medium shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+const platforms = ["LinkedIn", "Company Site", "Manual", "Indeed"] as const;
+const statuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"] as const;
+const workTypeOptions = ["Remote", "Hybrid", "On-site", "Worldwide"] as const;
+const jobTypeOptions = ["Full-time", "Part-time", "Contract"] as const;
 
 export function JobFormPanel({
 	mode,
 	initialJob,
-	isDarkMode,
+	isDarkMode: _isDarkMode,
 	onCancel,
 	onSave,
 }: JobFormPanelProps) {
 	const [job, setJob] = useState(initialJob);
+	const [deadlineOpen, setDeadlineOpen] = useState(false);
+	const [isReminderOpen, setIsReminderOpen] = useState(false);
 
-	const updateField = (
-		field: keyof SidePanelJobForm,
-		value: string | boolean,
+	const reminderValues = useMemo<ReminderFormValues>(
+		() =>
+			job.followUpDate
+				? {
+						type: job.reminderType ?? "Follow up",
+						date: job.followUpDate,
+						time: job.followUpTime || defaultReminderFormValues.time,
+						isActive: job.reminderEnabled,
+						note: job.reminderNote || defaultReminderFormValues.note,
+					}
+				: defaultReminderFormValues,
+		[
+			job.followUpDate,
+			job.followUpTime,
+			job.reminderEnabled,
+			job.reminderNote,
+			job.reminderType,
+		],
+	);
+
+	const updateField = <K extends keyof SidePanelJobForm>(
+		field: K,
+		value: SidePanelJobForm[K],
 	) => {
 		setJob((currentJob) => ({ ...currentJob, [field]: value }));
 	};
 
 	return (
-		<div className="flex min-h-0 flex-1 p-0">
-			<section className="flex min-h-0 flex-1 flex-col rounded-none border-0 bg-card shadow-none">
-				<header
-					className={cn(
-						"flex shrink-0 items-center justify-between border-b px-4 py-4",
-						"border-[#E5E7EB]",
-					)}
-				>
-					<h2 className={cn("text-xl font-bold", "text-foreground")}>
-						{mode === "add" ? "Add New Job" : "Edit Job"}
-					</h2>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className={cn(
-							"text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-						)}
-						aria-label="Close job form"
-						title="Close"
-						onClick={onCancel}
-					>
-						<X className="size-5" aria-hidden="true" />
-					</Button>
-				</header>
-
+		<>
+			<SidePanelLayout
+				contentClassName="px-0 pb-0 pt-0"
+				header={
+					<SidePanelTopBar
+						leftSlot={
+							<SidePanelBackHeader
+								title={mode === "add" ? "Add Job" : "Edit Job"}
+								onBack={onCancel}
+							/>
+						}
+						rightSlot={
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-sm"
+								className="text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
+								onClick={onCancel}
+								aria-label="Close job form"
+							>
+								<X className="size-4.5" aria-hidden="true" />
+							</Button>
+						}
+					/>
+				}
+				footer={
+					<div className="space-y-2">
+						<div className="grid grid-cols-2 gap-3 px-1 pt-0.5 pb-1">
+							<Button
+								type="button"
+								variant="outline"
+								className="h-10 rounded-md border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
+								onClick={onCancel}
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								form="side-panel-job-form"
+								className="h-10 rounded-md bg-primary px-5 font-semibold text-white shadow-none hover:bg-primary/90"
+							>
+								{mode === "add" ? "Save Job" : "Update Job"}
+							</Button>
+						</div>
+						<p className="text-[10px] text-muted-foreground/80">
+							All your job data is stored locally in your browser.
+						</p>
+					</div>
+				}
+			>
 				<form
-					className="flex min-h-0 flex-1 flex-col"
+					id="side-panel-job-form"
+					className="flex min-h-full flex-col"
 					onSubmit={(event) => {
 						event.preventDefault();
 						onSave(job);
 					}}
 				>
-					<div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
-						<FieldRow label="Job Title" isDarkMode={isDarkMode}>
-							<TextInput
-								value={job.title}
-								isDarkMode={isDarkMode}
-								placeholder="Frontend Developer"
-								required
-								onChange={(value) => updateField("title", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Company" isDarkMode={isDarkMode}>
-							<TextInput
-								value={job.company}
-								isDarkMode={isDarkMode}
-								placeholder="Google"
-								required
-								onChange={(value) => updateField("company", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Location" isDarkMode={isDarkMode}>
-							<TextInput
-								value={job.location}
-								isDarkMode={isDarkMode}
-								placeholder="Dhaka, Bangladesh"
-								onChange={(value) => updateField("location", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Job URL" isDarkMode={isDarkMode}>
-							<TextInput
-								type="url"
-								value={job.url}
-								isDarkMode={isDarkMode}
-								placeholder="https://www.linkedin.com/jobs/view/1234567890"
-								required
-								onChange={(value) => updateField("url", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Platform" isDarkMode={isDarkMode}>
-							<SelectInput
-								value={job.platform}
-								options={platforms}
-								isDarkMode={isDarkMode}
-								onChange={(value) => updateField("platform", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Salary" hint="Optional" isDarkMode={isDarkMode}>
-							<TextInput
-								value={job.salary}
-								isDarkMode={isDarkMode}
-								placeholder="INR 12 - 18 LPA"
-								onChange={(value) => updateField("salary", value)}
-							/>
-						</FieldRow>
-						<FieldRow label="Status" isDarkMode={isDarkMode}>
-							<SelectInput
-								value={job.status}
-								options={statuses}
-								isDarkMode={isDarkMode}
-								onChange={(value) =>
-									updateField("status", value as SidePanelJobStatus)
-								}
-							/>
-						</FieldRow>
-						<FieldRow label="Deadline" hint="Optional" isDarkMode={isDarkMode}>
-							<DateInput
-								value={job.deadline}
-								isDarkMode={isDarkMode}
-								onChange={(value) => updateField("deadline", value)}
-							/>
-						</FieldRow>
-						<FieldRow
-							label="Follow-up Date"
-							hint="Optional"
-							isDarkMode={isDarkMode}
-						>
-							<DateInput
-								value={job.followUpDate}
-								isDarkMode={isDarkMode}
-								onChange={(value) => updateField("followUpDate", value)}
-							/>
-						</FieldRow>
-						<section className="rounded-[14px] border border-border bg-muted/20 p-3">
-							<div className="flex items-start justify-between gap-3">
-								<div>
-									<h3 className="text-sm font-semibold text-foreground">
-										Reminder
-									</h3>
-									<p className="mt-1 text-xs leading-5 text-muted-foreground">
-										Set a follow-up reminder while saving or updating this job.
-									</p>
-								</div>
-								<div className="flex items-center gap-2 pt-0.5">
-									<Label
-										htmlFor="reminder-enabled"
-										className="text-xs font-semibold text-foreground"
-									>
-										Set follow-up reminder
-									</Label>
-									<Switch
-										id="reminder-enabled"
-										checked={job.reminderEnabled}
-										onCheckedChange={(checked) => {
-											updateField("reminderEnabled", checked);
-											if (!checked) {
-												updateField("reminderDone", false);
+					<Tabs defaultValue="details" className="flex min-h-full flex-col">
+						<div className="border-b border-slate-100 px-3 pb-0.5 dark:border-border/60 sm:px-4">
+							<TabsList variant="line" className="h-auto gap-6 p-0">
+								<TabsTrigger
+									value="details"
+									className="rounded-none px-0 py-4 text-sm font-semibold data-[state=active]:text-primary"
+								>
+									Job Details
+								</TabsTrigger>
+								<TabsTrigger
+									value="attachments"
+									disabled
+									className="rounded-none px-0 py-4 text-sm font-semibold"
+								>
+									Attachments
+								</TabsTrigger>
+							</TabsList>
+						</div>
+
+						<TabsContent value="details" className="mt-0 flex-1">
+							<div className="px-3 py-4 sm:px-4">
+								<FieldGroup className="gap-5">
+									<JobFormTextField
+										label="Job Title"
+										name="title"
+										value={job.title}
+										onChange={(value) => updateField("title", value)}
+									/>
+
+									<div className="grid grid-cols-2 gap-5">
+										<JobFormTextField
+											label="Company"
+											name="company"
+											value={job.company}
+											icon={BriefcaseBusiness}
+											onChange={(value) => updateField("company", value)}
+										/>
+										<JobFormSelectField
+											label="Status"
+											value={normalizeStatus(job.status)}
+											options={statuses}
+											onValueChange={(value) =>
+												updateField("status", value as SidePanelJobStatus)
 											}
-										}}
-									/>
-								</div>
-							</div>
-							<div className="mt-3 space-y-3">
-								<FieldRow label="Date" isDarkMode={isDarkMode}>
-									<DateInput
-										value={job.followUpDate}
-										isDarkMode={isDarkMode}
-										onChange={(value) => updateField("followUpDate", value)}
-									/>
-								</FieldRow>
-								<FieldRow label="Time" hint="Optional" isDarkMode={isDarkMode}>
-									<TextInput
-										type="time"
-										value={job.followUpTime}
-										isDarkMode={isDarkMode}
-										onChange={(value) => updateField("followUpTime", value)}
-									/>
-								</FieldRow>
-								<FieldRow label="Note" hint="Optional" isDarkMode={isDarkMode}>
-									<Textarea
-										value={job.reminderNote}
-										rows={3}
-										className={cn(
-											"min-h-20 resize-none rounded-md text-sm font-medium",
-											"border-input bg-card text-foreground placeholder:text-muted-foreground",
-										)}
-										placeholder="Follow up with hiring manager"
-										onChange={(event) =>
-											updateField("reminderNote", event.target.value)
-										}
-									/>
-								</FieldRow>
-							</div>
-						</section>
-						<FieldRow label="Notes" hint="Optional" isDarkMode={isDarkMode}>
-							<Textarea
-								value={job.notes}
-								rows={4}
-								className={cn(
-									"min-h-24 resize-none rounded-md text-sm font-medium",
-									"border-input bg-card text-foreground placeholder:text-muted-foreground",
-								)}
-								placeholder="Great role for frontend development using modern technologies."
-								onChange={(event) => updateField("notes", event.target.value)}
-							/>
-						</FieldRow>
-					</div>
+										/>
+										<JobFormSelectField
+											label="Source"
+											value={normalizePlatform(job.platform)}
+											options={platforms}
+											onValueChange={(value) => updateField("platform", value)}
+										/>
+										<JobFormTextField
+											label="Location"
+											name="location"
+											value={job.location}
+											icon={MapPin}
+											onChange={(value) => updateField("location", value)}
+										/>
+										<JobFormSelectField
+											label="Work Type"
+											value={job.workplaceType || "Remote"}
+											options={workTypeOptions}
+											onValueChange={(value) => updateField("workplaceType", value)}
+										/>
+										<JobFormSelectField
+											label="Job Type"
+											value={job.employmentType || "Full-time"}
+											options={jobTypeOptions}
+											onValueChange={(value) => updateField("employmentType", value)}
+										/>
+										<JobFormSelectField
+											label="Experience Level"
+											value={job.experienceLevel || "Mid-level"}
+											options={experienceLevelOptions}
+											onValueChange={(value) => updateField("experienceLevel", value)}
+										/>
+									</div>
 
-					<div
-						className={cn(
-							"grid shrink-0 grid-cols-2 gap-3 border-t px-4 py-4",
-							"border-[#E5E7EB] bg-white",
-						)}
-					>
-						<Button
-							type="button"
-							variant="outline"
-							className={cn(
-								"h-10 rounded-md text-sm font-bold",
-								"border-input bg-card text-foreground hover:bg-muted/60",
-							)}
-							onClick={onCancel}
-						>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							className="h-10 rounded-md bg-primary text-sm font-bold text-primary-foreground hover:brightness-95"
-						>
-							<Save className="size-4" aria-hidden="true" />
-							{mode === "add" ? "Save Job" : "Update Job"}
-						</Button>
-					</div>
+									<JobFormTextField
+										label="Job URL"
+										name="url"
+										value={job.url}
+										type="url"
+										icon={Link2}
+										onChange={(value) => updateField("url", value)}
+									/>
+
+									<div className="grid grid-cols-2 gap-5">
+										<JobFormDateField
+											label="Deadline (Optional)"
+											value={job.deadline}
+											open={deadlineOpen}
+											onOpenChange={setDeadlineOpen}
+											onChange={(value) => updateField("deadline", value)}
+										/>
+										<JobFormTextField
+											label="Salary (Optional)"
+											name="salary"
+											value={job.salary}
+											icon={Tag}
+											onChange={(value) => updateField("salary", value)}
+										/>
+									</div>
+
+									<Field>
+										<FieldLabel className={fieldLabelClassName}>
+											Reminder (Optional)
+										</FieldLabel>
+										<Button
+											type="button"
+											variant="outline"
+											className="h-11! w-full justify-start rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground"
+											onClick={() => setIsReminderOpen(true)}
+										>
+											<Bell
+												className="size-4 text-slate-400 dark:text-muted-foreground"
+												aria-hidden="true"
+											/>
+											{job.followUpDate
+												? `Update reminder • ${formatReminderSummary(job.followUpDate)}`
+												: "Set reminder"}
+										</Button>
+									</Field>
+
+									<Field>
+										<FieldLabel className={fieldLabelClassName}>
+											Note (Optional)
+										</FieldLabel>
+										<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
+											<Textarea
+												value={job.notes}
+												rows={4}
+												maxLength={500}
+												className="min-h-24 resize-none border-0 bg-transparent px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:bg-card dark:text-foreground"
+												onChange={(event) => updateField("notes", event.target.value)}
+											/>
+											<div className="mt-2 text-right text-xs font-medium text-slate-400 dark:text-muted-foreground/80">
+												{job.notes.length} / 500
+											</div>
+										</div>
+									</Field>
+								</FieldGroup>
+							</div>
+						</TabsContent>
+					</Tabs>
 				</form>
-			</section>
-		</div>
+			</SidePanelLayout>
+
+			<ReminderFormDialog
+				open={isReminderOpen}
+				title={job.followUpDate ? "Update Reminder" : "Create Reminder"}
+				submitLabel={job.followUpDate ? "Update Reminder" : "Save Reminder"}
+				contentClassName="w-[calc(100%-1.5rem)] max-w-none rounded-xl"
+				fieldGridClassName="grid-cols-2 md:grid-cols-2"
+				footerClassName="grid grid-cols-2 gap-3 sm:grid-cols-2"
+				initialValues={reminderValues}
+				onOpenChange={setIsReminderOpen}
+				onSubmit={(values) => {
+					updateField("reminderType", values.type);
+					updateField("followUpDate", values.date);
+					updateField("followUpTime", values.time);
+					updateField("reminderEnabled", values.isActive && Boolean(values.date));
+					updateField("reminderDone", false);
+					updateField("reminderNote", values.note);
+				}}
+			/>
+		</>
 	);
 }
 
-function FieldRow({
-	label,
-	hint,
-	isDarkMode,
-	children,
-}: {
-	label: string;
-	hint?: string;
-	isDarkMode: boolean;
-	children: ReactNode;
-}) {
-	return (
-		<Field
-			orientation="horizontal"
-			className="grid grid-cols-[76px_minmax(0,1fr)] items-start gap-3"
-		>
-			<FieldLabel
-				className={cn(
-					"block pt-2 text-xs font-bold leading-4",
-					"text-muted-foreground",
-				)}
-			>
-				{label}
-				{hint && (
-					<span
-						className={cn(
-							"block text-[10px] font-semibold",
-							"text-muted-foreground/80",
-						)}
-					>
-						({hint})
-					</span>
-				)}
-			</FieldLabel>
-			{children}
-		</Field>
-	);
+function normalizePlatform(value: string) {
+	return (platforms as readonly string[]).includes(value) ? value : "Manual";
 }
 
-function TextInput({
-	value,
-	isDarkMode,
-	onChange,
-	...props
-}: Omit<React.ComponentProps<typeof Input>, "onChange"> & {
-	isDarkMode: boolean;
-	onChange: (value: string) => void;
-}) {
-	return (
-		<Input
-			value={value}
-			className={cn(
-				inputBase,
-				"border-input bg-card text-foreground placeholder:text-muted-foreground",
-			)}
-			onChange={(event) => onChange(event.target.value)}
-			{...props}
-		/>
-	);
-}
-
-function SelectInput({
-	value,
-	options,
-	isDarkMode,
-	onChange,
-}: {
-	value: string;
-	options: string[];
-	isDarkMode: boolean;
-	onChange: (value: string) => void;
-}) {
-	return (
-		<Select value={value} onValueChange={onChange}>
-			<SelectTrigger
-				className={cn(
-					inputBase,
-					"w-full",
-					"border-input bg-card text-foreground placeholder:text-muted-foreground",
-				)}
-			>
-				<SelectValue />
-			</SelectTrigger>
-			<SelectContent>
-				{options.map((option) => (
-					<SelectItem key={option} value={option}>
-						{option}
-					</SelectItem>
-				))}
-			</SelectContent>
-		</Select>
-	);
-}
-
-function DateInput({
-	value,
-	isDarkMode,
-	onChange,
-}: {
-	value: string;
-	isDarkMode: boolean;
-	onChange: (value: string) => void;
-}) {
-	const selectedDate = value ? new Date(`${value}T00:00:00`) : undefined;
-
-	return (
-		<Popover>
-			<PopoverTrigger asChild>
-				<Button
-					type="button"
-					variant="outline"
-					className={cn(
-						inputBase,
-						"w-full justify-between px-3 font-medium",
-						"border-input bg-card text-foreground placeholder:text-muted-foreground",
-					)}
-				>
-					<span
-						className={value ? "text-foreground" : "text-muted-foreground/80"}
-					>
-						{value ? formatDateLabel(value) : "Select date"}
-					</span>
-					<CalendarDays
-						className="size-4 text-muted-foreground/80"
-						aria-hidden="true"
-					/>
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent align="end" className="w-auto p-0">
-				<Calendar
-					mode="single"
-					selected={selectedDate}
-					onSelect={(date) => {
-						if (!date) {
-							onChange("");
-							return;
-						}
-
-						onChange(toDateInputValue(date));
-					}}
-				/>
-			</PopoverContent>
-		</Popover>
-	);
-}
-
-function toDateInputValue(date: Date) {
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, "0");
-	const day = String(date.getDate()).padStart(2, "0");
-
-	return `${year}-${month}-${day}`;
-}
-
-function formatDateLabel(value: string) {
-	const [year, month, day] = value.split("-");
-
-	if (!year || !month || !day) {
-		return value;
-	}
-
-	return `${day}/${month}/${year}`;
+function normalizeStatus(value: SidePanelJobStatus) {
+	return value === "Interested" ? "Saved" : value;
 }

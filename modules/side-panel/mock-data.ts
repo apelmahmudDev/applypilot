@@ -7,6 +7,8 @@ export const emptyJobForm: SidePanelJobForm = {
 	url: "",
 	platform: "LinkedIn",
 	salary: "",
+	experienceLevel: "Mid-level",
+	reminderType: "Follow up",
 	status: "Saved",
 	deadline: "",
 	followUpDate: "",

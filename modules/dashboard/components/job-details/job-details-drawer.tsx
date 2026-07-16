@@ -2,7 +2,6 @@ import {
 	BadgeDollarSign,
 	BriefcaseBusiness,
 	ExternalLink,
-	FileText,
 	Link2,
 	MapPin,
 	Tag,
@@ -156,15 +155,9 @@ export function JobDetailsDrawer({
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Job Description">
-								<div className="flex gap-3">
-									<FileText
-										className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
-										aria-hidden="true"
-									/>
-									<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
-										{job.description}
-									</p>
-								</div>
+								<p className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
+									{job.description}
+								</p>
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Links">

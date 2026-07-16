@@ -2,7 +2,6 @@ import { FormattedJobDescription } from "@/components/formatted-job-description"
 import {
 	BadgeDollarSign,
 	BriefcaseBusiness,
-	FileText,
 	Link2,
 	MapPin,
 	PencilLine,
@@ -66,9 +65,9 @@ export function JobDetailsView({
 						onAddJob={onAddJob}
 					/>
 				}
-				contentClassName="px-4 pb-4 pt-4"
+				contentClassName="px-0 pb-0 pt-0"
 			>
-				<p className="rounded-[14px] border border-border bg-card px-3 py-4 text-sm text-muted-foreground">
+				<p className="px-4 py-4 text-sm text-muted-foreground">
 					This job is no longer available.
 				</p>
 			</SidePanelLayout>
@@ -103,157 +102,149 @@ export function JobDetailsView({
 					onAddJob={onAddJob}
 				/>
 			}
-			contentClassName="px-4 pb-4 pt-4"
+			contentClassName="px-0 pb-0 pt-0"
 		>
-			<div className="min-h-0 flex-1 rounded-[14px] border border-border bg-card">
-				<JobDetailsContent
-					brandMark={
-						<CompanyMark
-							brand={getBrand(job.company, job.platform)}
-							logoUrl={job.logoUrl}
-							companyName={job.company}
-							size="lg"
-							appearance="soft"
-						/>
-					}
-					title={job.title || "Untitled role"}
-					company={job.company || "Unknown company"}
-					status={status}
-					headerMeta={
-						<p className="mt-2 flex items-center gap-1.5 text-sm text-slate-500 dark:text-muted-foreground">
-							<MapPin className="size-4 shrink-0" aria-hidden="true" />
-							<span>{job.location || "Location not found"}</span>
-						</p>
-					}
-					summaryActions={
-						<div className="grid grid-cols-3 gap-2">
-							<Button
-								type="button"
-								variant="outline"
-								className={cn(
-									"h-9 rounded-md text-xs font-semibold",
-									"border-input bg-card text-foreground hover:bg-muted/60",
+			<JobDetailsContent
+				brandMark={
+					<CompanyMark
+						brand={getBrand(job.company, job.platform)}
+						logoUrl={job.logoUrl}
+						companyName={job.company}
+						size="lg"
+						appearance="soft"
+					/>
+				}
+				title={job.title || "Untitled role"}
+				company={job.company || "Unknown company"}
+				status={status}
+				headerMeta={
+					<p className="mt-2 flex items-center gap-1.5 text-sm text-slate-500 dark:text-muted-foreground">
+						<MapPin className="size-4 shrink-0" aria-hidden="true" />
+						<span>{job.location || "Location not found"}</span>
+					</p>
+				}
+				summaryActions={
+					<div className="grid grid-cols-3 gap-2">
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								"border-input bg-card text-foreground hover:bg-muted/60",
+							)}
+							onClick={() => onEdit(job)}
+						>
+							<PencilLine className="size-4" aria-hidden="true" />
+							Edit
+						</Button>
+						<Button
+							type="button"
+							className="h-9 rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
+							onClick={() => onStatusChange(job)}
+						>
+							Status: {status}
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							className={cn(
+								"h-9 rounded-md text-xs font-semibold",
+								"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
+							)}
+							aria-label="Delete job"
+							title="Delete job"
+							onClick={() => onDelete(job)}
+						>
+							<Trash2 className="size-4" aria-hidden="true" />
+						</Button>
+					</div>
+				}
+				sections={
+					<>
+						<JobDetailsSection title="Basic Info">
+							<JobDetailsRow
+								icon={BriefcaseBusiness}
+								label="Job Type"
+								value={job.employmentType || "Not specified"}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Work Mode"
+								value={job.workplaceType || "Not specified"}
+							/>
+							<JobDetailsRow
+								icon={MapPin}
+								label="Location"
+								value={job.location || "Location not found"}
+							/>
+							<JobDetailsRow
+								icon={Link2}
+								label="Source"
+								value={job.platform || "Other"}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Saved Date"
+								value={savedDate}
+							/>
+							<JobDetailsRow
+								icon={Tag}
+								label="Application Date"
+								value={applicationDate}
+							/>
+							<JobDetailsReminderRow
+								reminder={reminderValue}
+								onAddReminder={() => onUpdateReminder(job)}
+								secondaryAction={{
+									label: "Remove",
+									onClick: () => onRemoveReminder(job.id),
+									disabled: !job.reminderEnabled && !job.followUpDate,
+								}}
+							/>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Compensation">
+							<JobDetailsRow
+								icon={BadgeDollarSign}
+								label="Salary"
+								value={job.salary || "Not specified"}
+							/>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Job Description">
+							<div className="text-sm leading-6 text-slate-600 dark:text-muted-foreground">
+								<FormattedJobDescription
+									descriptionHtml={job.descriptionHtml}
+									descriptionText={job.descriptionText || job.notes}
+								/>
+							</div>
+						</JobDetailsSection>
+
+						<JobDetailsSection title="Links">
+							<div className="flex gap-3">
+								<Link2
+									className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
+									aria-hidden="true"
+								/>
+								{job.url ? (
+									<a
+										href={job.url}
+										target="_blank"
+										rel="noreferrer"
+										className="text-sm font-semibold text-primary hover:underline"
+									>
+										Original Job Post
+									</a>
+								) : (
+									<p className="text-sm text-slate-500 dark:text-muted-foreground">
+										No source link available.
+									</p>
 								)}
-								onClick={() => onEdit(job)}
-							>
-								<PencilLine className="size-4" aria-hidden="true" />
-								Edit
-							</Button>
-							<Button
-								type="button"
-								className="h-9 rounded-md bg-primary text-xs font-semibold text-primary-foreground hover:brightness-95"
-								onClick={() => onStatusChange(job)}
-							>
-								Status: {status}
-							</Button>
-							<Button
-								type="button"
-								variant="outline"
-								className={cn(
-									"h-9 rounded-md text-xs font-semibold",
-									"border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2]",
-								)}
-								aria-label="Delete job"
-								title="Delete job"
-								onClick={() => onDelete(job)}
-							>
-								<Trash2 className="size-4" aria-hidden="true" />
-							</Button>
-						</div>
-					}
-					sections={
-						<>
-							<JobDetailsSection title="Basic Info">
-								<JobDetailsRow
-									icon={BriefcaseBusiness}
-									label="Job Type"
-									value={job.employmentType || "Not specified"}
-								/>
-								<JobDetailsRow
-									icon={Tag}
-									label="Work Mode"
-									value={job.workplaceType || "Not specified"}
-								/>
-								<JobDetailsRow
-									icon={MapPin}
-									label="Location"
-									value={job.location || "Location not found"}
-								/>
-								<JobDetailsRow
-									icon={Link2}
-									label="Source"
-									value={job.platform || "Other"}
-								/>
-								<JobDetailsRow
-									icon={Tag}
-									label="Saved Date"
-									value={savedDate}
-								/>
-								<JobDetailsRow
-									icon={Tag}
-									label="Application Date"
-									value={applicationDate}
-								/>
-								<JobDetailsReminderRow
-									reminder={reminderValue}
-									onAddReminder={() => onUpdateReminder(job)}
-									secondaryAction={{
-										label: "Remove",
-										onClick: () => onRemoveReminder(job.id),
-										disabled: !job.reminderEnabled && !job.followUpDate,
-									}}
-								/>
-							</JobDetailsSection>
-
-							<JobDetailsSection title="Compensation">
-								<JobDetailsRow
-									icon={BadgeDollarSign}
-									label="Salary"
-									value={job.salary || "Not specified"}
-								/>
-							</JobDetailsSection>
-
-							<JobDetailsSection title="Job Description">
-								<div className="flex gap-3">
-									<FileText
-										className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
-										aria-hidden="true"
-									/>
-									<div className="min-w-0 flex-1 text-sm leading-6 text-slate-600 dark:text-muted-foreground">
-										<FormattedJobDescription
-											descriptionHtml={job.descriptionHtml}
-											descriptionText={job.descriptionText || job.notes}
-										/>
-									</div>
-								</div>
-							</JobDetailsSection>
-
-							<JobDetailsSection title="Links">
-								<div className="flex gap-3">
-									<Link2
-										className="mt-0.5 size-4 shrink-0 text-slate-400 dark:text-muted-foreground"
-										aria-hidden="true"
-									/>
-									{job.url ? (
-										<a
-											href={job.url}
-											target="_blank"
-											rel="noreferrer"
-											className="text-sm font-semibold text-primary hover:underline"
-										>
-											Original Job Post
-										</a>
-									) : (
-										<p className="text-sm text-slate-500 dark:text-muted-foreground">
-											No source link available.
-										</p>
-									)}
-								</div>
-							</JobDetailsSection>
-						</>
-					}
-				/>
-			</div>
+							</div>
+						</JobDetailsSection>
+					</>
+				}
+			/>
 		</SidePanelLayout>
 	);
 }

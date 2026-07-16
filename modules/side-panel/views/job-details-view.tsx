@@ -1,5 +1,11 @@
 import { FormattedJobDescription } from "@/components/formatted-job-description";
 import {
+	JobDetailsContent,
+	JobDetailsReminderRow,
+	JobDetailsRow,
+	JobDetailsSection,
+} from "@/components/job-details-content";
+import {
 	BadgeDollarSign,
 	BriefcaseBusiness,
 	Link2,
@@ -24,12 +30,6 @@ import {
 	SidePanelLayout,
 	SidePanelTopBar,
 } from "@/modules/side-panel/components/side-panel-layout";
-import {
-	JobDetailsContent,
-	JobDetailsReminderRow,
-	JobDetailsRow,
-	JobDetailsSection,
-} from "@/modules/job-details/components/job-details-content";
 import {
 	formatDate,
 	formatDateSlash,

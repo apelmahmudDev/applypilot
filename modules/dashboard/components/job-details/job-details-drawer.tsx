@@ -9,6 +9,12 @@ import {
 } from "lucide-react";
 
 import { FormattedJobDescription } from "@/components/formatted-job-description";
+import {
+	JobDetailsContent,
+	JobDetailsReminderRow,
+	JobDetailsRow,
+	JobDetailsSection,
+} from "@/components/job-details-content";
 import { Button } from "@/components/ui/button";
 import {
 	Sheet,
@@ -17,12 +23,6 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import {
-	JobDetailsContent,
-	JobDetailsReminderRow,
-	JobDetailsRow,
-	JobDetailsSection,
-} from "@/modules/job-details/components/job-details-content";
 import { JobBrandMark } from "@/modules/dashboard/components/job-table/job-brand-mark";
 import type { DashboardJob } from "@/modules/dashboard/types";
 

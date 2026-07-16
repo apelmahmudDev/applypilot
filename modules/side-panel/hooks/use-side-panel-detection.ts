@@ -11,6 +11,7 @@ const emptyDetectedJob: SidePanelJobForm = {
 	url: "",
 	platform: "Other",
 	salary: "",
+	reminderType: "Follow up",
 	status: "Saved",
 	deadline: "",
 	followUpDate: "",

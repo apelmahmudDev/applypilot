@@ -53,6 +53,8 @@ export type SidePanelJobForm = {
 	url: string;
 	platform: string;
 	salary: string;
+	experienceLevel?: string;
+	reminderType?: ReminderTypeOption;
 	logoUrl?: string;
 	descriptionText?: string;
 	descriptionHtml?: string;

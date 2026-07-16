@@ -40,9 +40,7 @@ export function JobDetailsContent({
 	hideHeaderStatus = false,
 }: JobDetailsContentProps) {
 	return (
-		<div
-			className={cn("flex-1 overflow-y-auto px-6 py-6", className)}
-		>
+		<div className={cn("flex-1 overflow-y-auto px-6 py-6", className)}>
 			<div className="flex items-start gap-4 border-b border-slate-100 pb-6 dark:border-border/60">
 				{brandMark}
 				<div className="min-w-0 flex-1">

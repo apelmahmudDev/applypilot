@@ -1,38 +1,27 @@
-import { useMemo, useState, type ComponentType } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { format } from "date-fns";
 import {
 	Bell,
 	BriefcaseBusiness,
-	CalendarDays,
-	ChevronDown,
 	Link2,
 	MapPin,
 	Tag,
 	X,
 } from "lucide-react";
 
+import {
+	fieldLabelClassName,
+	JobFormDateField as DateField,
+	JobFormSelectField as SelectField,
+	JobFormTextField as TextField,
+} from "@/components/job-form-fields";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import {
 	Sheet,
 	SheetContent,
@@ -72,11 +61,6 @@ type JobFormDrawerProps = {
 	onOpenChange: (open: boolean) => void;
 	onSubmit: (job: DashboardJob) => void;
 };
-
-const fieldLabelClassName =
-	"text-sm font-semibold text-slate-700 dark:text-foreground";
-const inputClassName =
-	"h-11! rounded-md border-slate-200 bg-white text-sm font-medium text-slate-900 shadow-none dark:border-[#454040] dark:bg-card dark:text-foreground";
 
 export function JobFormDrawer({
 	job,
@@ -521,182 +505,5 @@ export function JobFormDrawer({
 				}}
 			/>
 		</Sheet>
-	);
-}
-
-type TextFieldProps = {
-	label: string;
-	name: string;
-	value: string;
-	errors: Array<{ message?: string } | undefined>;
-	isInvalid: boolean;
-	type?: string;
-	icon?: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
-	onBlur: () => void;
-	onChange: (value: string) => void;
-};
-
-function TextField({
-	label,
-	name,
-	value,
-	errors,
-	isInvalid,
-	type = "text",
-	icon: Icon,
-	onBlur,
-	onChange,
-}: TextFieldProps) {
-	return (
-		<Field data-invalid={isInvalid}>
-			<FieldLabel className={fieldLabelClassName} htmlFor={name}>
-				{label}
-				{label.includes("Optional") ? null : (
-					<span className="text-red-500">*</span>
-				)}
-			</FieldLabel>
-			<div className="relative">
-				{Icon ? (
-					<Icon
-						className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground"
-						aria-hidden="true"
-					/>
-				) : null}
-				<Input
-					id={name}
-					name={name}
-					type={type}
-					value={value}
-					onBlur={onBlur}
-					onChange={(event) => onChange(event.target.value)}
-					aria-invalid={isInvalid}
-					className={cn(inputClassName, Icon ? "pl-10" : undefined)}
-				/>
-			</div>
-			<FieldError errors={errors} />
-		</Field>
-	);
-}
-
-type SelectFieldProps = {
-	label: string;
-	value: string;
-	options: readonly string[];
-	optionLabels?: Record<string, string>;
-	errors: Array<{ message?: string } | undefined>;
-	isInvalid: boolean;
-	placeholder?: string;
-	onValueChange: (value: string) => void;
-};
-
-function SelectField({
-	label,
-	value,
-	options,
-	optionLabels,
-	errors,
-	isInvalid,
-	placeholder,
-	onValueChange,
-}: SelectFieldProps) {
-	return (
-		<Field data-invalid={isInvalid}>
-			<FieldLabel className={fieldLabelClassName}>
-				{label}
-				{label.includes("Optional") ? null : (
-					<span className="text-red-500">*</span>
-				)}
-			</FieldLabel>
-			<Select value={value} onValueChange={onValueChange}>
-				<SelectTrigger
-					aria-invalid={isInvalid}
-					className={cn(inputClassName, "justify-between")}
-				>
-					<SelectValue placeholder={placeholder} />
-				</SelectTrigger>
-				<SelectContent>
-					{options.map((option) => (
-						<SelectItem key={option} value={option}>
-							{optionLabels?.[option] ?? option}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			<FieldError errors={errors} />
-		</Field>
-	);
-}
-
-type DateFieldProps = {
-	label: string;
-	value: string;
-	errors: Array<{ message?: string } | undefined>;
-	isInvalid: boolean;
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
-	onChange: (value: string) => void;
-};
-
-function DateField({
-	label,
-	value,
-	errors,
-	isInvalid,
-	open,
-	onOpenChange,
-	onChange,
-}: DateFieldProps) {
-	return (
-		<Field data-invalid={isInvalid}>
-			<FieldLabel className={fieldLabelClassName}>
-				{label}
-				{label.includes("Optional") ? null : (
-					<span className="text-red-500">*</span>
-				)}
-			</FieldLabel>
-			<Popover open={open} onOpenChange={onOpenChange}>
-				<PopoverTrigger asChild>
-					<Button
-						type="button"
-						variant="outline"
-						className={cn(
-							inputClassName,
-							"justify-between px-3 font-medium",
-							isInvalid && "border-destructive",
-						)}
-					>
-						<span className="flex items-center gap-3">
-							<CalendarDays
-								className="size-4 text-slate-400 dark:text-muted-foreground"
-								aria-hidden="true"
-							/>
-							{value
-								? format(new Date(`${value}T12:00:00`), "MMM d, yyyy")
-								: "Select date"}
-						</span>
-						<ChevronDown
-							className="size-4 text-slate-400 dark:text-muted-foreground"
-							aria-hidden="true"
-						/>
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="w-auto rounded-2xl border-slate-200 p-2 dark:border-[#454040] dark:bg-popover">
-					<Calendar
-						mode="single"
-						selected={value ? new Date(`${value}T12:00:00`) : undefined}
-						onSelect={(date) => {
-							if (!date) {
-								onChange("");
-								return;
-							}
-
-							onChange(format(date, "yyyy-MM-dd"));
-							onOpenChange(false);
-						}}
-					/>
-				</PopoverContent>
-			</Popover>
-			<FieldError errors={errors} />
-		</Field>
 	);
 }

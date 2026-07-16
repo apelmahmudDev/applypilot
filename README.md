@@ -1,176 +1,311 @@
 <!-- <p align="center">
-  <img src="./public/logo.png" alt="ApplyPilot logo" width="92" />
+  <img src="./public/logo.png" alt="ApplyPilot logo" width="88" />
 </p> -->
 
 <h1 align="center">ApplyPilot</h1>
 
 <p align="center">
-  A privacy-first browser extension for tracking job applications while you browse job boards.
+  A privacy-first browser extension for saving, organizing, and tracking job applications directly from job boards.
 </p>
 
 <p align="center">
-  <img src="./public/featured-image.png" alt="ApplyPilot featured preview" width="100%" />
+  <img
+    src="./public/featured-image.png"
+    alt="ApplyPilot browser extension preview"
+    width="100%"
+  />
 </p>
 
-<hr />
+<p align="center">
+  <strong>Save jobs faster · Track applications · Set reminders · Analyze progress</strong>
+</p>
 
-ApplyPilot helps you detect the current job page, review or edit the captured details, save the job locally, and manage your applications from a popup, side panel, and dashboard.
+---
 
-## Highlights
+## Overview
 
-- Fast popup flow for detect, review, edit, and save
-- Side panel workspace for browsing-time job tracking
-- Dashboard for larger management views and data-heavy workflows
-- Local-first storage using browser storage
-- Duplicate detection by job URL first, then company plus title
-- Reminder support with follow-up date, time, and note fields
-- Minimal extension permissions by default
+ApplyPilot helps job seekers manage their entire application journey without leaving the browser.
 
-## Product Surfaces
+While viewing a supported job posting, ApplyPilot can detect the visible job information, let you review or edit the captured details, and save the job locally.
 
-### Popup
+Saved applications can then be managed through the extension popup, side panel, or full dashboard.
 
-The popup is designed for quick actions on the current page:
+## Key Features
 
-- Detect the job posting from the active tab
-- Show a compact summary of the detected role
-- Edit important fields before saving
-- Save immediately when the detected data looks good
-- Jump to the side panel or full dashboard after saving
+- Detect job information from the current browser tab
+- Review and edit detected details before saving
+- Save jobs directly from supported job boards
+- Track application status and progress
+- View recently saved jobs
+- Add follow-up, interview, and deadline reminders
+- Manage applications from a browser side panel
+- Explore analytics from a full dashboard
+- Prevent duplicate entries using job URL, company, and title
+- Store all application data locally in the browser
+- Use minimal browser permissions
+
+## Product Experience
+
+### Extension Popup
+
+The popup is designed for quick actions.
+
+Use it to:
+
+- detect the current job posting
+- review the captured information
+- edit job details before saving
+- save a job with one click
+- open the side panel
+- open the full dashboard
 
 ### Side Panel
 
-The side panel is the browsing companion for day-to-day tracking:
+The side panel provides a larger workspace while you continue browsing.
 
-- Detect the current job page while you browse
-- Save, edit, or review jobs without leaving the tab
-- View recent jobs and upcoming reminders
-- Open detailed job and reminder views
-- Manage application status and follow-up workflows
+Use it to:
+
+- save and edit job postings
+- view recently saved jobs
+- update application statuses
+- access job details
+- review upcoming reminders
+- manage applications without leaving the current tab
 
 ### Dashboard
 
-The dashboard is the larger workspace for management-style tasks:
+The dashboard is the main workspace for managing larger amounts of application data.
 
-- Full application browsing
-- Table-oriented views
-- Analytics and export-oriented flows
-- More room for scaling job management over time
+It includes:
+
+- complete application management
+- searchable and structured job views
+- application analytics
+- status tracking
+- source and company insights
+- reminder management
+- export-oriented workflows
 
 ## How It Works
 
-1. Open a job posting in the browser.
+1. Open a supported job posting.
 2. Open the ApplyPilot popup or side panel.
-3. ApplyPilot detects the visible job details from the active tab.
-4. Review the captured information.
-5. Save immediately or edit before saving.
-6. Manage the saved record later from the side panel or dashboard.
+3. ApplyPilot detects the visible job information.
+4. Review the captured details.
+5. Edit any incorrect or missing information.
+6. Save the job to your local workspace.
+7. Track the application later from the side panel or dashboard.
 
-Saved jobs are stored locally in the browser. Each record keeps `createdAt` and `updatedAt` values, and saves try to avoid duplicates by checking URL first and then company plus title.
+## Privacy
+
+ApplyPilot follows a local-first approach.
+
+Your saved jobs, application statuses, reminders, and other tracking data are stored locally using browser storage.
+
+ApplyPilot does not require an account for its core functionality.
+
+The extension is designed to request only the permissions needed for job detection, local storage, and the browser side panel.
+
+## Duplicate Detection
+
+ApplyPilot attempts to prevent duplicate job records using the following checks:
+
+1. Exact job URL
+2. Company name and job title
+
+Each saved record also includes:
+
+- `createdAt`
+- `updatedAt`
 
 ## Tech Stack
 
-- WXT
+- [WXT](https://wxt.dev/)
 - React 19
 - TypeScript
 - Tailwind CSS 4
-- shadcn/ui and Radix primitives
+- shadcn/ui
+- Radix UI primitives
 - TanStack Form
 - TanStack Table
 - Zod
 - Sonner
 - pnpm
 
-## Current Permissions
+## Browser Permissions
 
-The current manifest is intentionally small:
+ApplyPilot currently uses the following permissions:
 
-- `activeTab`
-- `scripting`
-- `sidePanel`
-- `storage`
+```txt
+activeTab
+scripting
+sidePanel
+storage
+```
 
-Current host permission:
-
-- `*://*.linkedin.com/*`
-
-If detection expands to more sites later, permissions should stay as narrow as possible.
+Future job-board support should continue using the narrowest possible host permissions.
 
 ## Getting Started
 
 ### Prerequisites
 
+Make sure the following tools are installed:
+
 - Node.js
 - pnpm
 
-### Install
+### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### Run In Development
+## Development
 
-Chrome / Chromium:
+### Chrome and Chromium Browsers
 
 ```bash
 pnpm dev
 ```
 
-Firefox:
+### Firefox
 
 ```bash
 pnpm dev:firefox
 ```
 
-### Type Check
+## Type Checking
 
 ```bash
 pnpm compile
 ```
 
-### Production Build
+## Production Build
+
+### Chrome and Chromium Browsers
 
 ```bash
 pnpm build
 ```
 
-Firefox production build:
+### Firefox
 
 ```bash
 pnpm build:firefox
 ```
 
-### Create Zip Packages
+## Create Distribution Packages
+
+### Chrome and Chromium Browsers
 
 ```bash
 pnpm zip
 ```
 
-Firefox zip:
+### Firefox
 
 ```bash
 pnpm zip:firefox
 ```
 
-## Load The Extension
+## Load the Extension Locally
 
-### Chrome / Chromium
+### Chrome and Chromium Browsers
 
-1. Run `pnpm dev` or `pnpm build`.
-2. Open `chrome://extensions`.
-3. Enable Developer mode.
-4. Click `Load unpacked`.
-5. Select the WXT output directory.
+1. Run the extension in development mode:
+
+   ```bash
+   pnpm dev
+   ```
+
+   Or create a production build:
+
+   ```bash
+   pnpm build
+   ```
+
+2. Open the Chrome extensions page:
+
+   ```txt
+   chrome://extensions
+   ```
+
+3. Enable **Developer mode**.
+
+4. Click **Load unpacked**.
+
+5. Select the generated WXT output directory.
 
 ### Firefox
 
-1. Run `pnpm dev:firefox` or `pnpm build:firefox`.
-2. Open `about:debugging`.
-3. Choose `This Firefox`.
-4. Click `Load Temporary Add-on`.
-5. Select the generated manifest from the build output.
+1. Run the extension in development mode:
 
-## Status
+   ```bash
+   pnpm dev:firefox
+   ```
 
-ApplyPilot is under active development. The popup, side panel, local storage, and detection flow are already in place, and the dashboard is positioned to keep growing into the larger management surface.
+   Or create a production build:
+
+   ```bash
+   pnpm build:firefox
+   ```
+
+2. Open the Firefox debugging page:
+
+   ```txt
+   about:debugging
+   ```
+
+3. Select **This Firefox**.
+
+4. Click **Load Temporary Add-on**.
+
+5. Select the generated extension manifest from the build output.
+
+## Project Status
+
+ApplyPilot is currently under active development.
+
+### Available Functionality
+
+- Job detection
+- Extension popup
+- Browser side panel
+- Local job storage
+- Duplicate detection
+- Application status tracking
+- Reminder fields
+- Dashboard foundation
+
+### Planned Improvements
+
+- Support for additional job boards
+- Improved analytics
+- Advanced search and filtering
+- Richer reminder workflows
+- Data import and export improvements
+- Better job-description parsing
+
+## Contributing
+
+Contributions, suggestions, and bug reports are welcome.
+
+Before submitting a pull request:
+
+1. Create a new branch.
+2. Make your changes.
+3. Run the type checker.
+4. Test the extension in a supported browser.
+5. Submit a clear pull request describing your changes.
+
+---
+
+<p align="center">
+  Your job search, organized with ApplyPilot.
+</p>
+
+<p align="center">
+  <a href="https://apelmahmuddev.github.io/applypilot-landing"><strong>Installation Guide</strong></a>
+  ·
+  <a href="https://apelmahmuddev.github.io/applypilot-landing"><strong>View Demo</strong></a>
+</p>

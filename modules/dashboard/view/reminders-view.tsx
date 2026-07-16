@@ -17,6 +17,9 @@ export function RemindersView() {
 	const [jobs] = useState(dashboardJobs);
 	const [editingReminder, setEditingReminder] = useState<ReminderRow | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+	const [selectedReminderRow, setSelectedReminderRow] = useState<ReminderRow | null>(
+		null,
+	);
 
 	const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? null;
 
@@ -57,7 +60,10 @@ export function RemindersView() {
 							key={section.id}
 							section={section}
 							onEditReminder={setEditingReminder}
-							onOpenJob={(row) => setSelectedJobId(row.jobId)}
+							onOpenJob={(row) => {
+								setSelectedReminderRow(row);
+								setSelectedJobId(row.jobId);
+							}}
 						/>
 					))}
 
@@ -115,8 +121,10 @@ export function RemindersView() {
 				onOpenChange={(open) => {
 					if (!open) {
 						setSelectedJobId(null);
+						setSelectedReminderRow(null);
 					}
 				}}
+				reminderInfo={selectedReminderRow}
 			/>
 		</div>
 	);

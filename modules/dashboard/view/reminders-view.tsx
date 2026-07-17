@@ -3,8 +3,16 @@ import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
+import { reminderTypeOptions } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { getReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.utils";
 import { RemindersDatePicker } from "@/modules/dashboard/components/reminders/reminders-date-picker";
 import { RemindersStats } from "@/modules/dashboard/components/reminders/reminders-stats";
@@ -15,6 +23,9 @@ import { dashboardJobs } from "@/modules/dashboard/mock-data";
 
 export function RemindersView() {
 	const [jobs] = useState(dashboardJobs);
+	const [selectedReminderType, setSelectedReminderType] = useState<
+		(typeof reminderTypeOptions)[number]
+	>(reminderTypeOptions[0]);
 	const [editingReminder, setEditingReminder] = useState<ReminderRow | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [selectedReminderRow, setSelectedReminderRow] = useState<ReminderRow | null>(
@@ -46,6 +57,26 @@ export function RemindersView() {
 							className="h-11 bg-white pl-11 pr-14 text-sm shadow-none dark:border-border dark:bg-card"
 						/>
 					</div>
+
+					<Select
+						value={selectedReminderType}
+						onValueChange={(value) =>
+							setSelectedReminderType(
+								value as (typeof reminderTypeOptions)[number],
+							)
+						}
+					>
+						<SelectTrigger className="h-11! w-full bg-white font-semibold shadow-none sm:w-40 dark:border-border dark:bg-card">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{reminderTypeOptions.map((option) => (
+								<SelectItem key={option} value={option}>
+									{option}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 
 					<RemindersDatePicker />
 				</div>

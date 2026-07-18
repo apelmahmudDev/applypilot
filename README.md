@@ -1,8 +1,8 @@
 <!-- <p align="center">
-  <img src="./public/logo.png" alt="ApplyPilot logo" width="88" />
+  <img src="./public/logo.png" alt="Applypilot logo" width="88" />
 </p> -->
 
-<h1 align="center">ApplyPilot</h1>
+<h1 align="center">Applypilot</h1>
 
 <p align="center">
   A privacy-first browser extension for saving, organizing, and tracking job applications directly from job boards.
@@ -11,7 +11,7 @@
 <p align="center">
   <img
     src="./public/featured-image.png"
-    alt="ApplyPilot browser extension preview"
+    alt="Applypilot browser extension preview"
     width="100%"
   />
 </p>
@@ -24,13 +24,13 @@
   <a href="https://apelmahmuddev.github.io/applypilot/">
     <img
       src="https://img.shields.io/badge/Chrome-Install%20Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white"
-      alt="Install ApplyPilot for Chrome"
+      alt="Install Applypilot for Chrome"
     />
   </a>
   <a href="https://github.com/apelmahmudDev/applypilot">
     <img
       src="https://img.shields.io/badge/GitHub-View%20Repository-181717?style=for-the-badge&logo=github&logoColor=white"
-      alt="View ApplyPilot on GitHub"
+      alt="View Applypilot on GitHub"
     />
   </a>
 </p>
@@ -39,9 +39,9 @@
 
 ## Overview
 
-ApplyPilot helps job seekers manage their entire application journey without leaving the browser.
+Applypilot helps job seekers manage their entire application journey without leaving the browser.
 
-While viewing a supported job posting, ApplyPilot can detect the visible job information, let you review or edit the captured details, and save the job locally.
+While viewing a supported job posting, Applypilot can detect the visible job information, let you review or edit the captured details, and save the job locally.
 
 Saved applications can then be managed through the extension popup, side panel, or full dashboard.
 
@@ -104,8 +104,8 @@ It includes:
 ## How It Works
 
 1. Open a supported job posting.
-2. Open the ApplyPilot popup or side panel.
-3. ApplyPilot detects the visible job information.
+2. Open the Applypilot popup or side panel.
+3. Applypilot detects the visible job information.
 4. Review the captured details.
 5. Edit any incorrect or missing information.
 6. Save the job to your local workspace.
@@ -113,17 +113,17 @@ It includes:
 
 ## Privacy
 
-ApplyPilot follows a local-first approach.
+Applypilot follows a local-first approach.
 
 Your saved jobs, application statuses, reminders, and other tracking data are stored locally using browser storage.
 
-ApplyPilot does not require an account for its core functionality.
+Applypilot does not require an account for its core functionality.
 
 The extension is designed to request only the permissions needed for job detection, local storage, and the browser side panel.
 
 ## Duplicate Detection
 
-ApplyPilot attempts to prevent duplicate job records using the following checks:
+Applypilot attempts to prevent duplicate job records using the following checks:
 
 1. Exact job URL
 2. Company name and job title
@@ -149,7 +149,7 @@ Each saved record also includes:
 
 ## Browser Permissions
 
-ApplyPilot currently uses the following permissions:
+Applypilot currently uses the following permissions:
 
 ```txt
 activeTab
@@ -279,7 +279,7 @@ pnpm zip:firefox
 
 ## Project Status
 
-ApplyPilot is currently under active development.
+Applypilot is currently under active development.
 
 ### Available Functionality
 
@@ -316,7 +316,7 @@ Before submitting a pull request:
 ---
 
 <p align="center">
-  Your job search, organized with ApplyPilot.
+  Your job search, organized with Applypilot.
 </p>
 
 <p align="center">

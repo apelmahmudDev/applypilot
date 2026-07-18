@@ -20,6 +20,21 @@
   <strong>Save jobs faster · Track applications · Set reminders · Analyze progress</strong>
 </p>
 
+<p align="center">
+  <a href="https://apelmahmuddev.github.io/applypilot/">
+    <img
+      src="https://img.shields.io/badge/Chrome-Install%20Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white"
+      alt="Install ApplyPilot for Chrome"
+    />
+  </a>
+  <a href="https://github.com/apelmahmudDev/applypilot">
+    <img
+      src="https://img.shields.io/badge/GitHub-View%20Repository-181717?style=for-the-badge&logo=github&logoColor=white"
+      alt="View ApplyPilot on GitHub"
+    />
+  </a>
+</p>
+
 ---
 
 ## Overview
@@ -305,7 +320,7 @@ Before submitting a pull request:
 </p>
 
 <p align="center">
-  <a href="https://apelmahmuddev.github.io/applypilot-landing"><strong>Installation Guide</strong></a>
+  <a href="https://apelmahmuddev.github.io/applypilot/"><strong>Installation Guide</strong></a>
   ·
-  <a href="https://apelmahmuddev.github.io/applypilot-landing"><strong>View Demo</strong></a>
+  <a href="https://apelmahmuddev.github.io/applypilot/"><strong>View Demo</strong></a>
 </p>

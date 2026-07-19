@@ -26,7 +26,6 @@ export function mapStoredJobToRecentJob(job: StoredJob): RecentJob {
 export function mapJobStatus(status: StoredJob["status"]): JobStatus {
 	if (status === "Applied") return "Applied";
 	if (status === "Interviewing") return "Interview";
-	if (status === "Rejected") return "Rejected";
 	if (status === "Offer") return "Offer";
 	return "Saved";
 }
@@ -106,9 +105,8 @@ function mapSidePanelStatus(status: SidePanelJobStatus): StoredJob["status"] {
 	if (status === "Interview") return "Interviewing";
 	if (status === "Saved") return "Saved";
 	if (status === "Applied") return "Applied";
-	if (status === "Rejected") return "Rejected";
 	if (status === "Offer") return "Offer";
-	return "Interested";
+	return "Saved";
 }
 
 function mapStoredStatusToSidePanelStatus(
@@ -117,7 +115,6 @@ function mapStoredStatusToSidePanelStatus(
 	if (status === "Interviewing") return "Interview";
 	if (status === "Saved") return "Saved";
 	if (status === "Applied") return "Applied";
-	if (status === "Rejected") return "Rejected";
 	if (status === "Offer") return "Offer";
-	return "Interested";
+	return "Saved";
 }

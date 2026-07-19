@@ -24,7 +24,6 @@ const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 	{ value: "saved", label: "Saved" },
 	{ value: "applied", label: "Applied" },
 	{ value: "interview", label: "Interview" },
-	{ value: "rejected", label: "Rejected" },
 	{ value: "offer", label: "Offer" },
 ];
 

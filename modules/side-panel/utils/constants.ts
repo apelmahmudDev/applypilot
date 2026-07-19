@@ -6,7 +6,6 @@ export const applicationFilters: ApplicationFilter[] = [
 	"Saved",
 	"Applied",
 	"Interview",
-	"Rejected",
 	"Offer",
 ];
 
@@ -17,10 +16,8 @@ export const reminderFilters: ReminderFilter[] = [
 ];
 
 export const nextStatusByStatus: Record<StoredJob["status"], StoredJob["status"]> = {
-	Interested: "Saved",
 	Saved: "Applied",
 	Applied: "Interviewing",
 	Interviewing: "Offer",
-	Offer: "Rejected",
-	Rejected: "Saved",
+	Offer: "Saved",
 };

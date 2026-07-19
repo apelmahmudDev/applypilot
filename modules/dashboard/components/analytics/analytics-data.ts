@@ -12,14 +12,12 @@ export const applicationFunnelData = [
 	{ stage: "Applied", value: 42, percentage: 75, fill: "#b9f0c9" },
 	{ stage: "Interview", value: 10, percentage: 17.9, fill: "#d9c8ff" },
 	{ stage: "Offer", value: 5, percentage: 8.9, fill: "#ffd79b" },
-	{ stage: "Rejected", value: 7, percentage: 12.5, fill: "#ffb3b8" },
 ];
 
 export const applicationsByStatusData = [
 	{ name: "Applied", value: 42, percentage: "75.0%", fill: "#2563eb" },
 	{ name: "Interview", value: 10, percentage: "17.9%", fill: "#8b5cf6" },
 	{ name: "Offer", value: 5, percentage: "8.9%", fill: "#f59e0b" },
-	{ name: "Rejected", value: 7, percentage: "12.5%", fill: "#ef4444" },
 ];
 
 export const topSourcesData = [

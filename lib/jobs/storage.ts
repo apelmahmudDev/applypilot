@@ -254,7 +254,7 @@ function toStoredJob(value: unknown): StoredJob | null {
 			typeof job.workplaceType === "string" ? job.workplaceType : "",
 		experienceLevel:
 			typeof job.experienceLevel === "string" ? job.experienceLevel : "",
-		status: job.status as StoredJob["status"],
+		status: normalizeStoredStatus(job.status),
 		savedDate: typeof job.savedDate === "string" ? job.savedDate : "",
 		deadline: typeof job.deadline === "string" ? job.deadline : "",
 		reminderType: normalizeReminderType(job.reminderType),
@@ -276,4 +276,13 @@ function normalizeReminderType(value: unknown): ReminderTypeOption {
 		(reminderTypeOptions as readonly string[]).includes(value)
 		? (value as ReminderTypeOption)
 		: "Follow up";
+}
+
+function normalizeStoredStatus(value: unknown): StoredJob["status"] {
+	if (value === "Interviewing") return "Interviewing";
+	if (value === "Applied") return "Applied";
+	if (value === "Offer") return "Offer";
+	if (value === "Interested") return "Saved";
+	if (value === "Rejected") return "Saved";
+	return "Saved";
 }

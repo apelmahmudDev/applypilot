@@ -39,7 +39,7 @@ type JobFormPanelProps = {
 };
 
 const platforms = ["LinkedIn", "Company Site", "Manual", "Indeed"] as const;
-const statuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"] as const;
+const statuses = ["Saved", "Applied", "Interview", "Offer"] as const;
 const workTypeOptions = ["Remote", "Hybrid", "On-site", "Worldwide"] as const;
 const jobTypeOptions = ["Full-time", "Part-time", "Contract"] as const;
 
@@ -315,5 +315,5 @@ function normalizePlatform(value: string) {
 }
 
 function normalizeStatus(value: SidePanelJobStatus) {
-	return value === "Interested" ? "Saved" : value;
+	return value === "Rejected" ? "Saved" : value;
 }

@@ -4,7 +4,6 @@ export const statusStyles: Record<JobStatus, string> = {
 	Applied: "border-[#EEF2FF] bg-[#EEF2FF] text-[#4F46E5]",
 	Interview: "border-[#FFF7E6] bg-[#FFF7E6] text-[#C66A00]",
 	Saved: "border-[#F1F5F9] bg-[#F1F5F9] text-[#475569]",
-	Rejected: "border-[#FEF2F2] bg-[#FEF2F2] text-[#DC2626]",
 	Offer: "border-[#ECFDF3] bg-[#ECFDF3] text-[#15803D]",
 };
 

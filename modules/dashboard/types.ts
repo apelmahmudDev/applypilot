@@ -2,7 +2,6 @@ export type DashboardJobStatus =
 	| "Applied"
 	| "Interview"
 	| "Saved"
-	| "Rejected"
 	| "Offer";
 
 export type DashboardJobType = "Full-time" | "Part-time" | "Contract";
@@ -64,7 +63,6 @@ export type DashboardStatusFilter =
 	| "saved"
 	| "applied"
 	| "interview"
-	| "rejected"
 	| "offer";
 
 export type DashboardSourceFilter =

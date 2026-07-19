@@ -23,7 +23,6 @@ export const jobStatusOptions = [
 	"Applied",
 	"Interview",
 	"Offer",
-	"Rejected",
 ] as const satisfies ReadonlyArray<DashboardJob["status"]>;
 
 export const jobStatusLabels: Record<DashboardJob["status"], string> = {
@@ -31,7 +30,6 @@ export const jobStatusLabels: Record<DashboardJob["status"], string> = {
 	Applied: "Applied",
 	Interview: "Interviewing",
 	Offer: "Offers",
-	Rejected: "Rejected",
 };
 
 export type DashboardJobFormValues = {

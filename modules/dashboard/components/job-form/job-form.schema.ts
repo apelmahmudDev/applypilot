@@ -3,7 +3,7 @@ import * as z from "zod";
 export const dashboardJobFormSchema = z.object({
 	title: z.string().trim().min(1, "Job title is required."),
 	company: z.string().trim().min(1, "Company is required."),
-	status: z.enum(["Saved", "Applied", "Interview", "Offer", "Rejected"], {
+	status: z.enum(["Saved", "Applied", "Interview", "Offer"], {
 		message: "Status is required.",
 	}),
 	location: z.string().trim().min(1, "Location is required."),

@@ -119,30 +119,6 @@ export const dashboardJobs: DashboardJob[] = [
 		brand: "notion",
 	},
 	{
-		id: "spotify-marketing-manager",
-		title: "Marketing Manager",
-		company: "Spotify",
-		location: "New York, NY",
-		workMode: "Hybrid",
-		jobType: "Full-time",
-		source: {
-			name: "LinkedIn",
-			url: "https://www.linkedin.com/jobs/view/spotify-marketing-manager",
-			faviconUrl:
-				"https://www.google.com/s2/favicons?domain=linkedin.com&sz=64",
-		},
-		savedDate: "May 7, 2025",
-		appliedDate: "May 10, 2025",
-		reminder: "-",
-		status: "Rejected",
-		salary: "$135,000 - $155,000",
-		notes:
-			"Interesting brand and team, but this pipeline appears to be closed now.",
-		description:
-			"Spotify is hiring a Marketing Manager to lead campaign planning, coordinate channel strategy, and support audience growth across key markets.",
-		brand: "spotify",
-	},
-	{
 		id: "linear-product-manager",
 		title: "Product Manager",
 		company: "Linear",
@@ -241,7 +217,6 @@ export const dashboardStats = [
 	{ label: "Applied", value: "18", trend: "8% this month" },
 	{ label: "Interview", value: "4", trend: "2% this month" },
 	{ label: "Offers", value: "1", trend: "1% this month" },
-	{ label: "Rejected", value: "10", trend: "3% this month" },
 ];
 
 export const analyticsMonthlyActivity = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];

@@ -6,7 +6,6 @@ export type JobStatus =
 	| "Applied"
 	| "Interview"
 	| "Saved"
-	| "Rejected"
 	| "Offer";
 
 export type RecentJob = {
@@ -43,8 +42,6 @@ export type SidePanelJobStatus =
 	| "Saved"
 	| "Applied"
 	| "Interview"
-	| "Interested"
-	| "Rejected"
 	| "Offer";
 
 export type SidePanelJobForm = {

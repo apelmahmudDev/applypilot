@@ -22,7 +22,6 @@ const statusStyles: Record<DashboardJobStatus, string> = {
 	Interview:
 		"bg-violet-100 text-violet-700 dark:bg-violet-500/16 dark:text-violet-200",
 	Saved: "bg-blue-100 text-blue-700 dark:bg-blue-500/16 dark:text-blue-200",
-	Rejected: "bg-red-100 text-red-700 dark:bg-red-500/16 dark:text-red-200",
 	Offer: "bg-amber-100 text-amber-700 dark:bg-amber-500/16 dark:text-amber-200",
 };
 
@@ -173,7 +172,6 @@ export function getDashboardColumns({
 
 function getDateColumnLabel(statusFilter: DashboardStatusFilter) {
 	if (statusFilter === "saved") return "Saved Date";
-	if (statusFilter === "rejected") return "Rejected Date";
 	if (statusFilter === "offer") return "Offer Date";
 	if (statusFilter === "applied") return "Applied Date";
 	if (statusFilter === "interview") return "Interview Date";

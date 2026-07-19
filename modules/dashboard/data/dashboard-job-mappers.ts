@@ -158,7 +158,6 @@ function inferJobType(employmentType: string): DashboardJob["jobType"] {
 function mapStoredStatus(status: StoredJob["status"]): DashboardJob["status"] {
 	if (status === "Interviewing") return "Interview";
 	if (status === "Applied") return "Applied";
-	if (status === "Rejected") return "Rejected";
 	if (status === "Offer") return "Offer";
 	return "Saved";
 }

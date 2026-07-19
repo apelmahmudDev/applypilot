@@ -38,6 +38,8 @@ type DataTableProps = {
 		| ((props: {
 				statusFilter: DashboardStatusFilter;
 				setStatusFilter: (value: DashboardStatusFilter) => void;
+				search: string;
+				setSearch: (value: string) => void;
 		  }) => ReactNode);
 	toolbarMode?: "full" | "tabs-only";
 	showStatusTabs?: boolean;
@@ -82,7 +84,7 @@ export function DataTable({
 		return data.filter((job) => {
 			const matchesQuery =
 				!query ||
-				[job.title, job.company, job.location, job.source.name].some((value) =>
+				[job.title, job.company].some((value) =>
 					value.toLowerCase().includes(query),
 				);
 			const matchesStatus =
@@ -121,7 +123,7 @@ export function DataTable({
 	return (
 		<div className="min-w-0 space-y-5 pb-8">
 			{typeof headerSlot === "function"
-				? headerSlot({ statusFilter, setStatusFilter })
+				? headerSlot({ statusFilter, setStatusFilter, search, setSearch })
 				: headerSlot}
 			{statsSlot}
 

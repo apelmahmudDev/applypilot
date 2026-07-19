@@ -122,7 +122,7 @@ export function AllJobsView() {
 				toolbarMode="tabs-only"
 				showStatusTabs={false}
 				initialStatusFilter="saved"
-				headerSlot={({ statusFilter, setStatusFilter }) => (
+				headerSlot={({ statusFilter, setStatusFilter, search, setSearch }) => (
 					<section className="flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
 						<div className="min-w-0">
 							<h1 className="text-3xl font-bold tracking-[-0.05em] text-slate-950 dark:text-foreground">
@@ -140,8 +140,10 @@ export function AllJobsView() {
 									aria-hidden="true"
 								/>
 								<Input
+									value={search}
 									placeholder="Search jobs, companies, roles..."
 									className="h-11 bg-white pl-11 pr-14 text-sm shadow-none dark:border-border dark:bg-card"
+									onChange={(event) => setSearch(event.target.value)}
 								/>
 							</div>
 

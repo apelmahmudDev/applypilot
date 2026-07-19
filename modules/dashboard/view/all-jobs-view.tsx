@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,21 +29,84 @@ const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 ];
 
 export function AllJobsView() {
-	const { jobs, stats, createJob, saveJob, saveReminder } = useDashboardJobs();
+	const { jobs, stats, createJob, saveJob, saveReminder, deleteJob } =
+		useDashboardJobs();
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [editingJobId, setEditingJobId] = useState<string | null>(null);
 	const [isCreatingJob, setIsCreatingJob] = useState(false);
 	const [reminderDialogJobId, setReminderDialogJobId] = useState<string | null>(
 		null,
 	);
+	const [jobPendingDeleteId, setJobPendingDeleteId] = useState<string | null>(
+		null,
+	);
+	const [isDeletingJob, setIsDeletingJob] = useState(false);
 
 	const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? null;
 	const editingJob = jobs.find((job) => job.id === editingJobId) ?? null;
 	const reminderDialogJob =
 		jobs.find((job) => job.id === reminderDialogJobId) ?? null;
+	const jobPendingDelete =
+		jobs.find((job) => job.id === jobPendingDeleteId) ?? null;
+
+	const confirmDeleteJob = async () => {
+		if (!jobPendingDelete) {
+			return;
+		}
+
+		setIsDeletingJob(true);
+
+		try {
+			const deleted = await deleteJob(jobPendingDelete.id);
+
+			if (!deleted) {
+				return;
+			}
+
+			if (selectedJobId === jobPendingDelete.id) {
+				setSelectedJobId(null);
+			}
+
+			if (editingJobId === jobPendingDelete.id) {
+				setEditingJobId(null);
+			}
+
+			if (reminderDialogJobId === jobPendingDelete.id) {
+				setReminderDialogJobId(null);
+			}
+
+			setJobPendingDeleteId(null);
+		} finally {
+			setIsDeletingJob(false);
+		}
+	};
 
 	return (
 		<>
+			<ConfirmDialog
+				open={Boolean(jobPendingDelete)}
+				title="Delete this job?"
+				description={
+					<>
+						You're about to permanently delete{" "}
+						<span className="font-semibold text-foreground">
+							{jobPendingDelete?.title || "this job"}
+						</span>
+						. This action can't be undone.
+					</>
+				}
+				confirmLabel="Delete"
+				cancelLabel="Keep job"
+				confirmingLabel="Deleting..."
+				isConfirming={isDeletingJob}
+				onOpenChange={(open) => {
+					if (!open && !isDeletingJob) {
+						setJobPendingDeleteId(null);
+					}
+				}}
+				onConfirm={() => void confirmDeleteJob()}
+			/>
+
 			<DataTable
 				columns={({ statusFilter }) =>
 					getDashboardColumns({
@@ -51,6 +115,7 @@ export function AllJobsView() {
 						onViewDetails: (job) => setSelectedJobId(job.id),
 						onSetReminder: (job) => setReminderDialogJobId(job.id),
 						onEditJob: (job) => setEditingJobId(job.id),
+						onDeleteJob: (job) => setJobPendingDeleteId(job.id),
 					})
 				}
 				data={jobs}

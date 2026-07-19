@@ -25,6 +25,7 @@ type DataTableRowActionsProps = {
 	onViewDetails?: (job: DashboardJob) => void;
 	onSetReminder?: (job: DashboardJob) => void;
 	onEditJob?: (job: DashboardJob) => void;
+	onDeleteJob?: (job: DashboardJob) => void;
 };
 
 export function DataTableRowActions({
@@ -32,6 +33,7 @@ export function DataTableRowActions({
 	onViewDetails,
 	onSetReminder,
 	onEditJob,
+	onDeleteJob,
 }: DataTableRowActionsProps) {
 	const canOpenOriginal = Boolean(job.source.url);
 
@@ -113,6 +115,7 @@ export function DataTableRowActions({
 					<DropdownMenuItem
 						variant="destructive"
 						className="gap-2.5 rounded-lg py-2 font-medium"
+						onClick={() => onDeleteJob?.(job)}
 					>
 						<Trash2 className="size-4" aria-hidden="true" />
 						Delete

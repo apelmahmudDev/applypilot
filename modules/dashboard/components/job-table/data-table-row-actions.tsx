@@ -33,6 +33,29 @@ export function DataTableRowActions({
 	onSetReminder,
 	onEditJob,
 }: DataTableRowActionsProps) {
+	const canOpenOriginal = Boolean(job.source.url);
+
+	const handleOpenOriginal = () => {
+		if (!job.source.url) {
+			return;
+		}
+
+		const extensionChrome = globalThis as typeof globalThis & {
+			chrome?: {
+				tabs?: {
+					create: (options: { url: string }) => void;
+				};
+			};
+		};
+
+		if (extensionChrome.chrome?.tabs?.create) {
+			extensionChrome.chrome.tabs.create({ url: job.source.url });
+			return;
+		}
+
+		window.open(job.source.url, "_blank", "noopener,noreferrer");
+	};
+
 	return (
 		<div className="flex min-w-[76px] items-center justify-end gap-1">
 			<Button
@@ -67,7 +90,11 @@ export function DataTableRowActions({
 						<FilePenLine className="size-4" aria-hidden="true" />
 						Edit job
 					</DropdownMenuItem>
-					<DropdownMenuItem className="gap-2.5 rounded-lg py-2 font-medium">
+					<DropdownMenuItem
+						className="gap-2.5 rounded-lg py-2 font-medium"
+						disabled={!canOpenOriginal}
+						onClick={handleOpenOriginal}
+					>
 						<Link2 className="size-4" aria-hidden="true" />
 						Open original
 					</DropdownMenuItem>

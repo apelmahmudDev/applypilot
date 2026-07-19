@@ -2,8 +2,19 @@ import { SettingsAboutSection } from "@/modules/dashboard/components/settings/se
 import { SettingsAppearanceSection } from "@/modules/dashboard/components/settings/settings-appearance-section";
 import { SettingsPreferencesSection } from "@/modules/dashboard/components/settings/settings-preferences-section";
 import { SettingsStorageSection } from "@/modules/dashboard/components/settings/settings-storage-section";
+import { useDashboardSettings } from "@/modules/dashboard/hooks/use-dashboard-settings";
 
 export function SettingsView() {
+	const {
+		settings,
+		storageUsedLabel,
+		storageUsedPercent,
+		isClearingData,
+		appVersion,
+		updateSetting,
+		clearAllData,
+	} = useDashboardSettings();
+
 	return (
 		<div>
 			<section className="mb-5 flex flex-col gap-5 pt-5 pb-2 xl:flex-row xl:items-center xl:justify-between">
@@ -28,10 +39,18 @@ export function SettingsView() {
 			</section>
 
 			<section className="mt-6 mb-8 space-y-6">
-				<SettingsStorageSection />
-				<SettingsPreferencesSection />
+				<SettingsStorageSection
+					storageUsedLabel={storageUsedLabel}
+					storageUsedPercent={storageUsedPercent}
+					isClearingData={isClearingData}
+					onClearAllData={clearAllData}
+				/>
+				<SettingsPreferencesSection
+					settings={settings}
+					onUpdateSetting={updateSetting}
+				/>
 				<SettingsAppearanceSection />
-				<SettingsAboutSection />
+				<SettingsAboutSection appVersion={appVersion} />
 			</section>
 		</div>
 	);

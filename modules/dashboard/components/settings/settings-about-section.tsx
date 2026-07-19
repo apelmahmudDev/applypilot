@@ -1,7 +1,11 @@
 import { settingsSections } from "./data";
 import { SettingsSectionCard } from "./settings-section-card";
 
-export function SettingsAboutSection() {
+type SettingsAboutSectionProps = {
+	appVersion: string;
+};
+
+export function SettingsAboutSection({ appVersion }: SettingsAboutSectionProps) {
 	return (
 		<SettingsSectionCard config={settingsSections.about}>
 			<div className="flex flex-col gap-3 border-t border-slate-100 pt-6 dark:border-border/60 sm:flex-row sm:items-end sm:justify-between">
@@ -16,7 +20,7 @@ export function SettingsAboutSection() {
 				</div>
 
 				<p className="shrink-0 text-sm font-semibold text-slate-500 dark:text-muted-foreground">
-					Version 1.0.0
+					Version {appVersion}
 				</p>
 			</div>
 		</SettingsSectionCard>

@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 
+import type { DashboardDefaultStatus } from "@/lib/settings/storage";
 import type { DashboardJob } from "@/modules/dashboard/types";
 
 export const workTypeOptions = [
@@ -49,13 +50,15 @@ export type DashboardJobFormValues = {
 	notes: string;
 };
 
-export function createEmptyJobFormValues(): DashboardJobFormValues {
+export function createEmptyJobFormValues(
+	defaultStatus: DashboardDefaultStatus = "saved",
+): DashboardJobFormValues {
 	const today = format(new Date(), "yyyy-MM-dd");
 
 	return {
 		title: "",
 		company: "",
-		status: "Saved",
+		status: mapDefaultStatus(defaultStatus),
 		location: "",
 		workMode: "Remote",
 		jobType: "Full-time",
@@ -145,6 +148,15 @@ function formatDisplayDate(value: string) {
 
 function normalizeSalary(value?: string) {
 	return value === "Not specified" ? "" : value ?? "";
+}
+
+function mapDefaultStatus(
+	defaultStatus: DashboardDefaultStatus,
+): DashboardJob["status"] {
+	if (defaultStatus === "applied") return "Applied";
+	if (defaultStatus === "interview") return "Interview";
+	if (defaultStatus === "offer") return "Offer";
+	return "Saved";
 }
 
 function normalizeWorkModeOption(value: string) {

@@ -5,6 +5,7 @@ import {
 	getStoredJobs,
 	updateJobInStorage,
 } from "@/lib/jobs/storage";
+import type { DashboardSortJobsBy } from "@/lib/settings/storage";
 import type { ReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { buildAllJobsStats } from "@/modules/dashboard/data/dashboard-job-stats";
 import {
@@ -15,14 +16,16 @@ import {
 } from "@/modules/dashboard/data/dashboard-job-mappers";
 import type { DashboardJob } from "@/modules/dashboard/types";
 
-export function useDashboardJobs() {
+export function useDashboardJobs(
+	sortJobsBy: DashboardSortJobsBy = "last-updated",
+) {
 	const [jobs, setJobs] = useState<DashboardJob[]>([]);
 
 	useEffect(() => {
 		let isActive = true;
 
 		const loadJobs = async () => {
-			const nextJobs = await getDashboardJobs();
+			const nextJobs = sortDashboardJobs(await getDashboardJobs(), sortJobsBy);
 
 			if (isActive) {
 				setJobs(nextJobs);
@@ -46,21 +49,26 @@ export function useDashboardJobs() {
 			isActive = false;
 			browser.storage.onChanged.removeListener(handleStorageChanged);
 		};
-	}, []);
+	}, [sortJobsBy]);
 
 	const createJob = useCallback(async (job: DashboardJob) => {
 		const nextJob = await createDashboardJob(job);
-		setJobs((currentJobs) => [nextJob, ...currentJobs]);
-	}, []);
+		setJobs((currentJobs) =>
+			sortDashboardJobs([nextJob, ...currentJobs], sortJobsBy),
+		);
+	}, [sortJobsBy]);
 
 	const saveJob = useCallback(async (job: DashboardJob) => {
 		const nextJob = await updateDashboardJob(job);
 		setJobs((currentJobs) =>
-			currentJobs.map((currentJob) =>
-				currentJob.id === nextJob.id ? nextJob : currentJob,
+			sortDashboardJobs(
+				currentJobs.map((currentJob) =>
+					currentJob.id === nextJob.id ? nextJob : currentJob,
+				),
+				sortJobsBy,
 			),
 		);
-	}, []);
+	}, [sortJobsBy]);
 
 	const saveReminder = useCallback(
 		async (jobId: string, values: ReminderFormValues) => {
@@ -71,12 +79,15 @@ export function useDashboardJobs() {
 			}
 
 			setJobs((currentJobs) =>
-				currentJobs.map((currentJob) =>
-					currentJob.id === nextJob.id ? nextJob : currentJob,
+				sortDashboardJobs(
+					currentJobs.map((currentJob) =>
+						currentJob.id === nextJob.id ? nextJob : currentJob,
+					),
+					sortJobsBy,
 				),
 			);
 		},
-		[],
+		[sortJobsBy],
 	);
 
 	const deleteJob = useCallback(async (jobId: string) => {
@@ -107,13 +118,16 @@ export function useDashboardJobs() {
 		});
 
 		setJobs((currentJobs) =>
-			currentJobs.map((currentJob) =>
-				currentJob.id === result.job.id ? result.job : currentJob,
+			sortDashboardJobs(
+				currentJobs.map((currentJob) =>
+					currentJob.id === result.job.id ? result.job : currentJob,
+				),
+				sortJobsBy,
 			),
 		);
 
 		return true;
-	}, []);
+	}, [sortJobsBy]);
 
 	const stats = useMemo(() => buildAllJobsStats(jobs), [jobs]);
 
@@ -126,4 +140,34 @@ export function useDashboardJobs() {
 		deleteJob,
 		markReminderDone,
 	};
+}
+
+function sortDashboardJobs(
+	jobs: DashboardJob[],
+	sortJobsBy: DashboardSortJobsBy,
+) {
+	const nextJobs = [...jobs];
+
+	if (sortJobsBy === "company") {
+		return nextJobs.sort((firstJob, secondJob) =>
+			firstJob.company.localeCompare(secondJob.company),
+		);
+	}
+
+	const getDateValue = (value: string) => {
+		const date = new Date(value);
+		return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+	};
+
+	if (sortJobsBy === "date-created") {
+		return nextJobs.sort(
+			(firstJob, secondJob) =>
+				getDateValue(secondJob.savedDate) - getDateValue(firstJob.savedDate),
+		);
+	}
+
+	return nextJobs.sort(
+		(firstJob, secondJob) =>
+			getDateValue(secondJob.appliedDate) - getDateValue(firstJob.appliedDate),
+	);
 }

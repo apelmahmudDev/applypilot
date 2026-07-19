@@ -8,8 +8,20 @@ import {
 
 import { settingsPreferenceItems, settingsSections } from "./data";
 import { SettingsSectionCard } from "./settings-section-card";
+import type { DashboardSettings } from "@/lib/settings/storage";
 
-export function SettingsPreferencesSection() {
+type SettingsPreferencesSectionProps = {
+	settings: DashboardSettings;
+	onUpdateSetting: <K extends keyof DashboardSettings>(
+		key: K,
+		value: DashboardSettings[K],
+	) => void | Promise<void>;
+};
+
+export function SettingsPreferencesSection({
+	settings,
+	onUpdateSetting,
+}: SettingsPreferencesSectionProps) {
 	return (
 		<SettingsSectionCard config={settingsSections.preferences}>
 			<div className="space-y-6">
@@ -25,7 +37,10 @@ export function SettingsPreferencesSection() {
 							<p className="mt-1 text-sm text-slate-500 dark:text-muted-foreground">{item.description}</p>
 						</div>
 
-						<Select defaultValue={item.defaultValue}>
+						<Select
+							value={settings[item.id]}
+							onValueChange={(value) => void onUpdateSetting(item.id, value)}
+						>
 							<SelectTrigger className="h-11! w-full rounded-md border-slate-200 bg-white px-4 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground lg:w-50">
 								<SelectValue />
 							</SelectTrigger>

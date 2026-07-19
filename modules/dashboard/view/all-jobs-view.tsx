@@ -17,6 +17,7 @@ import { JobFormDrawer } from "@/modules/dashboard/components/job-form/job-form-
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
 import { getReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.utils";
 import { useDashboardJobs } from "@/modules/dashboard/hooks/use-dashboard-jobs";
+import { useDashboardSettings } from "@/modules/dashboard/hooks/use-dashboard-settings";
 import type { DashboardStatusFilter } from "@/modules/dashboard/types";
 import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
@@ -29,8 +30,9 @@ const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 ];
 
 export function AllJobsView() {
+	const { settings } = useDashboardSettings();
 	const { jobs, stats, createJob, saveJob, saveReminder, deleteJob } =
-		useDashboardJobs();
+		useDashboardJobs(settings.sortJobsBy);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [editingJobId, setEditingJobId] = useState<string | null>(null);
 	const [isCreatingJob, setIsCreatingJob] = useState(false);
@@ -212,6 +214,7 @@ export function AllJobsView() {
 					mode="create"
 					open={isCreatingJob}
 					onOpenChange={setIsCreatingJob}
+					defaultStatus={settings.defaultStatus}
 					onSubmit={async (job) => {
 						await createJob(job);
 					}}

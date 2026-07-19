@@ -40,6 +40,7 @@ import {
 } from "@/modules/dashboard/components/reminders/reminder-form.utils";
 import type { ReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import type { DashboardJob } from "@/modules/dashboard/types";
+import type { DashboardDefaultStatus } from "@/lib/settings/storage";
 
 import { dashboardJobFormSchema } from "./job-form.schema";
 import {
@@ -60,6 +61,7 @@ type JobFormDrawerProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	onSubmit: (job: DashboardJob) => void;
+	defaultStatus?: DashboardDefaultStatus;
 };
 
 export function JobFormDrawer({
@@ -68,6 +70,7 @@ export function JobFormDrawer({
 	open,
 	onOpenChange,
 	onSubmit,
+	defaultStatus = "saved",
 }: JobFormDrawerProps) {
 	const [savedDateOpen, setSavedDateOpen] = useState(false);
 	const [deadlineOpen, setDeadlineOpen] = useState(false);
@@ -77,8 +80,9 @@ export function JobFormDrawer({
 	);
 
 	const defaultValues = useMemo(
-		() => (job ? createJobFormValues(job) : createEmptyJobFormValues()),
-		[job],
+		() =>
+			job ? createJobFormValues(job) : createEmptyJobFormValues(defaultStatus),
+		[defaultStatus, job],
 	);
 
 	const form = useForm({

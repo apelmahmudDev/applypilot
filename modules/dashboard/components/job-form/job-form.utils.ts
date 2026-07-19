@@ -43,7 +43,7 @@ export type DashboardJobFormValues = {
 	sourceName: DashboardJob["source"]["name"];
 	url: string;
 	savedDate: string;
-	appliedDate: string;
+	deadline: string;
 	salary: string;
 	currency: string;
 	notes: string;
@@ -63,7 +63,7 @@ export function createEmptyJobFormValues(): DashboardJobFormValues {
 		sourceName: "LinkedIn",
 		url: "",
 		savedDate: today,
-		appliedDate: "",
+		deadline: "",
 		salary: "",
 		currency: "",
 		notes: "",
@@ -76,16 +76,16 @@ export function createJobFormValues(job: DashboardJob): DashboardJobFormValues {
 		company: job.company,
 		status: job.status,
 		location: job.location,
-		workMode: job.workMode,
+		workMode: normalizeWorkModeOption(job.workMode),
 		jobType: job.jobType,
 		experienceLevel: job.experienceLevel ?? "Mid-level",
 		sourceName: job.source.name,
 		url: job.source.url ?? "",
 		savedDate: toInputDate(job.savedDate),
-		appliedDate: job.appliedDate ? toInputDate(job.appliedDate) : "",
+		deadline: job.deadline ? toInputDate(job.deadline) : "",
 		salary: normalizeSalary(job.salary),
 		currency: job.currency ?? "",
-		notes: job.notes ?? "",
+		notes: job.description ?? "",
 	};
 }
 
@@ -110,14 +110,18 @@ export function buildJobFromFormValues(
 			faviconUrl: existingJob?.source.faviconUrl ?? null,
 		},
 		savedDate: formatDisplayDate(values.savedDate),
-		appliedDate: values.appliedDate ? formatDisplayDate(values.appliedDate) : "",
+		appliedDate: existingJob?.appliedDate ?? "-",
+		deadline: values.deadline ? formatDisplayDate(values.deadline) : "",
 		reminder: existingJob?.reminder ?? "-",
 		reminderDetails: existingJob?.reminderDetails ?? null,
 		salary: values.salary.trim() || "Not specified",
 		notes: values.notes.trim(),
 		description:
+			values.notes.trim() ||
 			existingJob?.description ||
 			`${values.company.trim()} opportunity for ${values.title.trim()}.`,
+		descriptionHtml: existingJob?.descriptionHtml,
+		logoUrl: existingJob?.logoUrl,
 		brand: existingJob?.brand ?? "hubspot",
 		experienceLevel: values.experienceLevel.trim(),
 		currency: values.currency.trim() || undefined,
@@ -141,4 +145,26 @@ function formatDisplayDate(value: string) {
 
 function normalizeSalary(value?: string) {
 	return value === "Not specified" ? "" : value ?? "";
+}
+
+function normalizeWorkModeOption(value: string) {
+	const normalizedValue = value.trim().toLowerCase();
+
+	if (normalizedValue === "on-site" || normalizedValue === "onsite") {
+		return "On-site";
+	}
+
+	if (normalizedValue === "remote") {
+		return "Remote";
+	}
+
+	if (normalizedValue === "hybrid") {
+		return "Hybrid";
+	}
+
+	if (normalizedValue === "worldwide") {
+		return "Worldwide";
+	}
+
+	return value.trim() || "Remote";
 }

@@ -177,6 +177,13 @@ export function JobDetailsDrawer({
 									label="Application Date"
 									value={applicationDate}
 								/>
+								{job.deadline ? (
+									<JobDetailsRow
+										icon={Tag}
+										label="Deadline"
+										value={job.deadline}
+									/>
+								) : null}
 								{reminderInfo ? null : (
 									<JobDetailsReminderRow
 										reminder={job.reminder}

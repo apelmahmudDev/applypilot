@@ -17,8 +17,8 @@ export const dashboardJobFormSchema = z.object({
 	}),
 	url: z.string().trim(),
 	savedDate: z.string().min(1, "Saved date is required."),
-	appliedDate: z.string(),
+	deadline: z.string(),
 	salary: z.string().trim(),
 	currency: z.string().trim(),
-	notes: z.string().trim().max(500, "Notes must be 500 characters or fewer."),
+	notes: z.string().trim(),
 });

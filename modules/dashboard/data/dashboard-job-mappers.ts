@@ -81,6 +81,7 @@ export function mapStoredJobToDashboardJob(job: StoredJob): DashboardJob {
 		},
 		appliedDate: getDisplayTimelineDate(job),
 		savedDate: formatDisplayDate(job.savedDate || job.createdAt),
+		deadline: job.deadline ? formatDisplayDate(job.deadline) : "",
 		reminder:
 			job.reminderEnabled && job.followUpDate
 				? format(new Date(`${job.followUpDate}T12:00:00`), "MMM d")
@@ -124,7 +125,7 @@ function toStoredJobForm(job: DashboardJob): JobForm {
 		experienceLevel: job.experienceLevel ?? "",
 		status: mapDashboardStatus(job.status),
 		savedDate: toStorageDate(job.savedDate),
-		deadline: "",
+		deadline: job.deadline ? toStorageDate(job.deadline) : "",
 		reminderType: job.reminderDetails?.type ?? "Follow up",
 		followUpDate: job.reminderDetails?.date ?? "",
 		followUpTime: job.reminderDetails?.time ?? "",

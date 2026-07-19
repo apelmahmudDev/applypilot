@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import {
 	Bell,
@@ -98,6 +98,11 @@ export function JobFormDrawer({
 			onOpenChange(false);
 		},
 	});
+
+	useEffect(() => {
+		form.reset(defaultValues);
+		setReminderValues(getReminderFormValues(job?.reminderDetails ?? null));
+	}, [defaultValues, form, job]);
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -356,10 +361,10 @@ export function JobFormDrawer({
 												)}
 											/>
 											<form.Field
-												name="appliedDate"
-												children={(field) => (
-													<DateField
-														label="Deadline (Optional)"
+											name="deadline"
+											children={(field) => (
+												<DateField
+													label="Deadline (Optional)"
 														value={field.state.value}
 														errors={field.state.meta.errors}
 														isInvalid={
@@ -439,26 +444,17 @@ export function JobFormDrawer({
 													}
 												>
 													<FieldLabel className={fieldLabelClassName}>
-														Note (Optional)
+														Job Description (Optional)
 													</FieldLabel>
 													<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
 														<Textarea
 															value={field.state.value}
-															rows={4}
-															maxLength={500}
-															className="min-h-24 resize-none border-0 dark:bg-card px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:text-foreground"
+															rows={8}
+															className="min-h-40 resize-none border-0 dark:bg-card px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:text-foreground"
 															onBlur={field.handleBlur}
 															onChange={(event) =>
 																field.handleChange(event.target.value)
 															}
-														/>
-														<form.Subscribe
-															selector={(state) => state.values.notes.length}
-															children={(notesLength) => (
-																<div className="mt-2 text-right text-xs font-medium text-slate-400 dark:text-muted-foreground/80">
-																	{notesLength} / 500
-																</div>
-															)}
 														/>
 													</div>
 													<FieldError errors={field.state.meta.errors} />

@@ -36,6 +36,7 @@ export type DashboardJob = {
 	source: DashboardJobSource;
 	appliedDate: string;
 	savedDate: string;
+	deadline?: string;
 	reminder: string;
 	reminderDetails?: DashboardReminder | null;
 	status: DashboardJobStatus;

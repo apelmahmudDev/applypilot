@@ -45,6 +45,7 @@ export type DashboardJob = {
 	experienceLevel?: string;
 	currency?: string;
 	tags?: string[];
+	logoUrl?: string;
 	brand:
 		| "figma"
 		| "vercel"

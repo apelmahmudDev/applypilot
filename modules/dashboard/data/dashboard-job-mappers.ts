@@ -71,8 +71,8 @@ export function mapStoredJobToDashboardJob(job: StoredJob): DashboardJob {
 		id: job.id,
 		title: job.title || "Untitled role",
 		company: job.company || "Unknown company",
-		location: job.location || "Unknown location",
-		workMode: job.workplaceType || "Remote",
+		location: normalizeLocation(job.location, job.workplaceType),
+		workMode: normalizeWorkMode(job.workplaceType),
 		jobType: inferJobType(job.employmentType),
 		source: {
 			name: sourceName,
@@ -101,6 +101,7 @@ export function mapStoredJobToDashboardJob(job: StoredJob): DashboardJob {
 		description: job.descriptionText || job.notes || "No description available.",
 		experienceLevel: job.experienceLevel || undefined,
 		currency: job.currency || undefined,
+		logoUrl: job.logoUrl || undefined,
 		brand: inferBrand(job.company, job.platform),
 	};
 }
@@ -114,7 +115,7 @@ function toStoredJobForm(job: DashboardJob): JobForm {
 		platform: job.source.name,
 		salary: normalizeStoredSalary(job.salary),
 		currency: job.currency ?? "",
-		logoUrl: "",
+		logoUrl: job.logoUrl ?? "",
 		descriptionText: job.description,
 		descriptionHtml: "",
 		employmentType: job.jobType,
@@ -250,4 +251,25 @@ function parseStoredDate(value: string) {
 	}
 
 	return new Date(value);
+}
+
+function normalizeLocation(location: string, workMode: string) {
+	const nextLocation = location.trim();
+	const nextWorkMode = workMode.trim();
+
+	if (!nextLocation) {
+		return "";
+	}
+
+	return normalizeComparable(nextLocation) === normalizeComparable(nextWorkMode)
+		? ""
+		: nextLocation;
+}
+
+function normalizeWorkMode(workMode: string) {
+	return workMode.trim();
+}
+
+function normalizeComparable(value: string) {
+	return value.trim().toLowerCase().replace(/\s+/g, " ");
 }

@@ -50,11 +50,35 @@ const brandContent: Record<
 
 type JobBrandMarkProps = {
 	brand: DashboardJob["brand"];
+	logoUrl?: string;
+	company: string;
 	className?: string;
 };
 
-export function JobBrandMark({ brand, className }: JobBrandMarkProps) {
+export function JobBrandMark({
+	brand,
+	logoUrl,
+	company,
+	className,
+}: JobBrandMarkProps) {
 	const content = brandContent[brand];
+
+	if (logoUrl) {
+		return (
+			<div
+				className={cn(
+					"flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white ring-1 ring-slate-200",
+					className,
+				)}
+			>
+				<img
+					src={logoUrl}
+					alt={`${company} logo`}
+					className="size-full object-cover"
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div

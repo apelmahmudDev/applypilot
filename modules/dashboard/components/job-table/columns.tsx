@@ -67,7 +67,11 @@ export function getDashboardColumns({
 				const job = row.original;
 				return (
 					<div className="flex min-w-[150px] items-center gap-3">
-						<JobBrandMark brand={job.brand} />
+						<JobBrandMark
+							brand={job.brand}
+							logoUrl={job.logoUrl}
+							company={job.company}
+						/>
 						<p className="truncate text-sm font-semibold text-slate-900 dark:text-foreground">
 							{job.company}
 						</p>
@@ -80,14 +84,25 @@ export function getDashboardColumns({
 			header: "Location",
 			cell: ({ row }) => {
 				const job = row.original;
+				const hasLocation = Boolean(job.location.trim());
+				const hasWorkMode = Boolean(job.workMode.trim());
+
 				return (
 					<div className="min-w-[150px]">
-						<p className="text-sm font-semibold text-slate-900 dark:text-foreground">
-							{job.location}
-						</p>
-						<p className="mt-1 text-xs font-medium text-slate-500 dark:text-muted-foreground">
-							{job.workMode}
-						</p>
+						{hasLocation ? (
+							<p className="text-sm font-semibold text-slate-900 dark:text-foreground">
+								{job.location}
+							</p>
+						) : (
+							<p className="text-sm font-semibold text-slate-400 dark:text-muted-foreground/75">
+								-
+							</p>
+						)}
+						{hasWorkMode ? (
+							<p className="mt-1 text-xs font-medium text-slate-500 dark:text-muted-foreground">
+								{job.workMode}
+							</p>
+						) : null}
 					</div>
 				);
 			},

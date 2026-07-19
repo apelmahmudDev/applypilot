@@ -93,6 +93,7 @@ export function mapStoredJobToDashboardJob(job: StoredJob): DashboardJob {
 						date: job.followUpDate,
 						time: job.followUpTime || "10:00",
 						isActive: job.reminderEnabled,
+						isDone: job.reminderDone,
 						note: job.reminderNote,
 					}
 				: null,
@@ -133,7 +134,7 @@ function toStoredJobForm(job: DashboardJob): JobForm {
 		reminderEnabled: Boolean(
 			job.reminderDetails?.isActive && job.reminderDetails.date,
 		),
-		reminderDone: false,
+		reminderDone: Boolean(job.reminderDetails?.isDone),
 		notes: job.notes,
 	};
 }

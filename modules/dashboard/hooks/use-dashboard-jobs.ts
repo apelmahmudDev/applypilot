@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { deleteJobFromStorage } from "@/lib/jobs/storage";
+import {
+	deleteJobFromStorage,
+	getStoredJobs,
+	updateJobInStorage,
+} from "@/lib/jobs/storage";
 import type { ReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.types";
 import { buildAllJobsStats } from "@/modules/dashboard/data/dashboard-job-stats";
 import {
@@ -89,6 +93,28 @@ export function useDashboardJobs() {
 		return true;
 	}, []);
 
+	const markReminderDone = useCallback(async (jobId: string) => {
+		const jobs = await getStoredJobs();
+		const job = jobs.find((currentJob) => currentJob.id === jobId);
+
+		if (!job) {
+			return false;
+		}
+
+		const result = await updateJobInStorage(jobId, {
+			...job,
+			reminderDone: true,
+		});
+
+		setJobs((currentJobs) =>
+			currentJobs.map((currentJob) =>
+				currentJob.id === result.job.id ? result.job : currentJob,
+			),
+		);
+
+		return true;
+	}, []);
+
 	const stats = useMemo(() => buildAllJobsStats(jobs), [jobs]);
 
 	return {
@@ -98,5 +124,6 @@ export function useDashboardJobs() {
 		saveJob,
 		saveReminder,
 		deleteJob,
+		markReminderDone,
 	};
 }

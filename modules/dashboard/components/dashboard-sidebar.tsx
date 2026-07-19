@@ -18,6 +18,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useDashboardReminderCount } from "@/modules/dashboard/hooks/use-dashboard-reminder-count";
 import {
 	dashboardNavSections,
 	type DashboardView,
@@ -35,6 +36,7 @@ export function DashboardSidebar({
 	const { isMobile, setOpenMobile } = useSidebar();
 	const logoSrc = browser.runtime.getURL("/logo.png");
 	const userProfile = useUserIdentity();
+	const reminderCount = useDashboardReminderCount();
 	const collapsedMenuButtonClass =
 		"group-data-[collapsible=icon]:h-auto! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:flex-col! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-1 group-data-[collapsible=icon]:px-1! group-data-[collapsible=icon]:py-2.5! group-data-[collapsible=icon]:text-center group-data-[collapsible=icon]:[&>span]:overflow-visible group-data-[collapsible=icon]:[&>span]:text-clip group-data-[collapsible=icon]:[&>span]:whitespace-normal group-data-[collapsible=icon]:[&>span]:text-center group-data-[collapsible=icon]:[&>span]:text-[11px] group-data-[collapsible=icon]:[&>span]:leading-4";
 
@@ -77,7 +79,8 @@ export function DashboardSidebar({
 								{section.items.map((item) => {
 									const Icon = item.icon;
 									const isActive = activeView === item.value;
-									const reminderCount = item.value === "reminders" ? "3" : null;
+									const badgeCount =
+										item.value === "reminders" ? reminderCount : null;
 
 									return (
 										<SidebarMenuItem key={item.value}>
@@ -87,7 +90,7 @@ export function DashboardSidebar({
 												isActive={isActive}
 												className={cn(
 													"h-10 rounded-md font-bold",
-													reminderCount && "pr-3",
+													badgeCount && "pr-3",
 													"group-data-[collapsible=icon]:px-1!",
 													collapsedMenuButtonClass,
 													isActive
@@ -101,7 +104,7 @@ export function DashboardSidebar({
 													aria-hidden="true"
 												/>
 												<span className="flex-1">{item.label}</span>
-												{reminderCount ? (
+												{badgeCount ? (
 													<div
 														className={cn(
 															"ml-auto flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-[11px] font-bold tabular-nums ring-1 ring-inset transition-colors group-data-[collapsible=icon]:hidden",
@@ -110,7 +113,7 @@ export function DashboardSidebar({
 																: "bg-primary text-primary-foreground ring-primary/15 shadow-[0_1px_2px_color-mix(in_srgb,var(--primary)_22%,transparent)]",
 														)}
 													>
-														{reminderCount}
+														{badgeCount}
 													</div>
 												) : null}
 											</SidebarMenuButton>

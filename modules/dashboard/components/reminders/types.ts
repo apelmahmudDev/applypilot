@@ -25,7 +25,7 @@ export type ReminderRow = {
 };
 
 export type ReminderSection = {
-	id: "today" | "this-week" | "later";
+	id: "overdue" | "today" | "this-week" | "later";
 	title: string;
 	eyebrow?: string;
 	rows: ReminderRow[];

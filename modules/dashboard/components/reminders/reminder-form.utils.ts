@@ -25,6 +25,7 @@ export function getReminderFormValues(
 		date: reminder.date,
 		time: reminder.time,
 		isActive: reminder.isActive,
+		isDone: reminder.isDone,
 		note: reminder.note,
 	};
 }

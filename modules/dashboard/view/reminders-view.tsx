@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,15 +18,24 @@ import { getReminderFormValues } from "@/modules/dashboard/components/reminders/
 import { RemindersDatePicker } from "@/modules/dashboard/components/reminders/reminders-date-picker";
 import { RemindersStats } from "@/modules/dashboard/components/reminders/reminders-stats";
 import { RemindersTableSection } from "@/modules/dashboard/components/reminders/reminders-table-section";
-import { reminderSections } from "@/modules/dashboard/components/reminders/data";
 import type { ReminderRow } from "@/modules/dashboard/components/reminders/types";
-import { dashboardJobs } from "@/modules/dashboard/mock-data";
+import { useDashboardReminders } from "@/modules/dashboard/hooks/use-dashboard-reminders";
 
 export function RemindersView() {
-	const [jobs] = useState(dashboardJobs);
-	const [selectedReminderType, setSelectedReminderType] = useState<
-		(typeof reminderTypeOptions)[number]
-	>(reminderTypeOptions[0]);
+	const {
+		jobs,
+		search,
+		setSearch,
+		selectedReminderType,
+		setSelectedReminderType,
+		selectedDate,
+		setSelectedDate,
+		sections,
+		stats,
+		totalVisibleReminders,
+		saveReminder,
+		markReminderDone,
+	} = useDashboardReminders();
 	const [editingReminder, setEditingReminder] = useState<ReminderRow | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [selectedReminderRow, setSelectedReminderRow] = useState<ReminderRow | null>(
@@ -33,6 +43,7 @@ export function RemindersView() {
 	);
 
 	const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? null;
+	const jobsById = new Map(jobs.map((job) => [job.id, job]));
 
 	return (
 		<div>
@@ -53,8 +64,10 @@ export function RemindersView() {
 							aria-hidden="true"
 						/>
 						<Input
+							value={search}
 							placeholder="Search jobs, companies..."
 							className="h-11 bg-white pl-11 pr-14 text-sm shadow-none dark:border-border dark:bg-card"
+							onChange={(event) => setSearch(event.target.value)}
 						/>
 					</div>
 
@@ -62,7 +75,7 @@ export function RemindersView() {
 						value={selectedReminderType}
 						onValueChange={(value) =>
 							setSelectedReminderType(
-								value as (typeof reminderTypeOptions)[number],
+								value as (typeof reminderTypeOptions)[number] | "all",
 							)
 						}
 					>
@@ -70,6 +83,7 @@ export function RemindersView() {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
+							<SelectItem value="all">All types</SelectItem>
 							{reminderTypeOptions.map((option) => (
 								<SelectItem key={option} value={option}>
 									{option}
@@ -78,35 +92,62 @@ export function RemindersView() {
 						</SelectContent>
 					</Select>
 
-					<RemindersDatePicker />
+					<RemindersDatePicker
+						selectedDate={selectedDate}
+						onSelectDate={setSelectedDate}
+					/>
 				</div>
 			</section>
 
-			<RemindersStats />
+			<RemindersStats stats={stats} />
 
 			<section className="mt-6 mb-8 space-y-6">
 				<div className="space-y-5">
-					{reminderSections.map((section) => (
-						<RemindersTableSection
-							key={section.id}
-							section={section}
-							onEditReminder={setEditingReminder}
-							onOpenJob={(row) => {
-								setSelectedReminderRow(row);
-								setSelectedJobId(row.jobId);
-							}}
-						/>
-					))}
+					{sections.length ? (
+						sections.map((section) => (
+							<RemindersTableSection
+								key={section.id}
+								section={section}
+								jobsById={jobsById}
+								onEditReminder={setEditingReminder}
+								onMarkCompleted={async (row) => {
+									const completed = await markReminderDone(row.jobId);
+
+									if (completed) {
+										toast.success("Marked this reminder as completed.");
+									} else {
+										toast.error(
+											"Could not mark this reminder as completed.",
+										);
+									}
+								}}
+								onOpenJob={(row) => {
+									setSelectedReminderRow(row);
+									setSelectedJobId(row.jobId);
+								}}
+							/>
+						))
+					) : (
+						<div className="rounded-md border border-slate-100 bg-white px-6 py-10 text-center text-sm font-medium text-slate-500 shadow-[0_4px_16px_rgba(15,23,42,0.01)] dark:border-none dark:bg-card dark:text-muted-foreground">
+							No reminders found for the current filters.
+						</div>
+					)}
 
 					<div className="flex flex-col gap-4 text-sm font-medium text-slate-500 dark:text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-						<p>Showing 1 to 6 of 12 reminders</p>
-						<Button
-							type="button"
-							variant="outline"
-							className="h-10 rounded-md border-slate-100 bg-white px-4 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
-						>
-							Load More
-						</Button>
+						<p>
+							Showing {totalVisibleReminders} reminder
+							{totalVisibleReminders === 1 ? "" : "s"}
+						</p>
+						{selectedDate ? (
+							<Button
+								type="button"
+								variant="outline"
+								className="h-10 rounded-md border-slate-100 bg-white px-4 font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground"
+								onClick={() => setSelectedDate(undefined)}
+							>
+								Clear Date
+							</Button>
+						) : null}
 					</div>
 				</div>
 			</section>
@@ -122,7 +163,8 @@ export function RemindersView() {
 							setEditingReminder(null);
 						}
 					}}
-					onSubmit={() => {
+					onSubmit={async (values) => {
+						await saveReminder(editingReminder.jobId, values);
 						setEditingReminder(null);
 					}}
 				/>

@@ -8,7 +8,6 @@ import {
 	Users,
 	type LucideIcon,
 } from "lucide-react";
-import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { JobBrandMark } from "@/modules/dashboard/components/job-table/job-brand-mark";
+import type { DashboardJob } from "@/modules/dashboard/types";
 
 import type { ReminderRow, ReminderSection } from "./types";
 
@@ -37,14 +38,18 @@ const reminderKindIcons: Record<ReminderRow["kind"], LucideIcon> = {
 
 type RemindersTableSectionProps = {
 	section: ReminderSection;
+	jobsById: Map<string, DashboardJob>;
 	onEditReminder?: (row: ReminderRow) => void;
 	onOpenJob?: (row: ReminderRow) => void;
+	onMarkCompleted?: (row: ReminderRow) => void;
 };
 
 export function RemindersTableSection({
 	section,
+	jobsById,
 	onEditReminder,
 	onOpenJob,
+	onMarkCompleted,
 }: RemindersTableSectionProps) {
 	return (
 		<section className="space-y-3">
@@ -69,14 +74,7 @@ export function RemindersTableSection({
 							>
 								<TableCell className="px-6 py-4">
 									<div className="flex min-w-[240px] items-center gap-4">
-										<div
-											className={cn(
-												"flex size-11 shrink-0 items-center justify-center rounded-lg text-sm font-black",
-												row.companyMarkClassName,
-											)}
-										>
-											{row.companyMark}
-										</div>
+										{renderCompanyMark(row, jobsById.get(row.jobId))}
 										<div className="min-w-0">
 											<p className="truncate text-sm font-bold text-slate-950 dark:text-foreground">
 												{row.title}
@@ -142,9 +140,7 @@ export function RemindersTableSection({
 												</DropdownMenuItem>
 												<DropdownMenuItem
 													className="gap-2.5"
-													onClick={() =>
-														toast.info("Mark completed is currently unavailable.")
-													}
+													onClick={() => onMarkCompleted?.(row)}
 												>
 													<Check className="size-4" aria-hidden="true" />
 													Mark completed
@@ -159,6 +155,30 @@ export function RemindersTableSection({
 				</Table>
 			</div>
 		</section>
+	);
+}
+
+function renderCompanyMark(row: ReminderRow, job?: DashboardJob) {
+	if (job) {
+		return (
+			<JobBrandMark
+				brand={job.brand}
+				logoUrl={job.logoUrl}
+				company={job.company}
+				className="size-11 rounded-lg text-sm"
+			/>
+		);
+	}
+
+	return (
+		<div
+			className={cn(
+				"flex size-11 shrink-0 items-center justify-center rounded-lg text-sm font-black",
+				row.companyMarkClassName,
+			)}
+		>
+			{row.companyMark}
+		</div>
 	);
 }
 

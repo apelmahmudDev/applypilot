@@ -11,6 +11,7 @@ export type ReminderFormValues = {
 	date: string;
 	time: string;
 	isActive: boolean;
+	isDone?: boolean;
 	note: string;
 };
 

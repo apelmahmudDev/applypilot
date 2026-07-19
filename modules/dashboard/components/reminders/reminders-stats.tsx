@@ -2,13 +2,16 @@ import {
 	StatsCardGrid,
 	type StatsCardItem,
 } from "@/modules/dashboard/components/stats-card-grid";
+import type { ReminderStat } from "./types";
 
-import { reminderStats } from "./data";
+type RemindersStatsProps = {
+	stats: ReminderStat[];
+};
 
-export function RemindersStats() {
+export function RemindersStats({ stats }: RemindersStatsProps) {
 	return (
 		<StatsCardGrid
-			stats={reminderStats as StatsCardItem[]}
+			stats={stats as StatsCardItem[]}
 			className="xl:grid-cols-5"
 			layout="value-first"
 			showDescription={false}

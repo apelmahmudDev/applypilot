@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Calendar1 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,15 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function RemindersDatePicker() {
-	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-		new Date(),
-	);
+type RemindersDatePickerProps = {
+	selectedDate?: Date;
+	onSelectDate: (date: Date | undefined) => void;
+};
+
+export function RemindersDatePicker({
+	selectedDate,
+	onSelectDate,
+}: RemindersDatePickerProps) {
 
 	const formattedDate = useMemo(() => {
 		if (!selectedDate) {
@@ -45,7 +50,7 @@ export function RemindersDatePicker() {
 				<Calendar
 					mode="single"
 					selected={selectedDate}
-					onSelect={setSelectedDate}
+					onSelect={onSelectDate}
 				/>
 			</PopoverContent>
 		</Popover>

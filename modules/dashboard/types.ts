@@ -23,6 +23,7 @@ export type DashboardReminder = {
 	date: string;
 	time: string;
 	isActive: boolean;
+	isDone?: boolean;
 	note: string;
 };
 

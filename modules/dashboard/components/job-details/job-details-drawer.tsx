@@ -49,7 +49,10 @@ export function JobDetailsDrawer({
 	}
 
 	const applicationDate = job.status === "Saved" ? "-" : job.appliedDate;
-	const savedDate = job.status === "Saved" ? job.appliedDate : job.savedDate;
+	const savedDate = job.savedDate || "-";
+	const location = job.location.trim() || "-";
+	const workMode = job.workMode.trim() || "-";
+	const salary = job.salary?.trim() || "Not specified";
 	const canOpenSource = Boolean(job.source.url);
 
 	return (
@@ -111,6 +114,8 @@ export function JobDetailsDrawer({
 					brandMark={
 						<JobBrandMark
 							brand={job.brand}
+							logoUrl={job.logoUrl}
+							company={job.company}
 							className="size-14 rounded-md text-2xl"
 						/>
 					}
@@ -154,12 +159,12 @@ export function JobDetailsDrawer({
 								<JobDetailsRow
 									icon={Tag}
 									label="Work Mode"
-									value={job.workMode}
+									value={workMode}
 								/>
 								<JobDetailsRow
 									icon={MapPin}
 									label="Location"
-									value={job.location}
+									value={location}
 								/>
 								<JobDetailsRow
 									icon={Link2}
@@ -184,12 +189,13 @@ export function JobDetailsDrawer({
 								<JobDetailsRow
 									icon={BadgeDollarSign}
 									label="Salary"
-									value={job.salary ?? "Not specified"}
+									value={salary}
 								/>
 							</JobDetailsSection>
 
 							<JobDetailsSection title="Job Description">
 								<FormattedJobDescription
+									descriptionHtml={job.descriptionHtml}
 									descriptionText={job.description}
 									collapsible
 								/>

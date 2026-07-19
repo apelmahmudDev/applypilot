@@ -4,7 +4,7 @@ import type { AriaAttributes, ComponentType, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type JobDetailsStatus = "Applied" | "Interview" | "Saved" | "Rejected" | "Offer";
+type JobDetailsStatus = "Applied" | "Interview" | "Saved" | "Offer";
 
 const statusStyles: Record<JobDetailsStatus, string> = {
 	Applied:
@@ -12,7 +12,6 @@ const statusStyles: Record<JobDetailsStatus, string> = {
 	Interview:
 		"bg-violet-50 text-violet-600 dark:bg-violet-500/18 dark:text-violet-200",
 	Saved: "bg-blue-50 text-blue-600 dark:bg-blue-500/18 dark:text-blue-200",
-	Rejected: "bg-red-50 text-red-600 dark:bg-red-500/18 dark:text-red-200",
 	Offer: "bg-amber-50 text-amber-600 dark:bg-amber-500/18 dark:text-amber-200",
 };
 

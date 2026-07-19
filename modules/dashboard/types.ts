@@ -42,6 +42,7 @@ export type DashboardJob = {
 	salary?: string;
 	notes: string;
 	description: string;
+	descriptionHtml?: string;
 	experienceLevel?: string;
 	currency?: string;
 	tags?: string[];

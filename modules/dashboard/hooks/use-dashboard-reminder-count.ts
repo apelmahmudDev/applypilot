@@ -6,27 +6,38 @@ export function useDashboardReminderCount() {
 	const [count, setCount] = useState(0);
 
 	useEffect(() => {
+		if (typeof browser === "undefined" || !browser.storage?.onChanged) {
+			return;
+		}
+
 		let isMounted = true;
 
 		const loadReminderCount = async () => {
-			const jobs = await getStoredJobs();
-			const nextCount = jobs.filter(
-				(job) =>
-					job.reminderEnabled &&
-					Boolean(job.followUpDate) &&
-					!job.reminderDone,
-			).length;
+			try {
+				const jobs = await getStoredJobs();
+				const nextCount = jobs.filter(
+					(job) =>
+						job.reminderEnabled &&
+						Boolean(job.followUpDate) &&
+						!job.reminderDone,
+				).length;
 
-			if (isMounted) {
-				setCount(nextCount);
+				if (isMounted) {
+					setCount(nextCount);
+				}
+			} catch {
+				if (isMounted) {
+					setCount(0);
+				}
 			}
 		};
 
 		void loadReminderCount();
 
-		const handleStorageChange: Parameters<
-			typeof browser.storage.onChanged.addListener
-		>[0] = (changes, areaName) => {
+		const handleStorageChange = (
+			changes: Record<string, browser.storage.StorageChange>,
+			areaName: string,
+		) => {
 			if (areaName === "local" && changes["applypilot.jobs"]) {
 				void loadReminderCount();
 			}

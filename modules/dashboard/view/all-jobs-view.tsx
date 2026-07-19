@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-	BriefcaseBusiness,
-	CircleCheckBig,
-	Plus,
-	Search,
-	Sparkles,
-	Users,
-} from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,22 +10,15 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { dashboardJobs } from "@/modules/dashboard/mock-data";
-import {
-	StatsCardGrid,
-	type StatsCardItem,
-} from "@/modules/dashboard/components/stats-card-grid";
+import { StatsCardGrid } from "@/modules/dashboard/components/stats-card-grid";
 import { JobDetailsDrawer } from "@/modules/dashboard/components/job-details/job-details-drawer";
 import { JobFormDrawer } from "@/modules/dashboard/components/job-form/job-form-drawer";
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
-import {
-	formatReminderSummary,
-	getReminderFormValues,
-} from "@/modules/dashboard/components/reminders/reminder-form.utils";
+import { getReminderFormValues } from "@/modules/dashboard/components/reminders/reminder-form.utils";
+import { useDashboardJobs } from "@/modules/dashboard/hooks/use-dashboard-jobs";
 import type { DashboardStatusFilter } from "@/modules/dashboard/types";
 import { getDashboardColumns } from "../components/job-table/columns";
 import { DataTable } from "../components/job-table/data-table";
-import type { DashboardJob } from "../types";
 
 const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 	{ value: "saved", label: "Saved" },
@@ -42,51 +28,8 @@ const statusFilters: Array<{ value: DashboardStatusFilter; label: string }> = [
 	{ value: "offer", label: "Offer" },
 ];
 
-const allJobsStats = [
-	{
-		label: "Total Jobs",
-		value: "42",
-		description: "All saved jobs",
-		trend: "12%",
-		icon: BriefcaseBusiness,
-		accentClassName:
-			"bg-blue-100 text-blue-700 dark:bg-blue-500/18 dark:text-blue-200",
-		trendClassName: "text-blue-600 dark:text-blue-300",
-	},
-	{
-		label: "Applied",
-		value: "18",
-		description: "Applications sent",
-		trend: "18%",
-		icon: CircleCheckBig,
-		accentClassName:
-			"bg-emerald-100 text-emerald-700 dark:bg-emerald-500/18 dark:text-emerald-200",
-		trendClassName: "text-emerald-600 dark:text-emerald-300",
-	},
-	{
-		label: "Interviewing",
-		value: "4",
-		description: "In progress",
-		trend: "14%",
-		icon: Users,
-		accentClassName:
-			"bg-violet-100 text-violet-700 dark:bg-violet-500/18 dark:text-violet-200",
-		trendClassName: "text-violet-600 dark:text-violet-300",
-	},
-	{
-		label: "Offers",
-		value: "1",
-		description: "Offers received",
-		trend: "50%",
-		icon: Sparkles,
-		accentClassName:
-			"bg-amber-100 text-amber-700 dark:bg-amber-500/18 dark:text-amber-200",
-		trendClassName: "text-amber-600 dark:text-amber-300",
-	},
-] satisfies StatsCardItem[];
-
 export function AllJobsView() {
-	const [jobs, setJobs] = useState(dashboardJobs);
+	const { jobs, stats, createJob, saveJob, saveReminder } = useDashboardJobs();
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [editingJobId, setEditingJobId] = useState<string | null>(null);
 	const [isCreatingJob, setIsCreatingJob] = useState(false);
@@ -166,7 +109,7 @@ export function AllJobsView() {
 						</div>
 					</section>
 				)}
-				statsSlot={<StatsCardGrid stats={allJobsStats} />}
+				statsSlot={<StatsCardGrid stats={stats} />}
 			/>
 
 			<JobDetailsDrawer
@@ -191,18 +134,8 @@ export function AllJobsView() {
 							setReminderDialogJobId(null);
 						}
 					}}
-					onSubmit={(values) => {
-						setJobs((currentJobs) =>
-							currentJobs.map((job) =>
-								job.id === reminderDialogJob.id
-									? {
-											...job,
-											reminder: formatReminderSummary(values.date),
-											reminderDetails: values,
-										}
-									: job,
-							),
-						);
+					onSubmit={async (values) => {
+						await saveReminder(reminderDialogJob.id, values);
 					}}
 				/>
 			) : null}
@@ -213,8 +146,8 @@ export function AllJobsView() {
 					mode="create"
 					open={isCreatingJob}
 					onOpenChange={setIsCreatingJob}
-					onSubmit={(job) => {
-						setJobs((currentJobs) => [job, ...currentJobs]);
+					onSubmit={async (job) => {
+						await createJob(job);
 					}}
 				/>
 			) : null}
@@ -230,10 +163,8 @@ export function AllJobsView() {
 							setEditingJobId(null);
 						}
 					}}
-					onSubmit={(nextJob) => {
-						setJobs((currentJobs) =>
-							currentJobs.map((job) => (job.id === nextJob.id ? nextJob : job)),
-						);
+					onSubmit={async (nextJob) => {
+						await saveJob(nextJob);
 					}}
 				/>
 			) : null}

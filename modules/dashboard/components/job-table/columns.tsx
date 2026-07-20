@@ -88,13 +88,23 @@ export function getDashboardColumns({
 				const job = row.original;
 				const hasLocation = Boolean(job.location.trim());
 				const hasWorkMode = Boolean(job.workMode.trim());
+				const locationText = job.location.trim();
 
 				return (
-					<div className="min-w-[150px]">
+					<div className="min-w-[150px] max-w-[320px]">
 						{hasLocation ? (
-							<p className="text-sm font-semibold text-slate-900 dark:text-foreground">
-								{job.location}
-							</p>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<p className="truncate text-sm font-semibold text-slate-900 dark:text-foreground">
+											{locationText}
+										</p>
+									</TooltipTrigger>
+									<TooltipContent side="top" sideOffset={6}>
+										{locationText}
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						) : (
 							<p className="text-sm font-semibold text-slate-400 dark:text-muted-foreground/75">
 								-

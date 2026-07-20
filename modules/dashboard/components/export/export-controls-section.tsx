@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, Download } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import {
+	exportApplyPilotData,
+	getExportRangeDescription,
+	type ExportRange,
+} from "@/lib/export/backup";
 import { cn } from "@/lib/utils";
 
 import {
@@ -21,7 +27,27 @@ import { ExportCardShell } from "./export-card-shell";
 
 export function ExportControlsSection() {
 	const [selectedFormat, setSelectedFormat] = useState<"json" | "csv">("json");
+	const [selectedRange, setSelectedRange] = useState<ExportRange>("all-time");
+	const [isExporting, setIsExporting] = useState(false);
 	const FooterIcon = exportFooterNote.icon;
+	const rangeDescription = getExportRangeDescription(selectedRange);
+
+	const handleExport = async () => {
+		setIsExporting(true);
+
+		try {
+			await exportApplyPilotData(selectedFormat, selectedRange);
+			toast.success(
+				selectedFormat === "json"
+					? "Backup exported successfully."
+					: "CSV export downloaded successfully.",
+			);
+		} catch {
+			toast.error("Could not export your data. Please try again.");
+		} finally {
+			setIsExporting(false);
+		}
+	};
 
 	return (
 		<ExportCardShell title="Export Format">
@@ -83,7 +109,7 @@ export function ExportControlsSection() {
 						</span>
 					</div>
 
-					<Select defaultValue="all-time">
+					<Select value={selectedRange} onValueChange={(value) => setSelectedRange(value as ExportRange)}>
 						<SelectTrigger className="h-12! w-full rounded-md border-slate-200 bg-white px-4 text-base font-semibold text-slate-700 shadow-none dark:border-border dark:bg-card dark:text-foreground">
 							<SelectValue />
 						</SelectTrigger>
@@ -97,14 +123,24 @@ export function ExportControlsSection() {
 					</Select>
 
 					<p className="text-base leading-7 text-slate-500 dark:text-muted-foreground">
-						Export all data from the beginning.
+						{rangeDescription}
 					</p>
 				</div>
 
 				<div className="space-y-4">
-					<Button className="h-12 w-full rounded-md bg-primary text-base font-bold text-primary-foreground hover:brightness-95">
+					{selectedFormat === "csv" ? (
+						<p className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+							CSV is intended for spreadsheets and reports. Use JSON if you want to restore your data later.
+						</p>
+					) : null}
+
+					<Button
+						className="h-12 w-full rounded-md bg-primary text-base font-bold text-primary-foreground hover:brightness-95"
+						onClick={() => void handleExport()}
+						disabled={isExporting}
+					>
 						<Download className="size-5" aria-hidden="true" />
-						Export Data
+						{isExporting ? "Exporting..." : "Export Data"}
 					</Button>
 
 					<div className="flex items-center justify-center gap-2 text-slate-500 dark:text-muted-foreground">

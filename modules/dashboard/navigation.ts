@@ -37,7 +37,7 @@ export const dashboardNavSections: DashboardNavSection[] = [
 		label: "Tools",
 		items: [
 			{ label: "Reminders", value: "reminders", icon: Bell },
-			{ label: "Export", value: "export", icon: Download },
+			{ label: "Backup & Restore", value: "export", icon: Download },
 		],
 	},
 	{

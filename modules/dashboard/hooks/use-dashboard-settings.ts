@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { getAppVersion } from "@/lib/app-version";
 import {
 	DASHBOARD_SETTINGS_STORAGE_KEY,
 	defaultDashboardSettings,
@@ -107,7 +108,7 @@ export function useDashboardSettings() {
 		() => Math.min(100, Math.round((storageUsedBytes / LOCAL_STORAGE_BUDGET_BYTES) * 100)),
 		[storageUsedBytes],
 	);
-	const appVersion = useMemo(() => browser.runtime.getManifest().version, []);
+	const appVersion = useMemo(() => getAppVersion(), []);
 
 	return {
 		settings,

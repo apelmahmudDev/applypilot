@@ -43,7 +43,7 @@ export const settingsSections: Record<
 
 export const settingsPreferenceItems: SettingsPreferenceItem[] = [
 	{
-		id: "default-status",
+		id: "defaultStatus",
 		label: "Default Status for New Jobs",
 		description: "Choose the default status applied when creating a new job.",
 		defaultValue: "saved",
@@ -54,7 +54,7 @@ export const settingsPreferenceItems: SettingsPreferenceItem[] = [
 		],
 	},
 	{
-		id: "date-format",
+		id: "dateFormat",
 		label: "Date Format",
 		description: "Choose how dates are displayed throughout the dashboard.",
 		defaultValue: "may-20-2025",
@@ -65,7 +65,7 @@ export const settingsPreferenceItems: SettingsPreferenceItem[] = [
 		],
 	},
 	{
-		id: "sort-jobs-by",
+		id: "sortJobsBy",
 		label: "Sort Jobs By",
 		description: "Choose the default sorting for your saved job applications.",
 		defaultValue: "last-updated",

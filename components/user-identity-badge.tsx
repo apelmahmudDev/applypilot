@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { getAppVersionLabel } from "@/lib/app-version";
 import { cn } from "@/lib/utils";
 
 const DASHBOARD_IDENTITY_STORAGE_KEY = "applypilot.dashboardIdentity";
@@ -40,7 +41,10 @@ type UserIdentity = {
 	version: string;
 };
 
-function buildUserIdentity(name: DashboardIdentityName): UserIdentity {
+function buildUserIdentity(
+	name: DashboardIdentityName,
+	version = getExtensionVersionLabel(),
+): UserIdentity {
 	const avatarLabel = name
 		.split(" ")
 		.slice(0, 2)
@@ -58,7 +62,7 @@ function buildUserIdentity(name: DashboardIdentityName): UserIdentity {
 		role: "Local workspace",
 		avatarLabel,
 		avatarThemeClassName,
-		version: "v1.0.0",
+		version,
 	};
 }
 
@@ -66,6 +70,10 @@ function getRandomDashboardIdentityName() {
 	return dashboardIdentities[
 		Math.floor(Math.random() * dashboardIdentities.length)
 	];
+}
+
+function getExtensionVersionLabel() {
+	return getAppVersionLabel();
 }
 
 export function useUserIdentity() {

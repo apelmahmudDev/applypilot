@@ -6,7 +6,7 @@ import {
 	ChartTooltipContent,
 	type ChartConfig,
 } from "@/components/ui/chart";
-import { applicationFunnelData } from "./analytics-data";
+import type { ApplicationFunnelPoint } from "@/modules/dashboard/data/dashboard-analytics";
 import { AnalyticsSectionCard } from "./analytics-section-card";
 
 const chartConfig = {
@@ -16,7 +16,13 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function ApplicationFunnelChart() {
+type ApplicationFunnelChartProps = {
+	data: ApplicationFunnelPoint[];
+};
+
+export function ApplicationFunnelChart({ data }: ApplicationFunnelChartProps) {
+	const maxValue = Math.max(...data.map((item) => item.value), 0);
+
 	return (
 		<AnalyticsSectionCard
 			title="Application Funnel"
@@ -24,13 +30,13 @@ export function ApplicationFunnelChart() {
 		>
 			<ChartContainer config={chartConfig} className="h-[250px] w-full">
 				<BarChart
-					data={applicationFunnelData}
+					data={data}
 					accessibilityLayer={false}
 					layout="vertical"
 					margin={{ top: 0, right: 30, left: 0, bottom: 0 }}
 					barCategoryGap={12}
 				>
-					<XAxis type="number" hide domain={[0, 60]} />
+					<XAxis type="number" hide domain={[0, Math.max(maxValue, 1)]} />
 					<YAxis
 						dataKey="stage"
 						type="category"
@@ -50,7 +56,7 @@ export function ApplicationFunnelChart() {
 							content={({ x = 0, y = 0, width = 0, height = 0, value, index }) => {
 								const percentage =
 									typeof index === "number"
-										? applicationFunnelData[index]?.percentage
+										? data[index]?.percentage
 										: undefined;
 
 								return (
@@ -65,7 +71,7 @@ export function ApplicationFunnelChart() {
 								);
 							}}
 						/>
-						{applicationFunnelData.map((entry) => (
+						{data.map((entry) => (
 							<Cell key={entry.stage} fill={entry.fill} />
 						))}
 					</Bar>

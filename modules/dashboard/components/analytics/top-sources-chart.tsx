@@ -13,7 +13,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { topSourcesData } from "./analytics-data";
+import type { TopSourcePoint } from "@/modules/dashboard/data/dashboard-analytics";
 import { AnalyticsSectionCard } from "./analytics-section-card";
 
 const chartConfig = {
@@ -23,7 +23,11 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function TopSourcesChart() {
+type TopSourcesChartProps = {
+	data: TopSourcePoint[];
+};
+
+export function TopSourcesChart({ data }: TopSourcesChartProps) {
 	return (
 		<AnalyticsSectionCard
 			title="Top Sources"
@@ -40,7 +44,7 @@ export function TopSourcesChart() {
 		>
 			<ChartContainer config={chartConfig} className="h-[250px] w-full">
 				<BarChart
-					data={topSourcesData}
+					data={data}
 					accessibilityLayer={false}
 					margin={{ top: 8, right: 0, left: -18, bottom: 0 }}
 				>
@@ -57,7 +61,7 @@ export function TopSourcesChart() {
 						content={<ChartTooltipContent labelKey="applications" />}
 					/>
 					<Bar dataKey="applications" radius={[8, 8, 0, 0]} barSize={38}>
-						{topSourcesData.map((entry, index) => (
+						{data.map((entry, index) => (
 							<Cell
 								key={entry.source}
 								fill={index === 0 ? "#2563eb" : "#3b82f6"}

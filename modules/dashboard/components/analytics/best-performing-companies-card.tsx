@@ -1,9 +1,15 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { bestPerformingCompanies } from "./analytics-data";
+import type { BestPerformingCompanyPoint } from "@/modules/dashboard/data/dashboard-analytics";
 import { AnalyticsSectionCard } from "./analytics-section-card";
 
-export function BestPerformingCompaniesCard() {
+type BestPerformingCompaniesCardProps = {
+	companies: BestPerformingCompanyPoint[];
+};
+
+export function BestPerformingCompaniesCard({
+	companies,
+}: BestPerformingCompaniesCardProps) {
 	return (
 		<AnalyticsSectionCard
 			title="Best Performing Companies"
@@ -16,7 +22,7 @@ export function BestPerformingCompaniesCard() {
 			</div>
 
 			<div className="space-y-4">
-				{bestPerformingCompanies.map((company) => (
+				{companies.map((company) => (
 					<div
 						key={company.company}
 						className="grid grid-cols-[minmax(0,1fr)_96px_112px] items-center gap-3 text-sm"

@@ -13,7 +13,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { applicationsOverTimeData } from "./analytics-data";
+import type { ApplicationsOverTimePoint } from "@/modules/dashboard/data/dashboard-analytics";
 import { AnalyticsSectionCard } from "./analytics-section-card";
 
 const chartConfig = {
@@ -23,7 +23,13 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function ApplicationsOverTimeChart() {
+type ApplicationsOverTimeChartProps = {
+	data: ApplicationsOverTimePoint[];
+};
+
+export function ApplicationsOverTimeChart({
+	data,
+}: ApplicationsOverTimeChartProps) {
 	return (
 		<AnalyticsSectionCard
 			title="Applications Over Time"
@@ -41,7 +47,7 @@ export function ApplicationsOverTimeChart() {
 		>
 			<ChartContainer config={chartConfig} className="h-[250px] w-full">
 				<LineChart
-					data={applicationsOverTimeData}
+					data={data}
 					accessibilityLayer={false}
 					margin={{ top: 10, right: 12, left: -18, bottom: 0 }}
 				>

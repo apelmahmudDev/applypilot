@@ -223,6 +223,23 @@ pnpm zip
 pnpm zip:firefox
 ```
 
+## Manage the Extension Version
+
+The browser extension version is sourced from `package.json`, and WXT carries that into the generated manifest during build and zip steps.
+
+```bash
+pnpm version:patch
+pnpm version:minor
+pnpm version:major
+pnpm version:prerelease
+```
+
+To set an exact version manually, run:
+
+```bash
+pnpm version:set -- 0.1.0
+```
+
 ## Load the Extension Locally
 
 ### Chrome and Chromium Browsers

@@ -40,10 +40,16 @@ export function ExportView() {
 			<section className="mt-6 mb-8 space-y-6">
 				<Tabs defaultValue="export" className="space-y-6">
 					<TabsList className="h-auto rounded-md bg-slate-100 p-1 dark:bg-muted">
-						<TabsTrigger value="export" className="px-4 py-2 font-semibold">
+						<TabsTrigger
+							value="export"
+							className="px-4 py-2 font-semibold rounded-sm"
+						>
 							Export Data
 						</TabsTrigger>
-						<TabsTrigger value="restore" className="px-4 py-2 font-semibold">
+						<TabsTrigger
+							value="restore"
+							className="px-4 py-2 font-semibold rounded-sm"
+						>
 							Restore Data
 						</TabsTrigger>
 					</TabsList>

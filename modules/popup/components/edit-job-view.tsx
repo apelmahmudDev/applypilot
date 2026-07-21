@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { JobDescriptionEditor } from "@/components/job-description-editor";
 import {
 	Field,
 	FieldError,
@@ -83,6 +84,8 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 	const form = useForm({
 		defaultValues: {
 			...job,
+			descriptionText: job.descriptionText ?? job.notes,
+			descriptionHtml: job.descriptionHtml ?? "",
 			platform: job.platform || "LinkedIn",
 			workplaceType: job.workplaceType || "Remote",
 			employmentType: job.employmentType || "Full-time",
@@ -486,26 +489,16 @@ export function EditJobView({ job, onCancel, onSave }: EditJobViewProps) {
 											className={fieldLabelClassName}
 											htmlFor={field.name}
 										>
-											Notes
+											Job Description / Notes
 										</FieldLabel>
-										<div className="relative">
-											<Textarea
-												id={field.name}
-												name={field.name}
-												value={field.state.value}
-												onBlur={field.handleBlur}
-												onChange={(event) =>
-													field.handleChange(event.target.value)
-												}
-												aria-invalid={isInvalid}
-												rows={4}
-												maxLength={500}
-												className="min-h-24 resize-none border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-950 shadow-none focus-visible:ring-0 dark:border-[#454040] dark:bg-card dark:text-slate-100"
-											/>
-											<div className="pointer-events-none absolute right-3 bottom-3 text-xs font-medium tabular-nums text-slate-400 dark:text-muted-foreground">
-												{field.state.value.length} characters
-											</div>
-										</div>
+										<JobDescriptionEditor
+											value={form.state.values.descriptionHtml || field.state.value}
+											onChange={({ html, text }) => {
+												field.handleChange(text);
+												form.setFieldValue("descriptionText", text);
+												form.setFieldValue("descriptionHtml", html);
+											}}
+										/>
 										{isInvalid && (
 											<FieldError errors={field.state.meta.errors} />
 										)}

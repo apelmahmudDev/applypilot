@@ -32,7 +32,8 @@ export function detectLinkedInJobInPage(): DetectedJob | null {
 	const sharedDetected = detectSharedLinkedInJob();
 	const companyCard = getCompanyCard(jobContainer);
 	const fallbackCompany = getCompany(jobContainer, companyCard, jobCardText, title, description.text);
-	const company = sharedDetected?.company || fallbackCompany;
+	const company =
+		getValidCompanyName(sharedDetected?.company) || getValidCompanyName(fallbackCompany);
 	const fallbackLocation = getLocation(
 		jobContainer,
 		jobCardText,
@@ -188,6 +189,21 @@ export function detectLinkedInJobInPage(): DetectedJob | null {
 			getDescriptionLabel(description, "Company Name") || getDescriptionLabel(description, "Company");
 		if (labelledCompany) return labelledCompany;
 
+		// LinkedIn's current job header exposes the employer as a stable,
+		// accessible label: aria-label="Company, OSCH EMPRESA.". Select the
+		// last such card before the current job's About section so job-list
+		// companies and LinkedIn navigation cannot win.
+		const pageCompanyCards = Array.from(
+			document.querySelectorAll<HTMLElement>('[aria-label^="Company,"]'),
+		);
+		const selectedCompanyCard = aboutSection
+			? pageCompanyCards.filter((card) => isBefore(card, aboutSection)).at(-1)
+			: pageCompanyCards[0];
+		const selectedCompanyName = normalizeCompanyName(
+			selectedCompanyCard?.getAttribute("aria-label")?.replace(/^Company,\s*/i, ""),
+		);
+		if (selectedCompanyName) return selectedCompanyName;
+
 		const companyCardLink = companyCard?.querySelector<HTMLAnchorElement>('a[href*="/company/"]');
 		if (companyCardLink) {
 			const companyName = normalizeCompanyName(companyCardLink.textContent);
@@ -204,6 +220,11 @@ export function detectLinkedInJobInPage(): DetectedJob | null {
 			container || document,
 		);
 		return normalizeCompanyName(semanticCompany || getCompanyAndLocation(jobCardText, title).company);
+	}
+
+	function getValidCompanyName(value: string | undefined) {
+		const company = normalizeCompanyName(value);
+		return /^linkedin$/i.test(company) ? "" : company;
 	}
 
 	function getLogoUrl(companyCard: Element | null, container: Element | null) {
@@ -326,7 +347,7 @@ export function detectLinkedInJobInPage(): DetectedJob | null {
 	}
 
 	function normalizeCompanyName(value: string | undefined) {
-		return shortValue(value?.replace(/\s+logo$/i, ""));
+		return shortValue(value?.replace(/\s+logo$/i, "").replace(/\.$/, ""));
 	}
 
 	function firstLocationPart(value: string) {

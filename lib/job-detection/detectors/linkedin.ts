@@ -352,23 +352,32 @@ function cleanLinkedInLocationValue(text?: string, company?: string): string | u
   return normalized;
 }
 
-function findLinkedInCompanyCard(header: Element | null, doc: Document): Element | null {
-  const root = header ?? doc;
+function findLinkedInCompanyCard(
+  header: Element | null,
+  doc: Document,
+  reference?: Node | null,
+): Element | null {
+  const headerCard = header?.querySelector('[aria-label^="Company,"]');
+  if (headerCard) return headerCard;
 
-  return (
-    root.querySelector('a[href*="/company/"] > div[aria-label^="Company,"]') ??
-    root.querySelector('[aria-label^="Company,"]') ??
-    root.querySelector('a[href*="/company/"]')
-  );
+  const pageCards = queryAll<HTMLElement>(doc, '[aria-label^="Company,"]');
+  if (reference) return nearestElementBefore(pageCards, reference);
+
+  return pageCards[0] ?? null;
 }
 
-function findLinkedInHeaderCompany(header: Element | null, doc: Document): string | undefined {
-  const companyCard = findLinkedInCompanyCard(header, doc);
+function findLinkedInHeaderCompany(
+  header: Element | null,
+  doc: Document,
+  reference?: Node | null,
+  titleElement?: Element | null,
+): string | undefined {
+  const companyCard = findLinkedInCompanyCard(header, doc, reference);
   if (companyCard) {
     const companyLink = companyCard.querySelector<HTMLAnchorElement>('a[href*="/company/"]');
     if (companyLink) {
       const name = oneLine(companyLink.textContent);
-      if (name) return name;
+      if (name && !/^linkedin$/i.test(name)) return name;
     }
 
     const cardLink =
@@ -378,13 +387,14 @@ function findLinkedInHeaderCompany(header: Element | null, doc: Document): strin
         : null;
     if (cardLink) {
       const name = oneLine(cardLink.textContent);
-      if (name) return name;
+      if (name && !/^linkedin$/i.test(name)) return name;
     }
 
     const ariaLabel = companyCard
       .getAttribute('aria-label')
       ?.match(/^Company,\s*(.+?)\.?$/i)?.[1];
-    if (ariaLabel) return oneLine(ariaLabel) || undefined;
+    const name = oneLine(ariaLabel);
+    if (name && !/^linkedin$/i.test(name)) return name;
   }
 
   const root = header ?? doc;
@@ -394,14 +404,39 @@ function findLinkedInHeaderCompany(header: Element | null, doc: Document): strin
     '.jobs-unified-top-card__company-name',
     '.jobs-details-top-card__company-info a',
   ]);
-  if (classic) return oneLine(classic.textContent) || undefined;
+  if (classic) {
+    const name = oneLine(classic.textContent);
+    if (name && !/^linkedin$/i.test(name)) return name;
+  }
 
-  const companyLink = root.querySelector<HTMLAnchorElement>('a[href*="/company/"]');
-  if (companyLink) return oneLine(companyLink.textContent) || undefined;
+  // Some current LinkedIn headers render the company as plain text rather
+  // than a link or accessible company card, for example: <p>Field Nation</p>
+  // immediately before the selected job title.
+  if (titleElement) {
+    const plainCompany = nearestElementBefore(
+      queryAll<HTMLElement>(header ?? doc, 'p').filter((element) => {
+        const text = oneLine(element.textContent);
+        return (
+          text.length >= 2 &&
+          text.length <= 160 &&
+          text.toLowerCase() !== 'linkedin' &&
+          !/\b(?:apply|save|about the job|reposted|posted|applicants?|people clicked|remote|hybrid|on-site|full-time|part-time|contract)\b/i.test(
+            text,
+          ) &&
+          !/[Ã‚Â·Ã¢â‚¬Â¢]/.test(text) &&
+          !/,\s*[A-Za-z]/.test(text)
+        );
+      }),
+      titleElement,
+    );
+    const name = oneLine(plainCompany?.textContent);
+    if (name && !/^linkedin$/i.test(name)) return name;
+  }
 
   const ariaCompany = root.querySelector<HTMLElement>('[aria-label^="Company,"]');
   const ariaLabel = ariaCompany?.getAttribute('aria-label')?.match(/^Company,\s*(.+?)\.?$/i)?.[1];
-  return oneLine(ariaLabel) || undefined;
+  const name = oneLine(ariaLabel);
+  return name && !/^linkedin$/i.test(name) ? name : undefined;
 }
 
 function findLinkedInLogoUrl(header: Element | null, doc: Document): string | undefined {
@@ -592,7 +627,12 @@ function detectLinkedInJobByMode(
   const header = findLinkedInHeaderContainer(titleElement);
   const headerText = elementText(header);
   const metadataText = findLinkedInMetadataText(header) ?? headerText;
-  const sourceCompany = findLinkedInHeaderCompany(header, doc);
+  const sourceCompany = findLinkedInHeaderCompany(
+    header,
+    doc,
+    aboutSection,
+    titleElement,
+  );
   const labelledCompany = extractLabel(description, ['Company Name', 'Company']);
   const company = labelledCompany || sourceCompany || '';
 

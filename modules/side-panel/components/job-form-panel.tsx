@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { experienceLevelOptions } from "@/modules/dashboard/components/job-form/job-form.utils";
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
 import {
@@ -23,6 +22,7 @@ import {
 	SidePanelLayout,
 	SidePanelTopBar,
 } from "@/modules/side-panel/components/side-panel-layout";
+import { JobDescriptionEditor } from "@/modules/side-panel/components/job-description-editor";
 import type {
 	SidePanelJobForm,
 	SidePanelJobStatus,
@@ -79,6 +79,15 @@ export function JobFormPanel({
 		value: SidePanelJobForm[K],
 	) => {
 		setJob((currentJob) => ({ ...currentJob, [field]: value }));
+	};
+
+	const updateDescription = ({ html, text }: { html: string; text: string }) => {
+		setJob((currentJob) => ({
+			...currentJob,
+			descriptionHtml: html,
+			descriptionText: text,
+			notes: text,
+		}));
 	};
 
 	return (
@@ -266,20 +275,12 @@ export function JobFormPanel({
 
 									<Field>
 										<FieldLabel className={fieldLabelClassName}>
-											Note (Optional)
+											Description (Optional)
 										</FieldLabel>
-										<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
-											<Textarea
-												value={job.notes}
-												rows={4}
-												maxLength={500}
-												className="min-h-24 resize-none border-0 bg-transparent px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:bg-card dark:text-foreground"
-												onChange={(event) => updateField("notes", event.target.value)}
-											/>
-											<div className="mt-2 text-right text-xs font-medium text-slate-400 dark:text-muted-foreground/80">
-												{job.notes.length} / 500
-											</div>
-										</div>
+										<JobDescriptionEditor
+											value={job.descriptionHtml || job.descriptionText || job.notes}
+											onChange={updateDescription}
+										/>
 									</Field>
 								</FieldGroup>
 							</div>

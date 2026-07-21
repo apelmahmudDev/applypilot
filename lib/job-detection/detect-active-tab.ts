@@ -319,6 +319,7 @@ function detectJobInPage(): DetectedJob | null {
 				findLocationFromText(pageText),
 			description:
 				text('[data-test="jobDescription"]') ||
+				text('[data-brandviews*="joblisting-description"]') ||
 				text('[class*="jobDescription"]') ||
 				text("main"),
 			salary: text('[data-test*="salary"]') || findSalaryFromText(pageText),
@@ -499,6 +500,18 @@ function detectJobInPage(): DetectedJob | null {
 		if (platformName === "bdjobs") {
 			return formatDescriptionElement(
 				document.querySelector<HTMLElement>("app-details-main"),
+			);
+		}
+
+		if (platformName === "glassdoor") {
+			const descriptionModule = document.querySelector<HTMLElement>(
+				'[data-brandviews*="joblisting-description"]',
+			);
+
+			return formatDescriptionElement(
+				descriptionModule?.querySelector<HTMLElement>(
+					'[class*="JobDetails_jobDescription"]',
+				) || descriptionModule,
 			);
 		}
 

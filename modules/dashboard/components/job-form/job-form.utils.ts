@@ -48,6 +48,7 @@ export type DashboardJobFormValues = {
 	salary: string;
 	currency: string;
 	notes: string;
+	descriptionHtml: string;
 };
 
 export function createEmptyJobFormValues(
@@ -70,6 +71,7 @@ export function createEmptyJobFormValues(
 		salary: "",
 		currency: "",
 		notes: "",
+		descriptionHtml: "",
 	};
 }
 
@@ -89,6 +91,7 @@ export function createJobFormValues(job: DashboardJob): DashboardJobFormValues {
 		salary: normalizeSalary(job.salary),
 		currency: job.currency ?? "",
 		notes: job.description ?? "",
+		descriptionHtml: job.descriptionHtml ?? "",
 	};
 }
 
@@ -123,7 +126,7 @@ export function buildJobFromFormValues(
 			values.notes.trim() ||
 			existingJob?.description ||
 			`${values.company.trim()} opportunity for ${values.title.trim()}.`,
-		descriptionHtml: existingJob?.descriptionHtml,
+		descriptionHtml: values.descriptionHtml.trim() || undefined,
 		logoUrl: existingJob?.logoUrl,
 		brand: existingJob?.brand ?? "hubspot",
 		experienceLevel: values.experienceLevel.trim(),

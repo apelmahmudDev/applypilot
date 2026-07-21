@@ -21,4 +21,5 @@ export const dashboardJobFormSchema = z.object({
 	salary: z.string().trim(),
 	currency: z.string().trim(),
 	notes: z.string().trim(),
+	descriptionHtml: z.string(),
 });

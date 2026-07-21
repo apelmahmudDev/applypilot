@@ -15,6 +15,7 @@ import {
 	JobFormSelectField as SelectField,
 	JobFormTextField as TextField,
 } from "@/components/job-form-fields";
+import { JobDescriptionEditor } from "@/components/job-description-editor";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -30,7 +31,6 @@ import {
 	SheetTitle,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { ReminderFormDialog } from "@/modules/dashboard/components/reminders/reminder-form-dialog";
 import {
@@ -450,17 +450,13 @@ export function JobFormDrawer({
 													<FieldLabel className={fieldLabelClassName}>
 														Job Description (Optional)
 													</FieldLabel>
-													<div className="rounded-md border border-slate-200 bg-white px-4 py-3 dark:border-[#454040] dark:bg-card">
-														<Textarea
-															value={field.state.value}
-															rows={8}
-															className="min-h-40 resize-none border-0 dark:bg-card px-0 py-0 text-sm font-medium text-slate-900 shadow-none focus-visible:ring-0 dark:text-foreground"
-															onBlur={field.handleBlur}
-															onChange={(event) =>
-																field.handleChange(event.target.value)
-															}
-														/>
-													</div>
+											<JobDescriptionEditor
+												value={form.state.values.descriptionHtml || field.state.value}
+												onChange={({ html, text }) => {
+													field.handleChange(text);
+													form.setFieldValue("descriptionHtml", html);
+												}}
+											/>
 													<FieldError errors={field.state.meta.errors} />
 												</Field>
 											)}

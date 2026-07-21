@@ -7,6 +7,7 @@ import {
 	JobFormSelectField,
 	JobFormTextField,
 } from "@/components/job-form-fields";
+import { JobDescriptionEditor } from "@/components/job-description-editor";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,7 +23,6 @@ import {
 	SidePanelLayout,
 	SidePanelTopBar,
 } from "@/modules/side-panel/components/side-panel-layout";
-import { JobDescriptionEditor } from "@/modules/side-panel/components/job-description-editor";
 import type {
 	SidePanelJobForm,
 	SidePanelJobStatus,
